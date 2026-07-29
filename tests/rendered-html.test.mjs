@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -23,10 +24,33 @@ test("server-renders the product shell and interactive demo", async () => {
   assert.match(html, /Describe the destination in your own words/);
   assert.match(html, /Interactive public demo/i);
   assert.match(html, /data-layout-direction="top-to-bottom"/);
+  assert.match(html, /data-layout-model="branched-dag"/);
+  assert.match(html, /Connected dependency tree/);
+  assert.match(html, /Swipe horizontally inside the map to compare all four branches/);
+  assert.match(html, /data-branch-level="5"/);
   assert.match(html, /What to learn from/);
   assert.match(html, /Where research is moving/);
   assert.match(html, /切换到中文/);
   assert.match(html, />12</);
   assert.match(html, />36</);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+});
+
+test("readmes keep demo languages and production screenshots separate", async () => {
+  const [english, chinese] = await Promise.all([
+    readFile(new URL("../README.md", import.meta.url), "utf8"),
+    readFile(new URL("../README.zh-CN.md", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(english, /knowledge-forest-framework\/\?lang=en/);
+  assert.match(english, /knowledge-forest-framework\/\?lang=zh-CN/);
+  assert.match(english, /aialra-forest-chip-overview-en\.jpg/);
+  assert.match(english, /aialra-forest-directory-en\.jpg/);
+  assert.doesNotMatch(english, /aialra-forest-(?:chip-overview|directory)-zh\.jpg/);
+
+  assert.match(chinese, /knowledge-forest-framework\/\?lang=zh-CN/);
+  assert.match(chinese, /knowledge-forest-framework\/\?lang=en/);
+  assert.match(chinese, /aialra-forest-chip-overview-zh\.jpg/);
+  assert.match(chinese, /aialra-forest-directory-zh\.jpg/);
+  assert.doesNotMatch(chinese, /aialra-forest-(?:chip-overview|directory)-en\.jpg/);
 });

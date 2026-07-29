@@ -1,6 +1,6 @@
 # User journey review
 
-Status: passed after three observed product changes
+Status: passed after four observed product changes
 
 Evaluation date: 2026-07-29
 
@@ -14,9 +14,9 @@ Evaluation date: 2026-07-29
 | locked publication node | all missing prerequisites were named |
 | return after reload | progress and feedback persisted |
 | unavailable primary resource | re-audit path recorded without silent substitution |
-| mobile domain and node exploration | complete resource, artifact, and frontier path remained usable |
+| mobile domain and node exploration | complete resource, artifact, frontier path, and horizontal branch navigation remained usable |
 | English to Chinese language switch | the full interface and all twelve node records changed language without losing progress |
-| deep public-demo path | four fields, twelve connected nodes, twelve complete resources, and thirty-six dated research directions remained inspectable |
+| deep public-demo path | six dependency levels, four fields, twelve connected nodes, fifteen prerequisite edges, twelve complete resources, and thirty-six dated research directions remained inspectable |
 
 ## Observed defect and fix
 
@@ -37,5 +37,13 @@ The Chinese title now uses an intentional two-line break and a mobile type size 
 The first interface had no explicit response when a verified resource later became unavailable
 
 The node detail now records a re-audit item, marks the learner as blocked, preserves it locally, and includes the affected node in progress export; it explicitly prevents silent resource substitution
+
+## Observed mobile branch-discovery gap and fix
+
+The real 390 by 844 pixel journey confirmed that the page itself had zero horizontal overflow and the complete dependency graph remained available inside its own 768 pixel scroll surface
+
+The first view did not explain that the four branch lanes could be explored horizontally; a learner could see a clipped neighboring card but had to infer the gesture
+
+A localized mobile hint, thin scrollbar and branch-node scroll snapping now make the horizontal interaction explicit while preserving the top-to-bottom dependency structure; the desktop view continues to show twelve nodes across six levels and fifteen prerequisite edges without page overflow
 
 Structured evidence is stored in `docs/user-journey-review.json`

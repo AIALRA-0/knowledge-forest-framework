@@ -4,7 +4,7 @@
 
 **说清楚你想学什么；得到一张可以照着学、逐步完成、长期维护的路线图**
 
-[在线演示](https://aialra-0.github.io/knowledge-forest-framework/) · [English](README.md) · [工作原理](docs/architecture.md) · [质量检查](docs/quality-gates.md) · [安全](SECURITY.md)
+[中文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) · [English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en) · [English](README.md) · [工作原理](docs/architecture.md) · [质量检查](docs/quality-gates.md) · [安全](SECURITY.md)
 
 </div>
 
@@ -19,9 +19,9 @@ Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步
 - 半导体树包含三百七十六个节点和八十二条分支；
 - 每个节点都包含完整资源、验收作品、学习平台、三个当前研究方向和持久化进度；
 
-![AIALRA 私有半导体知识森林](docs/images/aialra-forest-chip-overview.jpg)
+![AIALRA 私有半导体知识森林中文界面](docs/images/aialra-forest-chip-overview-zh.jpg)
 
-![AIALRA 私有知识森林目录](docs/images/aialra-forest-directory.jpg)
+![AIALRA 私有知识森林目录中文界面](docs/images/aialra-forest-directory-zh.jpg)
 
 ## 你需要做什么
 
@@ -41,13 +41,15 @@ Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步
 - 三个当前研究方向及其日期和来源；
 - 进度、反馈、导出和资源失效报告；
 
-双语公开演示提供一条贯穿证据、无障碍、可视化和可靠交付的连续路径；它包含十二个节点、十二份完整资源、十二项实践作品和三十六个当前研究方向；切换中英文不会影响学习进度；
+公开案例是一棵真实依赖树；不是一条单线列表；两个共同底座会分叉进入证据理解、无障碍交互、视觉表达和可靠交付四个领域；最终在发布节点重新汇合；它包含十二个节点、十二份完整资源、十二项实践作品和三十六个当前研究方向；
+
+中文与英文使用两个独立入口和完整本地化界面；二者显示同一棵依赖树并共享浏览器本地进度；单个页面不会混用两种语言；
 
 ![公开演示统计](public/readme-stats.svg)
 
 ## 直接体验
 
-打开[在线演示](https://aialra-0.github.io/knowledge-forest-framework/)；输入类似下面的目标；
+打开[中文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN)；[英文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=en)使用独立入口；输入类似下面的目标；
 
 ```text
 我想学习如何构建可靠的家用机器人；我已经掌握 Python 和基础线性代数

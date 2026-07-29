@@ -584,6 +584,10 @@ footer {
   background: var(--domain-color);
 }
 
+.domain-dot-all {
+  background: conic-gradient(#3f627d, #687551, #85624c, #775f72, #3f627d);
+}
+
 .domain-button strong,
 .domain-button small {
   display: block;
@@ -636,7 +640,7 @@ footer {
 
 .vertical-tree {
   min-width: 0;
-  padding: 32px 34px 70px;
+  padding: 32px 24px 70px;
   background:
     linear-gradient(rgba(23, 33, 28, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(23, 33, 28, 0.025) 1px, transparent 1px),
@@ -657,6 +661,7 @@ footer {
   height: 44px;
   flex: 0 0 auto;
   border-radius: 999px;
+  background: linear-gradient(#3f627d 0 25%, #687551 25% 50%, #85624c 50% 75%, #775f72 75%);
 }
 
 .domain-intro h3 {
@@ -672,34 +677,86 @@ footer {
   line-height: 1.5;
 }
 
-.tree-column {
-  display: flex;
-  max-width: 560px;
-  margin: 0 auto;
-  flex-direction: column;
-  align-items: center;
+.branch-map-hint {
+  display: none;
 }
 
-.tree-step {
-  position: relative;
-  display: flex;
+.branch-map-scroll {
   width: 100%;
-  justify-content: center;
-  padding-top: 30px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 0 4px 16px;
 }
 
-.tree-step:first-child {
-  padding-top: 0;
+.branch-lane-headings,
+.branch-map {
+  display: grid;
+  min-width: 820px;
+  grid-template-columns: repeat(4, minmax(170px, 1fr));
+  column-gap: 34px;
 }
 
-.tree-line {
-  position: absolute;
+.branch-lane-headings {
+  position: sticky;
+  z-index: 4;
   top: 0;
-  left: 50%;
-  width: 2px;
-  height: 31px;
-  transform: translateX(-50%);
-  background: #b7c5bd;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 13px;
+  background: #fdfcf8;
+}
+
+.branch-lane-headings span {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.branch-lane-headings i {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--domain-color);
+}
+
+.branch-map {
+  position: relative;
+  isolation: isolate;
+  grid-auto-rows: minmax(130px, auto);
+  row-gap: 58px;
+  align-items: center;
+  padding: 4px 0 22px;
+}
+
+.branch-edges {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.branch-edges path {
+  fill: none;
+  stroke: #bec6c0;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.branch-edges path.available {
+  stroke: #789080;
+  stroke-width: 2.5;
+}
+
+.branch-edges path.completed {
+  stroke: var(--forest);
+  stroke-width: 3;
 }
 
 .node-card {
@@ -717,6 +774,34 @@ footer {
   text-align: left;
   box-shadow: 0 10px 24px rgba(40, 46, 42, 0.06);
   cursor: pointer;
+}
+
+.branch-node {
+  z-index: 2;
+  width: 100%;
+  min-height: 130px;
+  align-self: center;
+  border-top: 4px solid var(--domain-color);
+  padding: 14px;
+}
+
+.branch-node .node-status {
+  width: 26px;
+  height: 26px;
+}
+
+.branch-node .node-copy strong {
+  font-size: 14px;
+}
+
+.branch-node .node-copy > span {
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.branch-node.muted:not(.selected) {
+  opacity: 0.22;
+  filter: grayscale(0.8);
 }
 
 .node-card:hover,
@@ -1127,19 +1212,9 @@ footer span {
   margin-top: 4px;
 }
 
-@media (max-width: 1120px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 46px;
-    padding-top: 72px;
-  }
-
-  .hero-map {
-    max-width: 760px;
-  }
-
+@media (max-width: 1500px) {
   .forest-workspace {
-    grid-template-columns: 220px minmax(380px, 1fr);
+    grid-template-columns: 220px minmax(0, 1fr);
   }
 
   .node-detail {
@@ -1156,6 +1231,19 @@ footer span {
   .feedback-box {
     break-inside: avoid;
   }
+}
+
+@media (max-width: 1120px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 46px;
+    padding-top: 72px;
+  }
+
+  .hero-map {
+    max-width: 760px;
+  }
+
 }
 
 @media (max-width: 780px) {
@@ -1263,6 +1351,33 @@ footer span {
 
   .vertical-tree {
     padding: 28px 14px 52px;
+  }
+
+  .branch-map-hint {
+    display: block;
+    color: var(--forest);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .branch-map-scroll {
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+
+  .branch-lane-headings,
+  .branch-map {
+    min-width: 760px;
+    column-gap: 24px;
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+  }
+
+  .branch-map {
+    row-gap: 46px;
+  }
+
+  .branch-node {
+    scroll-snap-align: center;
   }
 
   .node-detail {

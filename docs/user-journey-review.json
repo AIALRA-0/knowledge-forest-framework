@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "evaluatedAt": "2026-07-29T04:20:00.000Z",
+  "evaluatedAt": "2026-07-29T08:10:00.000Z",
   "status": "pass",
   "viewports": [
     {
@@ -20,7 +20,7 @@
       "id": "vague-goal",
       "goal": "Create a contract from a vague robotics goal",
       "result": "pass",
-      "evidence": "The first action was visible; the brief detected one known skill and preserved six correction rules"
+      "evidence": "The first action was visible; the brief detected one known skill and preserved eleven correction rules"
     },
     {
       "id": "high-risk-goal",
@@ -56,7 +56,7 @@
       "id": "mobile-node-exploration",
       "goal": "Select a domain and inspect a complete node on a narrow screen",
       "result": "pass-after-fix",
-      "evidence": "The learner could select accessibility, open the WCAG node, read its resource and acceptance artifact, and continue without horizontal clipping"
+      "evidence": "The learner could prepare a request, inspect the four-lane dependency map, select accessibility, open the WCAG node, read its resource and acceptance artifact, and continue with zero page overflow"
     },
     {
       "id": "bilingual-progress",
@@ -68,7 +68,7 @@
       "id": "public-demo-depth",
       "goal": "Follow a non-trivial public example from evidence to reliable publication",
       "result": "pass",
-      "evidence": "The demo exposes four fields, twelve connected nodes, twelve whole resources, twelve acceptance artifacts, and thirty-six dated research directions"
+      "evidence": "The demo exposes six dependency levels, four fields, twelve connected nodes, fifteen prerequisite edges, twelve whole resources, twelve acceptance artifacts, and thirty-six dated research directions"
     }
   ],
   "findings": [
@@ -104,6 +104,29 @@
       "observed": "The short Chinese hero title wrapped into an uneven three-line block at 390 by 844 pixels",
       "change": "Added an intentional two-line Chinese title break and a mobile-specific type size",
       "result": "resolved"
+    },
+    {
+      "id": "mobile-branch-discoverability",
+      "severity": "medium",
+      "observed": "The four-lane dependency graph used a contained 768 pixel scroll surface inside a 390 pixel viewport, but the first mobile view did not explain the horizontal gesture",
+      "change": "Added a localized mobile-only swipe hint, a thin scrollbar, and branch-node scroll snapping without introducing page overflow",
+      "before": {
+        "viewport": 390,
+        "pageWidth": 390,
+        "branchViewportWidth": 336,
+        "branchScrollWidth": 768,
+        "pageOverflow": 0,
+        "gestureHint": false
+      },
+      "after": {
+        "viewport": 390,
+        "pageWidth": 390,
+        "branchViewportWidth": 336,
+        "branchScrollWidth": 768,
+        "pageOverflow": 0,
+        "gestureHint": true
+      },
+      "result": "resolved"
     }
   ],
   "releaseJudgment": {
@@ -115,6 +138,7 @@
     "progressSurvivesReturn": true,
     "correctionMemoryVisible": true,
     "mobileTaskComplete": true,
+    "mobileBranchNavigationObvious": true,
     "bilingualTaskComplete": true,
     "publicDemoDepthInspectable": true
   }
