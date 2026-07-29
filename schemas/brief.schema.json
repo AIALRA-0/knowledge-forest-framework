@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-forest.dev/schemas/brief.schema.json",
+  "title": "LearnerBrief",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "goal",
+    "knownSkills",
+    "desiredDepth",
+    "weeklyHours",
+    "language",
+    "access",
+    "excludedFormats",
+    "highRiskAreas",
+    "preferences",
+    "corrections"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "goal": { "type": "string", "minLength": 1 },
+    "knownSkills": { "type": "array", "items": { "type": "string" } },
+    "desiredDepth": { "enum": ["overview", "practitioner", "research"] },
+    "weeklyHours": { "type": "number", "exclusiveMinimum": 0 },
+    "language": { "type": "string" },
+    "access": {
+      "type": "array",
+      "items": { "enum": ["free", "paid", "institutional"] },
+      "minItems": 1
+    },
+    "excludedFormats": { "type": "array", "items": { "type": "string" } },
+    "highRiskAreas": { "type": "array", "items": { "type": "string" } },
+    "preferences": {
+      "type": "object",
+      "required": [
+        "layoutDirection",
+        "wholeResourceOnly",
+        "splitCompoundTopics",
+        "frontierEvidencePerNode",
+        "progressStorage"
+      ],
+      "properties": {
+        "layoutDirection": { "const": "top-to-bottom" },
+        "wholeResourceOnly": { "const": true },
+        "splitCompoundTopics": { "const": true },
+        "frontierEvidencePerNode": { "const": 3 },
+        "progressStorage": { "const": "local-first" }
+      },
+      "additionalProperties": false
+    },
+    "corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "regressionCheck", "source"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "statement": { "type": "string", "minLength": 1 },
+          "regressionCheck": { "type": "string", "minLength": 1 },
+          "source": { "enum": ["user", "framework"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

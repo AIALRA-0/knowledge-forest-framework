@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "goal": "Describe the industry, capability, research direction, or lifelong-learning goal",
+  "knownSkills": [],
+  "desiredDepth": "research",
+  "weeklyHours": 10,
+  "language": "en",
+  "access": ["free"],
+  "excludedFormats": ["chapter fragments", "large video archives"],
+  "highRiskAreas": [],
+  "preferences": {
+    "layoutDirection": "top-to-bottom",
+    "wholeResourceOnly": true,
+    "splitCompoundTopics": true,
+    "frontierEvidencePerNode": 3,
+    "progressStorage": "local-first"
+  },
+  "corrections": []
+}

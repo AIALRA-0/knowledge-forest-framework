@@ -1,0 +1,33 @@
+name: Product or framework bug
+description: Report a reproducible failure without private data
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials, personal progress, private resources, or production configuration
+  - type: textarea
+    id: journey
+    attributes:
+      label: User journey
+      description: What were you trying to accomplish
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Framework version
+    validations:
+      required: true

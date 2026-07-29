@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="154" viewBox="0 0 980 154" role="img" aria-labelledby="title">
+  <title id="title">Knowledge Forest public demo statistics</title>
+  <rect width="980" height="154" rx="18" fill="#f4f2ec"/>
+  <text x="22" y="27" font-family="ui-monospace,monospace" font-size="10" fill="#254b3c" letter-spacing="1.4">PUBLIC DEMO · GENERATED FROM FORESTBUNDLE</text>
+  <g transform="translate(22 50)">
+    <rect width="174" height="82" rx="12" fill="#fbfaf7" stroke="#d7d9d2"/>
+    <text x="16" y="36" font-family="Inter,system-ui,sans-serif" font-size="25" font-weight="700" fill="#17211c">3</text>
+    <text x="16" y="61" font-family="ui-monospace,monospace" font-size="10" fill="#657067" letter-spacing="1">DOMAINS</text>
+  </g>
+  <g transform="translate(212 50)">
+    <rect width="174" height="82" rx="12" fill="#fbfaf7" stroke="#d7d9d2"/>
+    <text x="16" y="36" font-family="Inter,system-ui,sans-serif" font-size="25" font-weight="700" fill="#17211c">6</text>
+    <text x="16" y="61" font-family="ui-monospace,monospace" font-size="10" fill="#657067" letter-spacing="1">NODES</text>
+  </g>
+  <g transform="translate(402 50)">
+    <rect width="174" height="82" rx="12" fill="#fbfaf7" stroke="#d7d9d2"/>
+    <text x="16" y="36" font-family="Inter,system-ui,sans-serif" font-size="25" font-weight="700" fill="#17211c">18</text>
+    <text x="16" y="61" font-family="ui-monospace,monospace" font-size="10" fill="#657067" letter-spacing="1">FRONTIERS</text>
+  </g>
+  <g transform="translate(592 50)">
+    <rect width="174" height="82" rx="12" fill="#fbfaf7" stroke="#d7d9d2"/>
+    <text x="16" y="36" font-family="Inter,system-ui,sans-serif" font-size="25" font-weight="700" fill="#17211c">6</text>
+    <text x="16" y="61" font-family="ui-monospace,monospace" font-size="10" fill="#657067" letter-spacing="1">RESOURCES</text>
+  </g>
+  <g transform="translate(782 50)">
+    <rect width="174" height="82" rx="12" fill="#fbfaf7" stroke="#d7d9d2"/>
+    <text x="16" y="36" font-family="Inter,system-ui,sans-serif" font-size="25" font-weight="700" fill="#17211c">3</text>
+    <text x="16" y="61" font-family="ui-monospace,monospace" font-size="10" fill="#657067" letter-spacing="1">AUDIT ROUNDS</text>
+  </g>
+</svg>

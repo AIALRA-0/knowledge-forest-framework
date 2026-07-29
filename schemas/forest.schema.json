@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://knowledge-forest.dev/schemas/forest.schema.json",
+  "title": "ForestBundle",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "metadata",
+    "domains",
+    "nodes",
+    "bridges",
+    "provenance",
+    "completionContract"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "title", "description", "language", "generatedAt", "reviewedAt", "frameworkVersion"]
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "color", "order"]
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "domainId",
+          "title",
+          "outcome",
+          "rationale",
+          "dependsOn",
+          "estimatedHours",
+          "resource",
+          "acceptance",
+          "frontiers",
+          "tags"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "domainId": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "dependsOn": { "type": "array", "items": { "type": "string" } },
+          "resource": {
+            "type": "object",
+            "required": ["title", "url", "kind", "publisher", "access", "completeness"],
+            "properties": {
+              "completeness": { "const": "whole-resource" }
+            }
+          },
+          "frontiers": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3
+          }
+        }
+      }
+    },
+    "bridges": { "type": "array" },
+    "provenance": { "type": "object" },
+    "completionContract": {
+      "type": "object",
+      "required": [
+        "expectedDomains",
+        "expectedNodes",
+        "expectedFrontiersPerNode",
+        "wholeResourceOnly",
+        "layoutDirection"
+      ],
+      "properties": {
+        "expectedFrontiersPerNode": { "const": 3 },
+        "wholeResourceOnly": { "const": true },
+        "layoutDirection": { "const": "top-to-bottom" }
+      }
+    }
+  }
+}

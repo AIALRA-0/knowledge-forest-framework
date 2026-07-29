@@ -1,0 +1,421 @@
+{
+  "schemaVersion": "1.0.0",
+  "metadata": {
+    "id": "accessible-public-dashboards",
+    "title": "Accessible Public Dashboards",
+    "description": "A compact public demonstration of an evidence-backed, domain-separated learning forest",
+    "language": "en",
+    "generatedAt": "2026-07-29T00:00:00.000Z",
+    "reviewedAt": "2026-07-29T00:00:00.000Z",
+    "frameworkVersion": "0.1.0"
+  },
+  "domains": [
+    {
+      "id": "evidence",
+      "title": "Evidence literacy",
+      "description": "Reason about uncertainty before publishing a visual claim",
+      "color": "#375b4a",
+      "order": 1
+    },
+    {
+      "id": "accessibility",
+      "title": "Accessible interaction",
+      "description": "Make information perceivable, operable, understandable, and robust",
+      "color": "#4d5875",
+      "order": 2
+    },
+    {
+      "id": "visualization",
+      "title": "Visual communication",
+      "description": "Turn evidence into clear public explanations",
+      "color": "#805a46",
+      "order": 3
+    }
+  ],
+  "nodes": [
+    {
+      "id": "evidence-statistics",
+      "domainId": "evidence",
+      "title": "Statistical reasoning",
+      "outcome": "Interpret variation, uncertainty, estimation, and common statistical claims",
+      "rationale": "A dashboard can look precise while communicating an unsupported conclusion",
+      "dependsOn": [],
+      "estimatedHours": 45,
+      "resource": {
+        "title": "OpenStax Introductory Statistics 2e",
+        "url": "https://openstax.org/details/books/introductory-statistics-2e",
+        "kind": "book",
+        "publisher": "OpenStax",
+        "access": "free",
+        "completeness": "whole-resource",
+        "licenseNote": "CC BY 4.0"
+      },
+      "acceptance": {
+        "title": "Uncertainty notebook",
+        "description": "Analyze one public dataset and explain uncertainty without hiding assumptions",
+        "criteria": [
+          "Includes a reproducible calculation",
+          "Separates observation from inference",
+          "Documents at least three limitations"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Uncertainty-aware visual analytics",
+          "summary": "Interfaces increasingly expose uncertainty instead of presenting one deterministic answer",
+          "evidence": {
+            "title": "IEEE VIS 2025",
+            "url": "https://ieeevis.org/year/2025/welcome",
+            "publishedAt": "2025-10-01",
+            "sourceType": "conference"
+          }
+        },
+        {
+          "title": "AI-assisted statistical analysis",
+          "summary": "Research is testing when language models help or harm statistical reasoning",
+          "evidence": {
+            "title": "CHI 2025 Proceedings",
+            "url": "https://dl.acm.org/doi/proceedings/10.1145/3706598",
+            "publishedAt": "2025-04-26",
+            "sourceType": "conference"
+          }
+        },
+        {
+          "title": "Reproducible public evidence",
+          "summary": "Public-interest analysis is moving toward traceable data, transformations, and claims",
+          "evidence": {
+            "title": "NIST AI Risk Management Framework Generative AI Profile",
+            "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+            "publishedAt": "2024-07-26",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["statistics", "uncertainty", "evidence"]
+    },
+    {
+      "id": "evidence-journalism",
+      "domainId": "evidence",
+      "title": "Evidence storytelling",
+      "outcome": "Connect sourced evidence to a transparent public narrative",
+      "rationale": "Readers need to distinguish data, interpretation, uncertainty, and editorial judgment",
+      "dependsOn": ["evidence-statistics"],
+      "estimatedHours": 28,
+      "resource": {
+        "title": "The Data Journalism Handbook",
+        "url": "https://datajournalism.com/read/handbook/one",
+        "kind": "book",
+        "publisher": "European Journalism Centre",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Evidence memo",
+        "description": "Publish a short evidence memo that binds every major claim to a source",
+        "criteria": [
+          "Every major claim has a traceable source",
+          "Uncertainty is visible near the affected claim",
+          "Corrections can be made without rewriting the entire narrative"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Claim-level provenance",
+          "summary": "Research systems increasingly bind each generated statement to supporting evidence",
+          "evidence": {
+            "title": "NIST AI 600-1",
+            "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
+            "publishedAt": "2024-07-26",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Human review of generated explanations",
+          "summary": "Human review queues are becoming a first-class part of AI-supported public communication",
+          "evidence": {
+            "title": "OECD AI Principles",
+            "url": "https://oecd.ai/en/ai-principles",
+            "publishedAt": "2024-05-03",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Content authenticity",
+          "summary": "Signed provenance is emerging as an important trust signal for published media",
+          "evidence": {
+            "title": "C2PA Technical Specification 2.2",
+            "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+            "publishedAt": "2025-05-01",
+            "sourceType": "standard"
+          }
+        }
+      ],
+      "tags": ["journalism", "provenance", "storytelling"]
+    },
+    {
+      "id": "accessibility-wcag",
+      "domainId": "accessibility",
+      "title": "Accessibility standard",
+      "outcome": "Translate WCAG 2.2 success criteria into product acceptance tests",
+      "rationale": "Accessibility must be designed into the information architecture rather than patched later",
+      "dependsOn": [],
+      "estimatedHours": 24,
+      "resource": {
+        "title": "Web Content Accessibility Guidelines 2.2",
+        "url": "https://www.w3.org/TR/WCAG22/",
+        "kind": "standard",
+        "publisher": "W3C",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Accessibility acceptance map",
+        "description": "Map WCAG 2.2 criteria to one dashboard design and its verification method",
+        "criteria": [
+          "Covers keyboard, contrast, text alternatives, reflow, and focus",
+          "Names automated and manual verification methods",
+          "Records unresolved exceptions"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Outcome-based accessibility",
+          "summary": "WCAG 3 explores a broader outcome model beyond binary criterion checks",
+          "evidence": {
+            "title": "W3C WCAG 3.0 Working Draft",
+            "url": "https://www.w3.org/TR/wcag-3.0/",
+            "publishedAt": "2025-09-04",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Accessible authentication",
+          "summary": "Authentication and cognitive burden are now explicit accessibility concerns",
+          "evidence": {
+            "title": "WCAG 2.2 Recommendation",
+            "url": "https://www.w3.org/TR/WCAG22/",
+            "publishedAt": "2024-12-12",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Continuous accessibility measurement",
+          "summary": "Large-scale annual measurement is exposing persistent accessibility regressions",
+          "evidence": {
+            "title": "WebAIM Million 2025",
+            "url": "https://webaim.org/projects/million/",
+            "publishedAt": "2025-03-31",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["wcag", "accessibility", "standard"]
+    },
+    {
+      "id": "accessibility-patterns",
+      "domainId": "accessibility",
+      "title": "Interaction patterns",
+      "outcome": "Implement keyboard and assistive-technology behavior with tested interaction patterns",
+      "rationale": "Semantic roles alone do not create usable keyboard interaction or focus management",
+      "dependsOn": ["accessibility-wcag"],
+      "estimatedHours": 20,
+      "resource": {
+        "title": "ARIA Authoring Practices Guide",
+        "url": "https://www.w3.org/WAI/ARIA/apg/",
+        "kind": "documentation",
+        "publisher": "W3C",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Keyboard interaction prototype",
+        "description": "Build and test a compact dashboard interaction without pointer input",
+        "criteria": [
+          "All controls work by keyboard",
+          "Focus movement is predictable",
+          "A screen-reader test log records observed behavior"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Accessibility semantics for complex graphics",
+          "summary": "Standards work is expanding semantics for charts and structured graphics",
+          "evidence": {
+            "title": "WAI-ARIA 1.3 Working Draft",
+            "url": "https://www.w3.org/TR/wai-aria-1.3/",
+            "publishedAt": "2025-01-23",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Personalized presentation",
+          "summary": "Research is exploring interfaces that adapt to different cognitive and sensory needs",
+          "evidence": {
+            "title": "W3C WAI Adapt",
+            "url": "https://www.w3.org/WAI/adapt/",
+            "publishedAt": "2024-12-01",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Automated testing limits",
+          "summary": "Current work emphasizes combining automated checks with human task completion",
+          "evidence": {
+            "title": "ACT Rules Community Group",
+            "url": "https://www.w3.org/community/act-r/",
+            "publishedAt": "2025-06-01",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["aria", "keyboard", "interaction"]
+    },
+    {
+      "id": "visualization-design",
+      "domainId": "visualization",
+      "title": "Visualization design",
+      "outcome": "Select visual encodings that match the question, audience, and uncertainty",
+      "rationale": "A chart is an argument encoded through visual choices",
+      "dependsOn": ["evidence-statistics"],
+      "estimatedHours": 32,
+      "resource": {
+        "title": "Data Visualization: A Practical Introduction",
+        "url": "https://socviz.co/",
+        "kind": "book",
+        "publisher": "Princeton University Press",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Visual encoding comparison",
+        "description": "Create three competing visual explanations for the same dataset and justify one",
+        "criteria": [
+          "Each design states the intended question",
+          "The final choice explains excluded alternatives",
+          "Uncertainty and missing data remain visible"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Natural-language visualization authoring",
+          "summary": "Visualization systems increasingly combine direct manipulation with language interfaces",
+          "evidence": {
+            "title": "IEEE VIS 2025",
+            "url": "https://ieeevis.org/year/2025/welcome",
+            "publishedAt": "2025-10-01",
+            "sourceType": "conference"
+          }
+        },
+        {
+          "title": "Accessible data visualization",
+          "summary": "Research is expanding nonvisual exploration beyond static alternative text",
+          "evidence": {
+            "title": "CHI 2025 Proceedings",
+            "url": "https://dl.acm.org/doi/proceedings/10.1145/3706598",
+            "publishedAt": "2025-04-26",
+            "sourceType": "conference"
+          }
+        },
+        {
+          "title": "Declarative visualization grammars",
+          "summary": "Portable declarative specifications are becoming a shared layer across tools",
+          "evidence": {
+            "title": "Vega-Lite Documentation",
+            "url": "https://vega.github.io/vega-lite/",
+            "publishedAt": "2025-07-01",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["visualization", "charts", "encoding"]
+    },
+    {
+      "id": "visualization-publication",
+      "domainId": "visualization",
+      "title": "Public dashboard publication",
+      "outcome": "Publish a responsive dashboard with evidence, accessibility, and maintenance notes",
+      "rationale": "The final artifact must preserve evidence and accessibility after deployment",
+      "dependsOn": [
+        "evidence-journalism",
+        "accessibility-patterns",
+        "visualization-design"
+      ],
+      "estimatedHours": 36,
+      "resource": {
+        "title": "GOV.UK Design System",
+        "url": "https://design-system.service.gov.uk/",
+        "kind": "documentation",
+        "publisher": "UK Government Digital Service",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Audited public dashboard",
+        "description": "Ship one responsive dashboard with a decision log and repeatable review",
+        "criteria": [
+          "A new reader can identify the main conclusion and limitation",
+          "Keyboard and mobile task journeys complete successfully",
+          "Every claim, resource, and review date is traceable"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Design-system evidence",
+          "summary": "Mature teams are connecting components to accessibility and research evidence",
+          "evidence": {
+            "title": "GOV.UK Design System Roadmap",
+            "url": "https://design-system.service.gov.uk/community/roadmap/",
+            "publishedAt": "2025-04-01",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Progressive web delivery",
+          "summary": "Public services are balancing resilience, performance, and offline-capable delivery",
+          "evidence": {
+            "title": "Baseline 2024",
+            "url": "https://web.dev/blog/baseline-project-2024",
+            "publishedAt": "2024-05-10",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Privacy-preserving measurement",
+          "summary": "Analytics architectures are shifting toward data minimization and explicit purpose",
+          "evidence": {
+            "title": "W3C Privacy Principles",
+            "url": "https://www.w3.org/TR/privacy-principles/",
+            "publishedAt": "2024-07-18",
+            "sourceType": "standard"
+          }
+        }
+      ],
+      "tags": ["publication", "design-system", "audit"]
+    }
+  ],
+  "bridges": [
+    {
+      "from": "evidence-statistics",
+      "to": "visualization-design",
+      "reason": "Visual encodings must preserve the meaning of the statistical claim"
+    },
+    {
+      "from": "accessibility-patterns",
+      "to": "visualization-publication",
+      "reason": "The published interface inherits interaction and focus requirements"
+    }
+  ],
+  "provenance": {
+    "briefHash": "generated-during-audit",
+    "sourceSnapshotAt": "2026-07-29T00:00:00.000Z",
+    "generator": "knowledge-forest-framework-demo",
+    "sourcePolicy": "Official, standards, whole-resource, link-only public demonstration"
+  },
+  "completionContract": {
+    "expectedDomains": 3,
+    "expectedNodes": 6,
+    "expectedFrontiersPerNode": 3,
+    "wholeResourceOnly": true,
+    "layoutDirection": "top-to-bottom"
+  }
+}

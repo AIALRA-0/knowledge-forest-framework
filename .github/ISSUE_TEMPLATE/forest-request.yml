@@ -1,0 +1,33 @@
+name: Forest or domain request
+description: Propose a public example, taxonomy, provider, or audit improvement
+title: "[Forest] "
+labels: ["forest"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Learning goal
+      description: Describe the learner, intended depth, and outcome
+    validations:
+      required: true
+  - type: textarea
+    id: domains
+    attributes:
+      label: Expected domains
+      description: Name separate domains and likely bridges
+    validations:
+      required: true
+  - type: textarea
+    id: authority
+    attributes:
+      label: Authoritative sources
+      description: Standards, regulators, universities, industry bodies, or primary research
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights confirmation
+      options:
+        - label: I will submit links and original summaries unless redistribution permission is explicit
+          required: true

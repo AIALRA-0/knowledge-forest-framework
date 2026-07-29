@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-07-29T00:00:00.000Z",
+  "brief": "examples/public-demo/brief.json",
+  "forest": "examples/public-demo/forest.generated.json",
+  "policy": {
+    "sourcePreference": [
+      "standards bodies",
+      "government",
+      "universities",
+      "primary publications"
+    ],
+    "wholeResourceOnly": true,
+    "redistribution": "links and original summaries only",
+    "frontierWindowYears": 3
+  },
+  "adapters": [
+    {
+      "id": "public-demo",
+      "kind": "curated-fixture",
+      "credentialsRequired": false
+    }
+  ]
+}

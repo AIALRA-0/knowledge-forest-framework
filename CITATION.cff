@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use Knowledge Forest Framework, cite this software"
+title: "Knowledge Forest Framework"
+type: software
+version: 0.1.0
+date-released: 2026-07-29
+license: Apache-2.0
+repository-code: "https://github.com/AIALRA-0/knowledge-forest-framework"

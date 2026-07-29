@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-07-29T00:00:00.000Z",
+  "items": [
+    {
+      "id": "demo-date-recheck",
+      "severity": "low",
+      "reason": "Conference and working-draft pages must be rechecked before each public release",
+      "owner": "maintainer",
+      "status": "open"
+    }
+  ]
+}

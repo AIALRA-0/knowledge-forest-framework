@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-07-29T01:35:14.172Z",
+  "status": "pass",
+  "briefHash": "b1a725bcbef54eeda293c4450142ae7e4c3c88797a8753c481bc579b08ff2431",
+  "rounds": [
+    {
+      "id": "structure",
+      "status": "pass",
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "evidence",
+      "status": "pass",
+      "warnings": []
+    },
+    {
+      "id": "experience",
+      "status": "pass",
+      "artifact": "docs/user-journey-review.md",
+      "journeys": 7,
+      "resolvedFindings": 2
+    }
+  ],
+  "summary": {
+    "domains": 3,
+    "nodes": 6,
+    "frontierEvidence": 18,
+    "acceptanceArtifacts": 6
+  }
+}

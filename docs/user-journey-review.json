@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "1.0.0",
+  "evaluatedAt": "2026-07-29T01:35:00.000Z",
+  "status": "pass",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": "runtime default",
+      "result": "pass"
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "result": "pass-after-fix"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "vague-goal",
+      "goal": "Create a contract from a vague robotics goal",
+      "result": "pass",
+      "evidence": "The first action was visible; the brief detected one known skill and preserved six correction rules"
+    },
+    {
+      "id": "high-risk-goal",
+      "goal": "Create a contract for rehabilitation and fitness",
+      "result": "pass",
+      "evidence": "The brief detected the health safety boundary without asking the learner to restate the request"
+    },
+    {
+      "id": "node-acceptance",
+      "goal": "Accept one inspectable artifact and continue",
+      "result": "pass",
+      "evidence": "Progress moved from zero to one of six; the next exact node opened automatically"
+    },
+    {
+      "id": "locked-explanation",
+      "goal": "Understand why a later publication node is unavailable",
+      "result": "pass",
+      "evidence": "The detail view named all three incomplete prerequisites"
+    },
+    {
+      "id": "return-visit",
+      "goal": "Return after progress and feedback were saved",
+      "result": "pass",
+      "evidence": "Progress and the selected feedback value survived a reload"
+    },
+    {
+      "id": "unavailable-resource",
+      "goal": "Recover when a primary resource cannot be used",
+      "result": "pass-after-change",
+      "evidence": "The interface records a re-audit item and explicitly prevents silent substitution"
+    },
+    {
+      "id": "mobile-node-exploration",
+      "goal": "Select a domain and inspect a complete node on a narrow screen",
+      "result": "pass-after-fix",
+      "evidence": "The learner could select accessibility, open the WCAG node, read its resource and acceptance artifact, and continue without horizontal clipping"
+    }
+  ],
+  "findings": [
+    {
+      "id": "mobile-detail-min-width",
+      "severity": "high",
+      "observed": "The detail column retained a 630 pixel intrinsic width inside a 390 pixel viewport and clipped both edges",
+      "change": "Reset the mobile grid placement; constrained the detail panel to the container; enabled safe wrapping",
+      "before": {
+        "viewport": 390,
+        "detailWidth": 630,
+        "detailLeft": -52,
+        "detailRight": 578
+      },
+      "after": {
+        "viewport": 390,
+        "detailWidth": 364,
+        "detailLeft": 13,
+        "detailRight": 377
+      },
+      "result": "resolved"
+    },
+    {
+      "id": "resource-recovery",
+      "severity": "medium",
+      "observed": "The first interface had no explicit action when a verified primary resource later became unavailable",
+      "change": "Added a local re-audit action; blocked feedback is recorded; the export carries the affected node id",
+      "result": "resolved"
+    }
+  ],
+  "releaseJudgment": {
+    "firstActionObvious": true,
+    "resourceOneActionAway": true,
+    "lockedReasonVisible": true,
+    "acceptanceUnderstandable": true,
+    "frontiersDiscoverable": true,
+    "progressSurvivesReturn": true,
+    "correctionMemoryVisible": true,
+    "mobileTaskComplete": true
+  }
+}
