@@ -23,6 +23,24 @@ Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步
 
 ![AIALRA 私有知识森林目录中文界面](docs/images/aialra-forest-directory-zh.jpg)
 
+### 更多真实生产界面
+
+平台指南不是第二套课程表；它在学习树已经确定学习目标后；帮助学习者找到持续维护的行业工具、实验环境、流片入口和开放研究基础设施；
+
+![AIALRA 私有半导体平台指南中文界面](docs/images/production-platform-guide-zh.png)
+
+具身智能树展示从共同基础到感知、控制、机械系统和系统集成的真实分叉；学习者可以直接看出哪些节点能够并行推进；哪些节点必须等待前置成果；
+
+![AIALRA 私有具身智能分支树中文界面](docs/images/production-embodied-tree-zh.png)
+
+研究前沿界面把学习节点和仍未解决的问题放在同一条路径上；每条前沿都写明具体问题并提供可以反查的证据；
+
+![AIALRA 私有研究前沿中文界面](docs/images/production-research-frontiers-zh.png)
+
+移动端使用同一棵真实 AI 学习树；保留分支、节点状态和后续路径；不是另做一张简化的宣传页；
+
+![AIALRA 私有 AI 学习树移动端中文界面](docs/images/production-ai-mobile-zh.png)
+
 ## 你需要做什么
 
 1. 用自己的话写下目标；同时写明已经掌握的内容、可投入时间和重要限制；

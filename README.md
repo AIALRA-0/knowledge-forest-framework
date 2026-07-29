@@ -28,6 +28,16 @@ These sanitized screenshots come from AIALRA's running, Authentik-protected priv
 
 ![AIALRA private knowledge forest directory in English](docs/images/aialra-forest-directory-en.jpg)
 
+### More production views
+
+The platform guide is a supporting directory, not a second curriculum; it helps a learner find maintained industry tools, laboratories, fabrication access, and open research infrastructure after the tree has already defined what must be learned
+
+![AIALRA private semiconductor platform guide in English](docs/images/production-platform-guide-en.png)
+
+The research view keeps the learning path and the frontier connected; each statement names a concrete open problem and points to evidence a learner can inspect
+
+![AIALRA private semiconductor research frontiers in English](docs/images/production-research-frontiers-en.png)
+
 ## What you do
 
 1. Write the goal in your own words; include what you already know, how much time you have, and any limits that matter
