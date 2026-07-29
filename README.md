@@ -15,28 +15,40 @@
 
 Knowledge Forest turns a broad ambition into separate learning paths; every step tells you what to learn from, what to make before moving on, what must be completed first, and where current research is heading
 
-## A real private forest built with the framework
+## Product interface
 
-These sanitized screenshots come from AIALRA's running, Authentik-protected private deployment; its private records and deployment address are not included in this public repository
+A broad learning goal contains several kinds of work that should not be hidden inside one long checklist
 
-- 16 independent lifelong learning trees
-- 1,028 inspectable nodes
-- a 376-node semiconductor tree organized into 82 branches
-- a complete resource, acceptance artifact, learning platforms, three current research directions, and saved progress at every node
+- the tree shows what can be learned now, what can proceed in parallel, and what must wait
+- the node panel keeps the learning outcome, complete primary resource, and required work together
+- the source guide compares courses, official documentation, industry training, open tools, and research evidence
+- the research view separates established knowledge from current open questions and records how each claim can be checked
 
-![AIALRA private semiconductor knowledge forest in English](docs/images/aialra-forest-chip-overview-en.jpg)
+The following screens are rendered by the production product interface with synthetic content; they describe framework behavior without reading or exposing any learner's fields, records, resources, or progress
 
-![AIALRA private knowledge forest directory in English](docs/images/aialra-forest-directory-en.jpg)
+### Learning path and node requirements
 
-### More production views
+The vertical tree exposes prerequisites and parallel branches; the panel defines the work that must exist before the selected node can be marked complete
 
-The platform guide is a supporting directory, not a second curriculum; it helps a learner find maintained industry tools, laboratories, fabrication access, and open research infrastructure after the tree has already defined what must be learned
+<p align="center">
+  <img src="docs/images/product-learning-path-en.png" alt="English product interface showing a vertical branched learning path and node requirements" width="960">
+</p>
 
-![AIALRA private semiconductor platform guide in English](docs/images/production-platform-guide-en.png)
+### Source guide
 
-The research view keeps the learning path and the frontier connected; each statement names a concrete open problem and points to evidence a learner can inspect
+The source guide helps a learner compare complete and usable resources after the tree has already defined the learning outcome
 
-![AIALRA private semiconductor research frontiers in English](docs/images/production-research-frontiers-en.png)
+<p align="center">
+  <img src="docs/images/product-source-guide-en.png" alt="English product interface showing the source guide" width="960">
+</p>
+
+### Research review
+
+The research view names an unresolved problem, the evidence needed to evaluate it, and the boundary that still requires human review
+
+<p align="center">
+  <img src="docs/images/product-research-review-en.png" alt="English product interface showing evidence-bound research directions" width="960">
+</p>
 
 ## What you do
 
