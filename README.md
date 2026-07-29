@@ -15,11 +15,18 @@
 
 Knowledge Forest turns a broad ambition into separate learning paths; every step tells you what to learn from, what to make before moving on, what must be completed first, and where current research is heading
 
-![Knowledge Forest desktop product page](docs/images/product-desktop.jpg)
+## A real private forest built with the framework
 
-<p align="center">
-  <img src="docs/images/product-mobile.jpg" alt="Knowledge Forest mobile product page" width="390">
-</p>
+These sanitized screenshots come from AIALRA's running, Authentik-protected private deployment; its private records and deployment address are not included in this public repository
+
+- 16 independent lifelong learning trees
+- 1,028 inspectable nodes
+- a 376-node semiconductor tree organized into 82 branches
+- a complete resource, acceptance artifact, learning platforms, three current research directions, and saved progress at every node
+
+![AIALRA private semiconductor knowledge forest](docs/images/aialra-forest-chip-overview.jpg)
+
+![AIALRA private knowledge forest directory](docs/images/aialra-forest-directory.jpg)
 
 ## What you do
 
@@ -39,9 +46,7 @@ Knowledge Forest turns a broad ambition into separate learning paths; every step
 - three current research directions with dated sources
 - progress, feedback, export, and a way to report an unavailable resource
 
-The public demo contains three fields and six steps; it is deliberately small enough to inspect from beginning to end
-
-![Knowledge Forest interactive learning tree](docs/images/product-forest-desktop.jpg)
+The bilingual public demo is a connected path through evidence, accessibility, visualization, and reliable delivery; it contains twelve steps, twelve complete resources, twelve practical outcomes, and thirty-six current research directions; switch between English and Chinese without changing progress
 
 ![Public demo statistics](public/readme-stats.svg)
 

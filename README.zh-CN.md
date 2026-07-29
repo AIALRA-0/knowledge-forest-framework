@@ -10,11 +10,18 @@
 
 Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步都会告诉你去哪里学、学完要做出什么、必须先完成什么，以及这个方向目前正在研究什么；
 
-![Knowledge Forest 桌面端真实页面](docs/images/product-desktop.jpg)
+## 使用本框架构建的真实私有森林
 
-<p align="center">
-  <img src="docs/images/product-mobile.jpg" alt="Knowledge Forest 移动端真实页面" width="390">
-</p>
+以下截图来自 AIALRA 正在运行并由 Authentik 保护的私有部署；截图已经脱敏；私有数据和部署地址都不会进入这个公共仓库；
+
+- 十六棵可以独立推进的终身学习树；
+- 一千零二十八个可以逐个检查和点亮的节点；
+- 半导体树包含三百七十六个节点和八十二条分支；
+- 每个节点都包含完整资源、验收作品、学习平台、三个当前研究方向和持久化进度；
+
+![AIALRA 私有半导体知识森林](docs/images/aialra-forest-chip-overview.jpg)
+
+![AIALRA 私有知识森林目录](docs/images/aialra-forest-directory.jpg)
 
 ## 你需要做什么
 
@@ -34,9 +41,7 @@ Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步
 - 三个当前研究方向及其日期和来源；
 - 进度、反馈、导出和资源失效报告；
 
-公开演示包含三个领域和六个节点；规模足够小；可以从头到尾检查一次完整体验；
-
-![Knowledge Forest 交互学习树真实页面](docs/images/product-forest-desktop.jpg)
+双语公开演示提供一条贯穿证据、无障碍、可视化和可靠交付的连续路径；它包含十二个节点、十二份完整资源、十二项实践作品和三十六个当前研究方向；切换中英文不会影响学习进度；
 
 ![公开演示统计](public/readme-stats.svg)
 

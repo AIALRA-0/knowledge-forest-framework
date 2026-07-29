@@ -30,6 +30,13 @@
       "description": "Turn evidence into clear public explanations",
       "color": "#805a46",
       "order": 3
+    },
+    {
+      "id": "delivery",
+      "title": "Reliable delivery",
+      "description": "Prepare, publish, measure, and maintain a trustworthy public service",
+      "color": "#6b5546",
+      "order": 4
     }
   ],
   "nodes": [
@@ -94,12 +101,71 @@
       "tags": ["statistics", "uncertainty", "evidence"]
     },
     {
+      "id": "evidence-provenance",
+      "domainId": "evidence",
+      "title": "Data provenance",
+      "outcome": "Trace a public claim back through transformations, versions, licenses, and source data",
+      "rationale": "A result cannot be checked or repaired when nobody can reconstruct where it came from",
+      "dependsOn": ["evidence-statistics"],
+      "estimatedHours": 26,
+      "resource": {
+        "title": "Data on the Web Best Practices",
+        "url": "https://www.w3.org/TR/dwbp/",
+        "kind": "standard",
+        "publisher": "W3C",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Traceable data package",
+        "description": "Package one public dataset with source, license, schema, transformations, versions, and known limitations",
+        "criteria": [
+          "A new reviewer can reproduce the final table from the recorded source",
+          "Every transformation has an owner and timestamp",
+          "License, version, and limitation notes travel with the data"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Portable data packages",
+          "summary": "Open specifications are making data, schemas, licenses, and metadata easier to move together",
+          "evidence": {
+            "title": "Data Package Standard v2",
+            "url": "https://datapackage.org/blog/2024-06-26-v2-release/",
+            "publishedAt": "2024-06-26",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Interoperable public catalogs",
+          "summary": "Catalog standards increasingly describe datasets, services, versions, and relationships in one model",
+          "evidence": {
+            "title": "Data Catalog Vocabulary 3",
+            "url": "https://www.w3.org/TR/vocab-dcat-3/",
+            "publishedAt": "2024-08-22",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Signed content history",
+          "summary": "Publishers are attaching tamper-evident origin and edit history to digital material",
+          "evidence": {
+            "title": "C2PA Technical Specification 2.2",
+            "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+            "publishedAt": "2025-05-01",
+            "sourceType": "standard"
+          }
+        }
+      ],
+      "tags": ["provenance", "metadata", "licensing"]
+    },
+    {
       "id": "evidence-journalism",
       "domainId": "evidence",
       "title": "Evidence storytelling",
       "outcome": "Connect sourced evidence to a transparent public narrative",
       "rationale": "Readers need to distinguish data, interpretation, uncertainty, and editorial judgment",
-      "dependsOn": ["evidence-statistics"],
+      "dependsOn": ["evidence-provenance"],
       "estimatedHours": 28,
       "resource": {
         "title": "The Data Journalism Handbook",
@@ -271,6 +337,65 @@
       "tags": ["aria", "keyboard", "interaction"]
     },
     {
+      "id": "accessibility-testing",
+      "domainId": "accessibility",
+      "title": "Inclusive task testing",
+      "outcome": "Test complete dashboard tasks with keyboard, screen reader, zoom, reflow, and real users",
+      "rationale": "Passing an automated scan does not prove that a person can understand and finish the task",
+      "dependsOn": ["accessibility-patterns"],
+      "estimatedHours": 24,
+      "resource": {
+        "title": "Evaluating Web Accessibility Overview",
+        "url": "https://www.w3.org/WAI/test-evaluate/",
+        "kind": "documentation",
+        "publisher": "W3C Web Accessibility Initiative",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Inclusive task report",
+        "description": "Run three representative dashboard tasks across multiple input and presentation modes",
+        "criteria": [
+          "Records task completion rather than only rule violations",
+          "Includes keyboard, screen-reader, 400 percent zoom, and narrow-screen evidence",
+          "Ranks barriers by user impact and verifies each repair"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Test rules shared across tools",
+          "summary": "Accessibility tools are converging on reusable test definitions with explicit assumptions",
+          "evidence": {
+            "title": "WCAG 2 ACT Rules",
+            "url": "https://www.w3.org/WAI/standards-guidelines/act/rules/",
+            "publishedAt": "2026-05-05",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Task outcomes beyond conformance",
+          "summary": "Evaluation guidance increasingly distinguishes formal conformance from whether people can complete real work",
+          "evidence": {
+            "title": "W3C WAI Test and Evaluate",
+            "url": "https://www.w3.org/WAI/test-evaluate/",
+            "publishedAt": "2025-09-01",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Accessibility measured at web scale",
+          "summary": "Large public measurements continue to reveal recurring barriers that component tests miss",
+          "evidence": {
+            "title": "WebAIM Million 2025",
+            "url": "https://webaim.org/projects/million/",
+            "publishedAt": "2025-03-31",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["testing", "screen-reader", "usability"]
+    },
+    {
       "id": "visualization-design",
       "domainId": "visualization",
       "title": "Visualization design",
@@ -330,15 +455,253 @@
       "tags": ["visualization", "charts", "encoding"]
     },
     {
-      "id": "visualization-publication",
+      "id": "visualization-narrative",
       "domainId": "visualization",
+      "title": "Explanatory narrative",
+      "outcome": "Lead a reader from a public question to evidence, uncertainty, and a defensible conclusion",
+      "rationale": "A collection of correct charts can still leave readers unsure what matters or why",
+      "dependsOn": ["visualization-design", "evidence-journalism"],
+      "estimatedHours": 26,
+      "resource": {
+        "title": "The Data Journalism Handbook 2",
+        "url": "https://datajournalism.com/read/handbook/two",
+        "kind": "book",
+        "publisher": "European Journalism Centre",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Guided evidence story",
+        "description": "Publish one scrollable explanation that makes the question, evidence, uncertainty, and limitation visible",
+        "criteria": [
+          "The opening states the public question without overstating the answer",
+          "Every chart advances one part of the reasoning",
+          "Sources, uncertainty, and limitations stay close to the affected claim"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Language-assisted chart authoring",
+          "summary": "New tools combine natural language with direct editing while researchers study loss of control and hidden assumptions",
+          "evidence": {
+            "title": "IEEE VIS 2025",
+            "url": "https://ieeevis.org/year/2025/welcome",
+            "publishedAt": "2025-10-01",
+            "sourceType": "conference"
+          }
+        },
+        {
+          "title": "Human review of generated explanations",
+          "summary": "Research is examining how people verify and revise AI-assisted public explanations",
+          "evidence": {
+            "title": "CHI 2025 Proceedings",
+            "url": "https://dl.acm.org/doi/proceedings/10.1145/3706598",
+            "publishedAt": "2025-04-26",
+            "sourceType": "conference"
+          }
+        },
+        {
+          "title": "Verifiable media provenance",
+          "summary": "Content credentials are connecting published explanations to their origin and edit history",
+          "evidence": {
+            "title": "C2PA Technical Specification 2.2",
+            "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+            "publishedAt": "2025-05-01",
+            "sourceType": "standard"
+          }
+        }
+      ],
+      "tags": ["narrative", "explanation", "storytelling"]
+    },
+    {
+      "id": "visualization-ethics",
+      "domainId": "visualization",
+      "title": "Responsible communication",
+      "outcome": "Identify who is represented, omitted, exposed, or harmed by a data product",
+      "rationale": "Accurate calculations can still produce an unfair or unsafe public message",
+      "dependsOn": ["visualization-narrative"],
+      "estimatedHours": 24,
+      "resource": {
+        "title": "Data Feminism",
+        "url": "https://data-feminism.mitpress.mit.edu/",
+        "kind": "book",
+        "publisher": "MIT Press",
+        "access": "free",
+        "completeness": "whole-resource",
+        "licenseNote": "CC BY-NC 4.0"
+      },
+      "acceptance": {
+        "title": "Impact and omission review",
+        "description": "Review one dashboard for representation, privacy, power, possible misuse, and missing voices",
+        "criteria": [
+          "Names people affected by publication and non-publication",
+          "Tests at least two plausible misuse scenarios",
+          "Changes the design or publication boundary in response to the review"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Risk management for generated content",
+          "summary": "Organizations are translating generative AI risks into concrete design and review controls",
+          "evidence": {
+            "title": "NIST AI 600-1",
+            "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+            "publishedAt": "2024-07-26",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Rights-based AI governance",
+          "summary": "Regulation increasingly connects system risk to transparency, oversight, and affected people's rights",
+          "evidence": {
+            "title": "European Union Artificial Intelligence Act",
+            "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+            "publishedAt": "2024-07-12",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "International responsible AI principles",
+          "summary": "Public-interest communication is being evaluated through transparency, robustness, accountability, and human agency",
+          "evidence": {
+            "title": "OECD AI Principles",
+            "url": "https://oecd.ai/en/ai-principles",
+            "publishedAt": "2024-05-03",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["ethics", "privacy", "representation"]
+    },
+    {
+      "id": "delivery-data-pipeline",
+      "domainId": "delivery",
+      "title": "Reproducible data pipeline",
+      "outcome": "Turn raw public data into a validated, versioned, repeatable publication input",
+      "rationale": "Manual cleanup makes every update a new unreviewed analysis",
+      "dependsOn": ["evidence-provenance"],
+      "estimatedHours": 34,
+      "resource": {
+        "title": "Data Carpentry Lessons",
+        "url": "https://datacarpentry.org/lessons/",
+        "kind": "course",
+        "publisher": "The Carpentries",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Repeatable data build",
+        "description": "Create a one-command pipeline that downloads, validates, transforms, and packages a public dataset",
+        "criteria": [
+          "A clean environment can reproduce the published data",
+          "Schema and quality failures stop the build with useful messages",
+          "Source version, output version, and transformation history are recorded"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "Data contracts as portable standards",
+          "summary": "Teams are moving validation, schema, and metadata expectations into portable data packages",
+          "evidence": {
+            "title": "Data Package Standard v2",
+            "url": "https://datapackage.org/blog/2024-06-26-v2-release/",
+            "publishedAt": "2024-06-26",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Catalogs that include services and versions",
+          "summary": "Public catalogs now describe distributions, APIs, versions, relationships, and data services together",
+          "evidence": {
+            "title": "Data Catalog Vocabulary 3",
+            "url": "https://www.w3.org/TR/vocab-dcat-3/",
+            "publishedAt": "2024-08-22",
+            "sourceType": "standard"
+          }
+        },
+        {
+          "title": "Open lineage across tools",
+          "summary": "Shared lineage events are connecting jobs, datasets, and runs across heterogeneous pipelines",
+          "evidence": {
+            "title": "OpenLineage Documentation",
+            "url": "https://openlineage.io/docs/",
+            "publishedAt": "2025-06-01",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["pipeline", "validation", "lineage"]
+    },
+    {
+      "id": "delivery-performance",
+      "domainId": "delivery",
+      "title": "Resilient web delivery",
+      "outcome": "Keep the dashboard fast, readable, and usable on constrained devices and networks",
+      "rationale": "A public service that only works on a powerful device and stable broadband excludes part of its audience",
+      "dependsOn": ["delivery-data-pipeline", "accessibility-testing"],
+      "estimatedHours": 28,
+      "resource": {
+        "title": "Learn Performance",
+        "url": "https://web.dev/learn/performance",
+        "kind": "course",
+        "publisher": "web.dev",
+        "access": "free",
+        "completeness": "whole-resource"
+      },
+      "acceptance": {
+        "title": "Constrained-network release",
+        "description": "Ship a measured dashboard build that remains usable on a narrow screen and slow connection",
+        "criteria": [
+          "Records loading, interaction, and layout stability measurements",
+          "Critical content remains available when optional scripts or large assets fail",
+          "Mobile and slow-network journeys reach the same conclusion as desktop"
+        ]
+      },
+      "frontiers": [
+        {
+          "title": "User-centered performance measures",
+          "summary": "Web performance is increasingly judged by loading, responsiveness, and visual stability experienced by real users",
+          "evidence": {
+            "title": "Web Vitals",
+            "url": "https://web.dev/articles/vitals",
+            "publishedAt": "2024-03-12",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Shared browser feature baselines",
+          "summary": "Teams are using common availability baselines to choose resilient web capabilities",
+          "evidence": {
+            "title": "Baseline 2024",
+            "url": "https://web.dev/blog/baseline-project-2024",
+            "publishedAt": "2024-05-10",
+            "sourceType": "official"
+          }
+        },
+        {
+          "title": "Population-scale performance evidence",
+          "summary": "Open measurements are connecting design choices with real performance across millions of sites",
+          "evidence": {
+            "title": "Web Almanac 2024 Performance",
+            "url": "https://almanac.httparchive.org/en/2024/performance",
+            "publishedAt": "2024-12-01",
+            "sourceType": "official"
+          }
+        }
+      ],
+      "tags": ["performance", "resilience", "mobile"]
+    },
+    {
+      "id": "visualization-publication",
+      "domainId": "delivery",
       "title": "Public dashboard publication",
       "outcome": "Publish a responsive dashboard with evidence, accessibility, and maintenance notes",
       "rationale": "The final artifact must preserve evidence and accessibility after deployment",
       "dependsOn": [
         "evidence-journalism",
-        "accessibility-patterns",
-        "visualization-design"
+        "accessibility-testing",
+        "visualization-ethics",
+        "delivery-performance"
       ],
       "estimatedHours": 36,
       "resource": {
@@ -401,8 +764,18 @@
     },
     {
       "from": "accessibility-patterns",
+      "to": "accessibility-testing",
+      "reason": "Implemented interaction patterns must be verified through complete user tasks"
+    },
+    {
+      "from": "evidence-provenance",
+      "to": "delivery-data-pipeline",
+      "reason": "The pipeline must preserve source, transformation, license, and version history"
+    },
+    {
+      "from": "visualization-ethics",
       "to": "visualization-publication",
-      "reason": "The published interface inherits interaction and focus requirements"
+      "reason": "The publication boundary follows the completed impact and omission review"
     }
   ],
   "provenance": {
@@ -412,8 +785,8 @@
     "sourcePolicy": "Official, standards, whole-resource, link-only public demonstration"
   },
   "completionContract": {
-    "expectedDomains": 3,
-    "expectedNodes": 6,
+    "expectedDomains": 4,
+    "expectedNodes": 12,
     "expectedFrontiersPerNode": 3,
     "wholeResourceOnly": true,
     "layoutDirection": "top-to-bottom"

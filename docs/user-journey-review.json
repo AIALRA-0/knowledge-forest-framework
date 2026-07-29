@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "evaluatedAt": "2026-07-29T01:35:00.000Z",
+  "evaluatedAt": "2026-07-29T04:20:00.000Z",
   "status": "pass",
   "viewports": [
     {
@@ -32,7 +32,7 @@
       "id": "node-acceptance",
       "goal": "Accept one inspectable artifact and continue",
       "result": "pass",
-      "evidence": "Progress moved from zero to one of six; the next exact node opened automatically"
+      "evidence": "Progress moved from zero to one of twelve; the next exact nodes opened automatically"
     },
     {
       "id": "locked-explanation",
@@ -57,6 +57,18 @@
       "goal": "Select a domain and inspect a complete node on a narrow screen",
       "result": "pass-after-fix",
       "evidence": "The learner could select accessibility, open the WCAG node, read its resource and acceptance artifact, and continue without horizontal clipping"
+    },
+    {
+      "id": "bilingual-progress",
+      "goal": "Switch the complete experience from English to Chinese and continue learning",
+      "result": "pass-after-fix",
+      "evidence": "All navigation, instructions, domain names, node content, acceptance work, frontier summaries, and feedback changed language; one accepted node remained accepted after both language switches"
+    },
+    {
+      "id": "public-demo-depth",
+      "goal": "Follow a non-trivial public example from evidence to reliable publication",
+      "result": "pass",
+      "evidence": "The demo exposes four fields, twelve connected nodes, twelve whole resources, twelve acceptance artifacts, and thirty-six dated research directions"
     }
   ],
   "findings": [
@@ -85,6 +97,13 @@
       "observed": "The first interface had no explicit action when a verified primary resource later became unavailable",
       "change": "Added a local re-audit action; blocked feedback is recorded; the export carries the affected node id",
       "result": "resolved"
+    },
+    {
+      "id": "chinese-mobile-hero-wrap",
+      "severity": "medium",
+      "observed": "The short Chinese hero title wrapped into an uneven three-line block at 390 by 844 pixels",
+      "change": "Added an intentional two-line Chinese title break and a mobile-specific type size",
+      "result": "resolved"
     }
   ],
   "releaseJudgment": {
@@ -95,6 +114,8 @@
     "frontiersDiscoverable": true,
     "progressSurvivesReturn": true,
     "correctionMemoryVisible": true,
-    "mobileTaskComplete": true
+    "mobileTaskComplete": true,
+    "bilingualTaskComplete": true,
+    "publicDemoDepthInspectable": true
   }
 }
