@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-29T01:35:14.172Z",
+  "generatedAt": "2026-07-29T03:11:29.803Z",
   "status": "pass",
   "briefHash": "b1a725bcbef54eeda293c4450142ae7e4c3c88797a8753c481bc579b08ff2431",
   "rounds": [
@@ -19,14 +19,14 @@
       "id": "experience",
       "status": "pass",
       "artifact": "docs/user-journey-review.md",
-      "journeys": 7,
-      "resolvedFindings": 2
+      "journeys": 9,
+      "resolvedFindings": 3
     }
   ],
   "summary": {
-    "domains": 3,
-    "nodes": 6,
-    "frontierEvidence": 18,
-    "acceptanceArtifacts": 6
+    "domains": 4,
+    "nodes": 12,
+    "frontierEvidence": 36,
+    "acceptanceArtifacts": 12
   }
 }

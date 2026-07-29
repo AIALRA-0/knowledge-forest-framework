@@ -16,8 +16,9 @@ const brief = JSON.parse(await readFile(
 test("public demo passes the deterministic forest contract", () => {
   const report = auditForest(bundle, { currentYear: 2026 });
   assert.equal(report.status, "pass", JSON.stringify(report.errors));
-  assert.equal(report.summary.nodes, 6);
-  assert.equal(report.summary.frontierEvidence, 18);
+  assert.equal(report.summary.domains, 4);
+  assert.equal(report.summary.nodes, 12);
+  assert.equal(report.summary.frontierEvidence, 36);
 });
 
 test("brief preserves every remembered correction", () => {
@@ -39,7 +40,7 @@ test("completing a root node unlocks the next exact node", () => {
   const result = completeNode(bundle, completed, "evidence-statistics");
   assert.equal(result.ok, true);
   const next = nextAvailableNodes(bundle, result.completed).map((node) => node.id);
-  assert.ok(next.includes("evidence-journalism"));
+  assert.ok(next.includes("evidence-provenance"));
   assert.ok(next.includes("visualization-design"));
 });
 

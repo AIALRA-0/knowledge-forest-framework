@@ -16,6 +16,11 @@ import {
   progressEnvelope,
 } from "@/packages/core/src/progress.mjs";
 import { normalizeRequirement } from "@/packages/agent/src/normalize.mjs";
+import {
+  localizeForest,
+  UI_COPY,
+  type DemoLanguage,
+} from "@/app/demo-i18n";
 
 const forest = demoForest as ForestBundle;
 const audit = auditForest(forest, { currentYear: 2026 });
@@ -47,12 +52,6 @@ function saveSet(key: string, value: Set<string>) {
   window.localStorage.setItem(key, JSON.stringify([...value]));
 }
 
-function statusLabel(status: NodeStatus) {
-  if (status === "completed") return "Completed";
-  if (status === "available") return "Ready";
-  return "Locked";
-}
-
 function domainProgress(domain: ForestDomain, completed: Set<string>) {
   const nodes = forest.nodes.filter((node) => node.domainId === domain.id);
   return {
@@ -62,6 +61,7 @@ function domainProgress(domain: ForestDomain, completed: Set<string>) {
 }
 
 export default function Home() {
+  const [language, setLanguage] = useState<DemoLanguage>("en");
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState(forest.nodes[0].id);
   const [activeDomainId, setActiveDomainId] = useState(forest.domains[0].id);
@@ -72,6 +72,8 @@ export default function Home() {
   const [feedback, setFeedback] = useState<Record<string, FeedbackValue>>({});
   const [resourceIssues, setResourceIssues] = useState<Set<string>>(new Set());
   const [copyState, setCopyState] = useState("Copy brief");
+  const t = UI_COPY[language];
+  const displayForest = useMemo(() => localizeForest(forest, language), [language]);
 
   useEffect(() => {
     setCompleted(loadSet(PROGRESS_KEY));
@@ -84,18 +86,29 @@ export default function Home() {
     setResourceIssues(loadSet(RESOURCE_ISSUE_KEY));
   }, []);
 
-  const selected = forest.nodes.find((node) => node.id === selectedId) ?? forest.nodes[0];
+  useEffect(() => {
+    document.documentElement.lang = language;
+    setCopyState(t.copyBrief);
+  }, [language, t.copyBrief]);
+
+  function statusLabel(status: NodeStatus) {
+    if (status === "completed") return t.completed;
+    if (status === "available") return t.nodeReady;
+    return t.locked;
+  }
+
+  const selected = displayForest.nodes.find((node) => node.id === selectedId) ?? displayForest.nodes[0];
   const selectedStatus = nodeState(selected, completed) as NodeStatus;
   const readyNodes = nextAvailableNodes(forest, completed);
   const filteredNodes = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase();
-    return forest.nodes.filter((node) => (
+    return displayForest.nodes.filter((node) => (
       node.domainId === activeDomainId
       && (!normalized
         || node.title.toLocaleLowerCase().includes(normalized)
         || node.tags.some((tag) => tag.toLocaleLowerCase().includes(normalized)))
     ));
-  }, [activeDomainId, query]);
+  }, [activeDomainId, displayForest.nodes, query]);
 
   function selectNode(node: ForestNode) {
     setSelectedId(node.id);
@@ -132,8 +145,8 @@ export default function Home() {
   async function copyBrief() {
     const normalized = brief ?? normalizeRequirement(requirement, { weeklyHours: 8 });
     await navigator.clipboard.writeText(JSON.stringify(normalized, null, 2));
-    setCopyState("Copied");
-    window.setTimeout(() => setCopyState("Copy brief"), 1400);
+    setCopyState(t.copied);
+    window.setTimeout(() => setCopyState(t.copyBrief), 1400);
   }
 
   function recordFeedback(value: FeedbackValue) {
@@ -171,46 +184,50 @@ export default function Home() {
   return (
     <main className="site-shell">
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="Knowledge Forest Framework home">
+        <a className="brand" href="#top" aria-label={t.homeLabel}>
           <span className="brand-mark">KF</span>
           <span>
             <strong>Knowledge Forest</strong>
-            <small>open framework · v0.1</small>
+            <small>{t.brandSubtitle}</small>
           </span>
         </a>
-        <nav aria-label="Project links">
-          <a href="#forest">Demo forest</a>
-          <a href="#contract">Create your map</a>
+        <nav aria-label={t.projectLinksLabel}>
+          <a href="#forest">{t.demoForest}</a>
+          <a href="#contract">{t.createMap}</a>
           <a href="https://github.com/AIALRA-0/knowledge-forest-framework">GitHub</a>
+          <button
+            className="language-toggle"
+            type="button"
+            onClick={() => setLanguage(language === "en" ? "zh-CN" : "en")}
+            aria-label={language === "en" ? "切换到中文" : "Switch to English"}
+          >
+            {t.languageName}
+          </button>
         </nav>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">A PERSONAL MAP FOR SERIOUS LEARNING</p>
-          <h1>One clear node at a time</h1>
-          <p className="hero-lede">
-            Describe what you want to learn and what you already know; get separate learning paths,
-            one complete resource for every step, a project that proves the skill, and a clear next move
-          </p>
+          <p className="eyebrow">{t.heroEyebrow}</p>
+          <h1>
+            {language === "zh-CN"
+              ? <>一次只完成<br />一个明确节点</>
+              : t.heroTitle}
+          </h1>
+          <p className="hero-lede">{t.heroDescription}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="#contract">Create your map</a>
-            <a className="secondary-action" href="#forest">Explore the demo</a>
+            <a className="primary-action" href="#contract">{t.createMap}</a>
+            <a className="secondary-action" href="#forest">{t.exploreDemo}</a>
           </div>
-          <dl className="hero-stats" aria-label="Demo statistics">
-            <div><dt>{forest.domains.length}</dt><dd>domains</dd></div>
-            <div><dt>{forest.nodes.length}</dt><dd>nodes</dd></div>
-            <div><dt>{forest.nodes.length * 3}</dt><dd>research leads</dd></div>
-            <div><dt>{audit.status}</dt><dd>quality check</dd></div>
+          <dl className="hero-stats" aria-label={t.demoStatisticsLabel}>
+            <div><dt>{displayForest.domains.length}</dt><dd>{t.domains}</dd></div>
+            <div><dt>{displayForest.nodes.length}</dt><dd>{t.nodes}</dd></div>
+            <div><dt>{displayForest.nodes.length * 3}</dt><dd>{t.researchLeads}</dd></div>
+            <div><dt>{audit.status === "pass" ? t.auditPass : t.auditFail}</dt><dd>{t.qualityCheck}</dd></div>
           </dl>
         </div>
-        <div className="hero-map" aria-label="Framework pipeline">
-          {[
-            ["01", "Tell us", "Your goal, prior knowledge, and constraints"],
-            ["02", "Map the field", "Separate the major directions and prerequisites"],
-            ["03", "Choose the work", "A complete resource and a result to produce"],
-            ["04", "Learn and track", "Finish one step, light it, and move forward"],
-          ].map(([step, title, note]) => (
+        <div className="hero-map" aria-label={t.pipelineLabel}>
+          {t.pipeline.map(([step, title, note]) => (
             <div className="pipeline-row" key={step}>
               <span>{step}</span>
               <strong>{title}</strong>
@@ -222,13 +239,13 @@ export default function Home() {
 
       <section className="contract-section" id="contract">
         <div className="section-heading">
-          <p className="eyebrow">START WITH YOUR GOAL</p>
-          <h2>Describe the destination in your own words</h2>
-          <p>The page turns your answer into a clear research request that an agent can investigate and build</p>
+          <p className="eyebrow">{t.startEyebrow}</p>
+          <h2>{t.startTitle}</h2>
+          <p>{t.startDescription}</p>
         </div>
         <div className="intake-grid">
           <div className="intake-card">
-            <label htmlFor="requirement">What do you want to learn or build</label>
+            <label htmlFor="requirement">{t.requirementLabel}</label>
             <textarea
               id="requirement"
               data-testid="requirement-input"
@@ -242,15 +259,15 @@ export default function Home() {
                   key={example}
                   type="button"
                   onClick={() => setRequirement(example)}
-                  aria-label={`Use example ${index + 1}`}
+                  aria-label={`${t.example} ${index + 1}`}
                 >
-                  Example {index + 1}
+                  {t.example} {index + 1}
                 </button>
               ))}
             </div>
             <div className="intake-actions">
               <button className="primary-action" type="button" onClick={analyzeRequirement}>
-                Prepare my learning request
+                {t.prepareRequest}
               </button>
               <button className="secondary-action" type="button" onClick={copyBrief}>
                 {copyState}
@@ -261,28 +278,22 @@ export default function Home() {
           <div className="contract-card" data-testid="brief-summary">
             {brief ? (
               <>
-                <div className="contract-status"><span>READY</span> Ready for research</div>
+                <div className="contract-status"><span>{t.ready}</span> {t.readyForResearch}</div>
                 <h3>{brief.goal}</h3>
                 <div className="contract-facts">
-                  <p><strong>{brief.knownSkills.length}</strong> skills you already know</p>
-                  <p><strong>{brief.highRiskAreas.length}</strong> areas that need extra care</p>
-                  <p><strong>{brief.corrections.length}</strong> quality rules included</p>
+                  <p><strong>{brief.knownSkills.length}</strong> {t.skillsKnown}</p>
+                  <p><strong>{brief.highRiskAreas.length}</strong> {t.careAreas}</p>
+                  <p><strong>{brief.corrections.length}</strong> {t.qualityRules}</p>
                 </div>
                 <ul>
-                  <li>Separate paths for different parts of the field</li>
-                  <li>One complete learning resource for each step</li>
-                  <li>A concrete piece of work to finish before moving on</li>
-                  <li>Current research directions with sources</li>
+                  {t.requestFeatures.map((feature) => <li key={feature}>{feature}</li>)}
                 </ul>
               </>
             ) : (
               <>
-                <div className="contract-status"><span>WAITING</span> No request prepared</div>
-                <h3>Your starting point stays part of the plan</h3>
-                <p>
-                  Tell the system what you want to achieve, what you already know, how much time
-                  you have, and any limits that matter; the resulting map is built around that context
-                </p>
+                <div className="contract-status"><span>{t.waiting}</span> {t.noRequest}</div>
+                <h3>{t.startingPointTitle}</h3>
+                <p>{t.startingPointDescription}</p>
               </>
             )}
           </div>
@@ -292,33 +303,33 @@ export default function Home() {
       <section className="forest-section" id="forest">
         <div className="section-heading forest-heading">
           <div>
-            <p className="eyebrow">INTERACTIVE PUBLIC DEMO</p>
-            <h2>{forest.metadata.title}</h2>
-            <p>{forest.metadata.description}</p>
+            <p className="eyebrow">{t.demoEyebrow}</p>
+            <h2>{displayForest.metadata.title}</h2>
+            <p>{displayForest.metadata.description}</p>
           </div>
           <div className="progress-summary">
             <span>{completionPercent}%</span>
             <div>
-              <strong>{completedCount} of {forest.nodes.length} accepted</strong>
-              <small>{readyNodes.length} nodes ready now</small>
+              <strong>{completedCount} / {displayForest.nodes.length} {t.accepted}</strong>
+              <small>{readyNodes.length} {t.readyNow}</small>
             </div>
-            <button type="button" onClick={exportProgress}>Export</button>
+            <button type="button" onClick={exportProgress}>{t.export}</button>
           </div>
         </div>
 
         <div className="forest-workspace">
-          <aside className="domain-rail" aria-label="Learning domains">
-            <label htmlFor="node-search">Search this forest</label>
+          <aside className="domain-rail" aria-label={t.learningDomains}>
+            <label htmlFor="node-search">{t.searchForest}</label>
             <input
               id="node-search"
               data-testid="node-search"
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Topic or skill"
+              placeholder={t.searchPlaceholder}
             />
             <div className="domain-list">
-              {forest.domains.map((domain) => {
+              {displayForest.domains.map((domain) => {
                 const progress = domainProgress(domain, completed);
                 return (
                   <button
@@ -332,7 +343,7 @@ export default function Home() {
                     <span className="domain-dot" />
                     <span>
                       <strong>{domain.title}</strong>
-                      <small>{progress.complete} / {progress.total} complete</small>
+                      <small>{progress.complete} / {progress.total} {t.complete}</small>
                     </span>
                   </button>
                 );
@@ -340,26 +351,26 @@ export default function Home() {
             </div>
             <div className="audit-card">
               <span className={audit.status === "pass" ? "audit-pass" : "audit-fail"}>
-                {audit.status.toUpperCase()}
+                {audit.status === "pass" ? t.auditPass.toUpperCase() : t.auditFail.toUpperCase()}
               </span>
-              <strong>Quality checks</strong>
-              <small>{audit.summary.frontierEvidence} research sources checked</small>
+              <strong>{t.qualityChecks}</strong>
+              <small>{audit.summary.frontierEvidence} {t.sourcesChecked}</small>
             </div>
           </aside>
 
           <section
             className="vertical-tree"
-            aria-label={`${forest.domains.find((domain) => domain.id === activeDomainId)?.title} learning path`}
+            aria-label={`${displayForest.domains.find((domain) => domain.id === activeDomainId)?.title} ${t.learningPath}`}
             data-layout-direction="top-to-bottom"
           >
             <div className="domain-intro">
               <span
                 className="domain-accent"
-                style={{ background: forest.domains.find((domain) => domain.id === activeDomainId)?.color }}
+                style={{ background: displayForest.domains.find((domain) => domain.id === activeDomainId)?.color }}
               />
               <div>
-                <h3>{forest.domains.find((domain) => domain.id === activeDomainId)?.title}</h3>
-                <p>{forest.domains.find((domain) => domain.id === activeDomainId)?.description}</p>
+                <h3>{displayForest.domains.find((domain) => domain.id === activeDomainId)?.title}</h3>
+                <p>{displayForest.domains.find((domain) => domain.id === activeDomainId)?.description}</p>
               </div>
             </div>
             <div className="tree-column">
@@ -377,7 +388,7 @@ export default function Home() {
                     >
                       <span className="node-status">{status === "completed" ? "✓" : index + 1}</span>
                       <span className="node-copy">
-                        <small>{statusLabel(status)} · {node.estimatedHours} hours</small>
+                        <small>{statusLabel(status)} · {node.estimatedHours} {t.hours}</small>
                         <strong>{node.title}</strong>
                         <span>{node.outcome}</span>
                       </span>
@@ -386,7 +397,7 @@ export default function Home() {
                 );
               })}
               {filteredNodes.length === 0 && (
-                <p className="empty-state">No nodes match this search in the selected domain</p>
+                <p className="empty-state">{t.noMatches}</p>
               )}
             </div>
           </section>
@@ -394,43 +405,43 @@ export default function Home() {
           <aside className="node-detail" data-testid="node-detail">
             <div className="detail-heading">
               <span className={`state-pill ${selectedStatus}`}>{statusLabel(selectedStatus)}</span>
-              <small>{selected.estimatedHours} estimated hours</small>
+              <small>{selected.estimatedHours} {t.estimatedHours}</small>
             </div>
             <h3>{selected.title}</h3>
             <p className="detail-outcome">{selected.outcome}</p>
 
             {selectedStatus === "locked" && (
               <div className="lock-explanation">
-                <strong>Why this is locked</strong>
+                <strong>{t.whyLocked}</strong>
                 <p>
-                  Complete {selected.dependsOn
+                  {t.completeFirst} {selected.dependsOn
                     .filter((id) => !completed.has(id))
-                    .map((id) => forest.nodes.find((node) => node.id === id)?.title)
-                    .join(", ")} first
+                    .map((id) => displayForest.nodes.find((node) => node.id === id)?.title)
+                    .join(language === "en" ? ", " : "、")} {t.first}
                 </p>
               </div>
             )}
 
             <section className="detail-block">
-              <div className="block-label">What to learn from</div>
+              <div className="block-label">{t.learnFrom}</div>
               <a className="resource-card" href={selected.resource.url} target="_blank" rel="noreferrer">
-                <span>{selected.resource.kind}</span>
+                <span>{t.resourceKinds[selected.resource.kind]}</span>
                 <strong>{selected.resource.title}</strong>
-                <small>{selected.resource.publisher} · {selected.resource.access}</small>
+                <small>{selected.resource.publisher} · {t[selected.resource.access]}</small>
               </a>
               <button className="resource-issue-button" type="button" onClick={reportResourceIssue}>
-                Resource unavailable
+                {t.resourceUnavailable}
               </button>
               {resourceIssues.has(selected.id) && (
                 <div className="resource-issue-note" role="status">
-                  Saved for review; export the issue or ask the agent to verify a replacement before changing this step
+                  {t.resourceSaved}
                 </div>
               )}
               <p>{selected.rationale}</p>
             </section>
 
             <section className="detail-block">
-              <div className="block-label">What to make</div>
+              <div className="block-label">{t.make}</div>
               <h4>{selected.acceptance.title}</h4>
               <p>{selected.acceptance.description}</p>
               <ul>
@@ -439,7 +450,7 @@ export default function Home() {
             </section>
 
             <section className="detail-block">
-              <div className="block-label">Where research is moving · 3</div>
+              <div className="block-label">{t.researchMoving} · 3</div>
               <div className="frontier-list">
                 {selected.frontiers.map((frontier, index) => (
                   <details key={frontier.title}>
@@ -463,7 +474,7 @@ export default function Home() {
                       onChange={(event) => setArtifactConfirmed(event.target.checked)}
                       disabled={selectedStatus === "locked"}
                     />
-                    I finished the work above
+                    {t.finishedWork}
                   </label>
                   <button
                     type="button"
@@ -471,23 +482,23 @@ export default function Home() {
                     disabled={!artifactConfirmed || selectedStatus === "locked"}
                     data-testid="complete-node"
                   >
-                    Mark complete and light this step
+                    {t.markComplete}
                   </button>
                 </>
               ) : (
                 <button type="button" className="undo-button" onClick={undoNode}>
-                  Reopen this node
+                  {t.reopen}
                 </button>
               )}
             </section>
 
             <section className="feedback-box">
-              <span>Was this node clear enough to act on</span>
+              <span>{t.clarityQuestion}</span>
               <div>
                 {([
-                  ["clear", "Clear"],
-                  ["unsure", "Unsure"],
-                  ["blocked", "Blocked"],
+                  ["clear", t.clear],
+                  ["unsure", t.unsure],
+                  ["blocked", t.blocked],
                 ] as Array<[FeedbackValue, string]>).map(([value, label]) => (
                   <button
                     type="button"
@@ -499,7 +510,7 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-              <small>Stored only in this browser and included in your export</small>
+              <small>{t.storedLocally}</small>
             </section>
           </aside>
         </div>
@@ -507,15 +518,11 @@ export default function Home() {
 
       <section className="principles-section">
         <div className="section-heading">
-          <p className="eyebrow">HOW QUALITY IS CHECKED</p>
-          <h2>A useful map must survive real use</h2>
+          <p className="eyebrow">{t.qualityEyebrow}</p>
+          <h2>{t.qualityTitle}</h2>
         </div>
         <div className="principle-grid">
-          {[
-            ["01", "Nothing important is missing", "Compare the map with university programs, industry practice, regulation, and neighboring fields"],
-            ["02", "Every source still works", "Open the links, confirm who published them, check the date, and make sure they support the claim"],
-            ["03", "A person can actually use it", "Try realistic goals on desktop and mobile, record confusion, and fix the unclear parts"],
-          ].map(([number, title, text]) => (
+          {t.qualityItems.map(([number, title, text]) => (
             <article key={number}>
               <span>{number}</span>
               <h3>{title}</h3>
@@ -528,9 +535,9 @@ export default function Home() {
       <footer>
         <div>
           <strong>Knowledge Forest Framework</strong>
-          <span>Apache-2.0 code · CC BY 4.0 examples</span>
+          <span>{t.footerLicense}</span>
         </div>
-        <p>Research deeply; learn one complete node; return and light the next</p>
+        <p>{t.footerTagline}</p>
       </footer>
     </main>
   );

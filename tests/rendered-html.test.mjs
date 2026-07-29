@@ -25,5 +25,8 @@ test("server-renders the product shell and interactive demo", async () => {
   assert.match(html, /data-layout-direction="top-to-bottom"/);
   assert.match(html, /What to learn from/);
   assert.match(html, /Where research is moving/);
+  assert.match(html, /切换到中文/);
+  assert.match(html, />12</);
+  assert.match(html, />36</);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
