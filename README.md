@@ -12,7 +12,7 @@
 [![Local first](https://img.shields.io/badge/progress-local--first-805a46.svg)](docs/privacy.md)
 [![No telemetry](https://img.shields.io/badge/telemetry-none-657067.svg)](docs/privacy.md)
 
-[Live demo](https://aialra-0.github.io/knowledge-forest-framework/) · [中文说明](README.zh-CN.md) · [Agent protocol](docs/agent-protocol.md) · [Quality gates](docs/quality-gates.md) · [Security](SECURITY.md)
+[Live demo](https://aialra-0.github.io/knowledge-forest-framework/) · [中文说明](README.zh-CN.md) · [Project landscape](docs/project-landscape.md) · [Agent protocol](docs/agent-protocol.md) · [Quality gates](docs/quality-gates.md) · [Security](SECURITY.md)
 
 </div>
 
@@ -178,6 +178,10 @@ Private knowledge, progress, restricted resources, research archives, credential
 - generated user forests keep the license selected by their owner
 
 Read [privacy](docs/privacy.md), [content policy](docs/content-policy.md), and [security](SECURITY.md) before publishing an instance
+
+## Related work
+
+The [project landscape](docs/project-landscape.md) compares roadmap.sh, OSSU, Teach Yourself Computer Science, SkillTree, Understand Anything, Learn Anything, and OpenAlex; it records what this framework adopts, what remains different, and how the comparison must be revalidated
 
 ## Contributing
 
