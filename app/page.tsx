@@ -180,36 +180,36 @@ export default function Home() {
         </a>
         <nav aria-label="Project links">
           <a href="#forest">Demo forest</a>
-          <a href="#contract">Agent contract</a>
+          <a href="#contract">Create your map</a>
           <a href="https://github.com/AIALRA-0/knowledge-forest-framework">GitHub</a>
         </nav>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">FROM A NEED TO AN AUDITABLE LEARNING FOREST</p>
+          <p className="eyebrow">A PERSONAL MAP FOR SERIOUS LEARNING</p>
           <h1>One clear node at a time</h1>
           <p className="hero-lede">
-            Describe what you want to learn; an agent investigates the field, separates domains,
-            verifies complete resources, defines acceptance artifacts, and keeps frontier evidence current
+            Describe what you want to learn and what you already know; get separate learning paths,
+            one complete resource for every step, a project that proves the skill, and a clear next move
           </p>
           <div className="hero-actions">
-            <a className="primary-action" href="#contract">Create a brief</a>
+            <a className="primary-action" href="#contract">Create your map</a>
             <a className="secondary-action" href="#forest">Explore the demo</a>
           </div>
           <dl className="hero-stats" aria-label="Demo statistics">
             <div><dt>{forest.domains.length}</dt><dd>domains</dd></div>
             <div><dt>{forest.nodes.length}</dt><dd>nodes</dd></div>
-            <div><dt>{forest.nodes.length * 3}</dt><dd>frontiers</dd></div>
-            <div><dt>{audit.status}</dt><dd>audit</dd></div>
+            <div><dt>{forest.nodes.length * 3}</dt><dd>research leads</dd></div>
+            <div><dt>{audit.status}</dt><dd>quality check</dd></div>
           </dl>
         </div>
         <div className="hero-map" aria-label="Framework pipeline">
           {[
-            ["01", "Requirement", "Goals, prior knowledge, constraints"],
-            ["02", "Research", "Taxonomy, resources, frontier evidence"],
-            ["03", "Audit", "Coverage, freshness, licensing, safety"],
-            ["04", "Forest", "Vertical paths, artifacts, progress"],
+            ["01", "Tell us", "Your goal, prior knowledge, and constraints"],
+            ["02", "Map the field", "Separate the major directions and prerequisites"],
+            ["03", "Choose the work", "A complete resource and a result to produce"],
+            ["04", "Learn and track", "Finish one step, light it, and move forward"],
           ].map(([step, title, note]) => (
             <div className="pipeline-row" key={step}>
               <span>{step}</span>
@@ -222,9 +222,9 @@ export default function Home() {
 
       <section className="contract-section" id="contract">
         <div className="section-heading">
-          <p className="eyebrow">AGENT INTAKE</p>
-          <h2>Turn a rough ambition into a durable contract</h2>
-          <p>The browser creates the brief; the agent skill performs research and produces the audited bundle</p>
+          <p className="eyebrow">START WITH YOUR GOAL</p>
+          <h2>Describe the destination in your own words</h2>
+          <p>The page turns your answer into a clear research request that an agent can investigate and build</p>
         </div>
         <div className="intake-grid">
           <div className="intake-card">
@@ -250,7 +250,7 @@ export default function Home() {
             </div>
             <div className="intake-actions">
               <button className="primary-action" type="button" onClick={analyzeRequirement}>
-                Build requirement contract
+                Prepare my learning request
               </button>
               <button className="secondary-action" type="button" onClick={copyBrief}>
                 {copyState}
@@ -261,27 +261,27 @@ export default function Home() {
           <div className="contract-card" data-testid="brief-summary">
             {brief ? (
               <>
-                <div className="contract-status"><span>READY</span> Agent-readable brief</div>
+                <div className="contract-status"><span>READY</span> Ready for research</div>
                 <h3>{brief.goal}</h3>
                 <div className="contract-facts">
-                  <p><strong>{brief.knownSkills.length}</strong> known skills detected</p>
-                  <p><strong>{brief.highRiskAreas.length}</strong> safety boundaries detected</p>
-                  <p><strong>{brief.corrections.length}</strong> remembered corrections</p>
+                  <p><strong>{brief.knownSkills.length}</strong> skills you already know</p>
+                  <p><strong>{brief.highRiskAreas.length}</strong> areas that need extra care</p>
+                  <p><strong>{brief.corrections.length}</strong> quality rules included</p>
                 </div>
                 <ul>
-                  <li>Top-to-bottom domain trees</li>
-                  <li>Complete resources only</li>
-                  <li>Three traceable frontiers per node</li>
-                  <li>Real user journeys required before release</li>
+                  <li>Separate paths for different parts of the field</li>
+                  <li>One complete learning resource for each step</li>
+                  <li>A concrete piece of work to finish before moving on</li>
+                  <li>Current research directions with sources</li>
                 </ul>
               </>
             ) : (
               <>
-                <div className="contract-status"><span>WAITING</span> No brief generated</div>
-                <h3>Your corrections become permanent regression rules</h3>
+                <div className="contract-status"><span>WAITING</span> No request prepared</div>
+                <h3>Your starting point stays part of the plan</h3>
                 <p>
-                  The framework keeps layout, resource granularity, atomicity, frontier,
-                  safety, and experience requirements attached to every future iteration
+                  Tell the system what you want to achieve, what you already know, how much time
+                  you have, and any limits that matter; the resulting map is built around that context
                 </p>
               </>
             )}
@@ -342,8 +342,8 @@ export default function Home() {
               <span className={audit.status === "pass" ? "audit-pass" : "audit-fail"}>
                 {audit.status.toUpperCase()}
               </span>
-              <strong>Deterministic audit</strong>
-              <small>{audit.summary.frontierEvidence} evidence positions checked</small>
+              <strong>Quality checks</strong>
+              <small>{audit.summary.frontierEvidence} research sources checked</small>
             </div>
           </aside>
 
@@ -412,7 +412,7 @@ export default function Home() {
             )}
 
             <section className="detail-block">
-              <div className="block-label">Complete resource</div>
+              <div className="block-label">What to learn from</div>
               <a className="resource-card" href={selected.resource.url} target="_blank" rel="noreferrer">
                 <span>{selected.resource.kind}</span>
                 <strong>{selected.resource.title}</strong>
@@ -423,14 +423,14 @@ export default function Home() {
               </button>
               {resourceIssues.has(selected.id) && (
                 <div className="resource-issue-note" role="status">
-                  Recorded for re-audit; do not silently substitute another resource; export the issue or rerun the agent review queue
+                  Saved for review; export the issue or ask the agent to verify a replacement before changing this step
                 </div>
               )}
               <p>{selected.rationale}</p>
             </section>
 
             <section className="detail-block">
-              <div className="block-label">Acceptance artifact</div>
+              <div className="block-label">What to make</div>
               <h4>{selected.acceptance.title}</h4>
               <p>{selected.acceptance.description}</p>
               <ul>
@@ -439,7 +439,7 @@ export default function Home() {
             </section>
 
             <section className="detail-block">
-              <div className="block-label">Current frontiers · 3</div>
+              <div className="block-label">Where research is moving · 3</div>
               <div className="frontier-list">
                 {selected.frontiers.map((frontier, index) => (
                   <details key={frontier.title}>
@@ -463,7 +463,7 @@ export default function Home() {
                       onChange={(event) => setArtifactConfirmed(event.target.checked)}
                       disabled={selectedStatus === "locked"}
                     />
-                    I produced the acceptance artifact
+                    I finished the work above
                   </label>
                   <button
                     type="button"
@@ -471,7 +471,7 @@ export default function Home() {
                     disabled={!artifactConfirmed || selectedStatus === "locked"}
                     data-testid="complete-node"
                   >
-                    Accept and light this node
+                    Mark complete and light this step
                   </button>
                 </>
               ) : (
@@ -507,14 +507,14 @@ export default function Home() {
 
       <section className="principles-section">
         <div className="section-heading">
-          <p className="eyebrow">RELEASE STANDARD</p>
-          <h2>A forest is not finished when it renders</h2>
+          <p className="eyebrow">HOW QUALITY IS CHECKED</p>
+          <h2>A useful map must survive real use</h2>
         </div>
         <div className="principle-grid">
           {[
-            ["01", "Coverage audit", "Challenge the taxonomy from industry, academic, regulatory, and adjacent-domain perspectives"],
-            ["02", "Evidence audit", "Recheck authority, access, freshness, licensing, duplication, and claim-level support"],
-            ["03", "Experience audit", "Use realistic goals on desktop and mobile; record confusion, recovery, and the next visible action"],
+            ["01", "Nothing important is missing", "Compare the map with university programs, industry practice, regulation, and neighboring fields"],
+            ["02", "Every source still works", "Open the links, confirm who published them, check the date, and make sure they support the claim"],
+            ["03", "A person can actually use it", "Try realistic goals on desktop and mobile, record confusion, and fix the unclear parts"],
           ].map(([number, title, text]) => (
             <article key={number}>
               <span>{number}</span>

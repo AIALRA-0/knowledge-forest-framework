@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const imageUrl = `${protocol}://${host}/og.png`;
   const title = "Knowledge Forest Framework";
-  const description = "An open framework for turning a learning ambition into an evidence-backed, auditable skill forest";
+  const description = "Describe what you want to learn and get a clear, researched path with complete resources, practical outcomes, and visible progress";
   return {
     title: "Knowledge Forest Framework",
     description,
@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title,
-      description: "From one learning ambition to a maintainable, evidence-backed skill forest",
+      description: "From one learning goal to a clear path you can follow, finish, and maintain",
       images: [imageUrl],
     },
   };
