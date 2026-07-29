@@ -12,7 +12,7 @@
 [![Local first](https://img.shields.io/badge/progress-local--first-805a46.svg)](docs/privacy.md)
 [![No telemetry](https://img.shields.io/badge/telemetry-none-657067.svg)](docs/privacy.md)
 
-[中文说明](README.zh-CN.md) · [Agent protocol](docs/agent-protocol.md) · [Quality gates](docs/quality-gates.md) · [Security](SECURITY.md)
+[Live demo](https://aialra-0.github.io/knowledge-forest-framework/) · [中文说明](README.zh-CN.md) · [Agent protocol](docs/agent-protocol.md) · [Quality gates](docs/quality-gates.md) · [Security](SECURITY.md)
 
 </div>
 

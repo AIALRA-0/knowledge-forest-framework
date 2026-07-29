@@ -6,7 +6,7 @@
 
 **把一句学习目标转化为有证据、可验收、可长期维护的技能森林**
 
-[English](README.md) · [Agent 协议](docs/agent-protocol.md) · [质量门](docs/quality-gates.md) · [安全](SECURITY.md)
+[在线演示](https://aialra-0.github.io/knowledge-forest-framework/) · [English](README.md) · [Agent 协议](docs/agent-protocol.md) · [质量门](docs/quality-gates.md) · [安全](SECURITY.md)
 
 </div>
 
