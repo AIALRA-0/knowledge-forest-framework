@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-29T03:11:29.803Z",
+  "generatedAt": "2026-07-29T09:10:06.637Z",
   "status": "pass",
-  "briefHash": "b1a725bcbef54eeda293c4450142ae7e4c3c88797a8753c481bc579b08ff2431",
+  "briefHash": "5d566ef529d0dc53601cc4cc12702c8f20ab72db9e9b3b970fa4b4bf4b62f064",
   "rounds": [
     {
       "id": "structure",
@@ -20,7 +20,7 @@
       "status": "pass",
       "artifact": "docs/user-journey-review.md",
       "journeys": 9,
-      "resolvedFindings": 3
+      "resolvedFindings": 4
     }
   ],
   "summary": {

@@ -24,7 +24,8 @@ test("public demo passes the deterministic forest contract", () => {
 test("brief preserves every remembered correction", () => {
   const report = auditBrief(brief);
   assert.equal(report.status, "pass");
-  assert.equal(brief.corrections.length, 6);
+  assert.equal(brief.corrections.length, 11);
+  assert.equal(new Set(brief.corrections.map((item) => item.id)).size, 11);
 });
 
 test("locked nodes explain prerequisites through the state model", () => {

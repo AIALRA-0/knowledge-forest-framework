@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import demoForest from "@/examples/public-demo/forest.generated.json";
 import type {
   ForestBundle,
@@ -37,6 +37,12 @@ const EXAMPLE_REQUIREMENTS = [
 
 type NodeStatus = "completed" | "available" | "locked";
 type FeedbackValue = "clear" | "unsure" | "blocked";
+type BranchEdge = {
+  id: string;
+  sourceId: string;
+  targetId: string;
+  path: string;
+};
 
 function loadSet(key: string) {
   if (typeof window === "undefined") return new Set<string>();
@@ -60,11 +66,32 @@ function domainProgress(domain: ForestDomain, completed: Set<string>) {
   };
 }
 
+function dependencyLevels(nodes: ForestNode[]) {
+  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+  const memo = new Map<string, number>();
+  const visit = (id: string, visiting = new Set<string>()): number => {
+    const cached = memo.get(id);
+    if (cached !== undefined) return cached;
+    if (visiting.has(id)) return 0;
+    const node = nodeMap.get(id);
+    if (!node || node.dependsOn.length === 0) {
+      memo.set(id, 0);
+      return 0;
+    }
+    const nextVisiting = new Set(visiting).add(id);
+    const level = Math.max(...node.dependsOn.map((dependency) => visit(dependency, nextVisiting))) + 1;
+    memo.set(id, level);
+    return level;
+  };
+  nodes.forEach((node) => visit(node.id));
+  return memo;
+}
+
 export default function Home() {
   const [language, setLanguage] = useState<DemoLanguage>("en");
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState(forest.nodes[0].id);
-  const [activeDomainId, setActiveDomainId] = useState(forest.domains[0].id);
+  const [activeDomainId, setActiveDomainId] = useState("all");
   const [query, setQuery] = useState("");
   const [requirement, setRequirement] = useState(EXAMPLE_REQUIREMENTS[0]);
   const [brief, setBrief] = useState<LearnerBrief | null>(null);
@@ -72,6 +99,9 @@ export default function Home() {
   const [feedback, setFeedback] = useState<Record<string, FeedbackValue>>({});
   const [resourceIssues, setResourceIssues] = useState<Set<string>>(new Set());
   const [copyState, setCopyState] = useState("Copy brief");
+  const branchMapRef = useRef<HTMLDivElement>(null);
+  const branchNodeRefs = useRef(new Map<string, HTMLButtonElement>());
+  const [branchEdges, setBranchEdges] = useState<BranchEdge[]>([]);
   const t = UI_COPY[language];
   const displayForest = useMemo(() => localizeForest(forest, language), [language]);
 
@@ -91,6 +121,13 @@ export default function Home() {
     setCopyState(t.copyBrief);
   }, [language, t.copyBrief]);
 
+  useEffect(() => {
+    const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
+    if (requestedLanguage === "zh-CN" || requestedLanguage === "en") {
+      setLanguage(requestedLanguage);
+    }
+  }, []);
+
   function statusLabel(status: NodeStatus) {
     if (status === "completed") return t.completed;
     if (status === "available") return t.nodeReady;
@@ -100,15 +137,68 @@ export default function Home() {
   const selected = displayForest.nodes.find((node) => node.id === selectedId) ?? displayForest.nodes[0];
   const selectedStatus = nodeState(selected, completed) as NodeStatus;
   const readyNodes = nextAvailableNodes(forest, completed);
-  const filteredNodes = useMemo(() => {
+  const matchingNodeIds = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase();
-    return displayForest.nodes.filter((node) => (
-      node.domainId === activeDomainId
-      && (!normalized
-        || node.title.toLocaleLowerCase().includes(normalized)
-        || node.tags.some((tag) => tag.toLocaleLowerCase().includes(normalized)))
-    ));
-  }, [activeDomainId, displayForest.nodes, query]);
+    return new Set(displayForest.nodes.filter((node) => (
+      !normalized
+      || node.title.toLocaleLowerCase().includes(normalized)
+      || node.tags.some((tag) => tag.toLocaleLowerCase().includes(normalized))
+    )).map((node) => node.id));
+  }, [displayForest.nodes, query]);
+  const branchLevels = useMemo(() => dependencyLevels(displayForest.nodes), [displayForest.nodes]);
+
+  useLayoutEffect(() => {
+    const map = branchMapRef.current;
+    if (!map) return;
+    let frame = 0;
+    const measure = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const mapRect = map.getBoundingClientRect();
+        const edges: BranchEdge[] = [];
+        displayForest.nodes.forEach((target) => {
+          const targetElement = branchNodeRefs.current.get(target.id);
+          if (!targetElement) return;
+          const targetRect = targetElement.getBoundingClientRect();
+          target.dependsOn.forEach((sourceId) => {
+            const sourceElement = branchNodeRefs.current.get(sourceId);
+            if (!sourceElement) return;
+            const sourceRect = sourceElement.getBoundingClientRect();
+            const startX = sourceRect.left - mapRect.left + sourceRect.width / 2;
+            const startY = sourceRect.bottom - mapRect.top;
+            const endX = targetRect.left - mapRect.left + targetRect.width / 2;
+            const endY = targetRect.top - mapRect.top;
+            const middleY = startY + Math.max(26, (endY - startY) / 2);
+            edges.push({
+              id: `${sourceId}-${target.id}`,
+              sourceId,
+              targetId: target.id,
+              path: `M ${startX} ${startY} C ${startX} ${middleY}, ${endX} ${middleY}, ${endX} ${endY}`,
+            });
+          });
+        });
+        setBranchEdges(edges);
+      });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(map);
+    branchNodeRefs.current.forEach((element) => observer.observe(element));
+    window.addEventListener("resize", measure);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [displayForest, language]);
+
+  function switchLanguage() {
+    const nextLanguage: DemoLanguage = language === "en" ? "zh-CN" : "en";
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", nextLanguage);
+    window.history.replaceState(null, "", url);
+    setLanguage(nextLanguage);
+  }
 
   function selectNode(node: ForestNode) {
     setSelectedId(node.id);
@@ -123,7 +213,6 @@ export default function Home() {
     saveSet(PROGRESS_KEY, result.completed);
     const next = nextAvailableNodes(forest, result.completed)[0];
     if (next) {
-      setActiveDomainId(next.domainId);
       setSelectedId(next.id);
     }
     setArtifactConfirmed(false);
@@ -198,7 +287,7 @@ export default function Home() {
           <button
             className="language-toggle"
             type="button"
-            onClick={() => setLanguage(language === "en" ? "zh-CN" : "en")}
+            onClick={switchLanguage}
             aria-label={language === "en" ? "切换到中文" : "Switch to English"}
           >
             {t.languageName}
@@ -329,6 +418,19 @@ export default function Home() {
               placeholder={t.searchPlaceholder}
             />
             <div className="domain-list">
+              <button
+                type="button"
+                className={activeDomainId === "all" ? "domain-button active" : "domain-button"}
+                style={{ "--domain-color": "#254b3c" } as React.CSSProperties}
+                onClick={() => setActiveDomainId("all")}
+                data-testid="domain-all"
+              >
+                <span className="domain-dot domain-dot-all" />
+                <span>
+                  <strong>{t.completeMap}</strong>
+                  <small>{displayForest.nodes.length} {t.completeMapProgress}</small>
+                </span>
+              </button>
               {displayForest.domains.map((domain) => {
                 const progress = domainProgress(domain, completed);
                 return (
@@ -360,45 +462,75 @@ export default function Home() {
 
           <section
             className="vertical-tree"
-            aria-label={`${displayForest.domains.find((domain) => domain.id === activeDomainId)?.title} ${t.learningPath}`}
+            aria-label={`${t.completeMap} ${t.learningPath}`}
             data-layout-direction="top-to-bottom"
+            data-layout-model="branched-dag"
           >
             <div className="domain-intro">
-              <span
-                className="domain-accent"
-                style={{ background: displayForest.domains.find((domain) => domain.id === activeDomainId)?.color }}
-              />
+              <span className="domain-accent" />
               <div>
-                <h3>{displayForest.domains.find((domain) => domain.id === activeDomainId)?.title}</h3>
-                <p>{displayForest.domains.find((domain) => domain.id === activeDomainId)?.description}</p>
+                <h3>{t.dependencyMapTitle}</h3>
+                <p>{t.dependencyMapDescription}</p>
+                <p className="branch-map-hint">{t.branchMapHint}</p>
               </div>
             </div>
-            <div className="tree-column">
-              {filteredNodes.map((node, index) => {
-                const status = nodeState(node, completed) as NodeStatus;
-                return (
-                  <div className="tree-step" key={node.id}>
-                    {index > 0 && <span className="tree-line" aria-hidden="true" />}
+            <div className="branch-map-scroll">
+              <div className="branch-lane-headings" aria-hidden="true">
+                {displayForest.domains.map((domain) => (
+                  <span key={domain.id} style={{ "--domain-color": domain.color } as React.CSSProperties}>
+                    <i />
+                    {domain.title}
+                  </span>
+                ))}
+              </div>
+              <div className="branch-map" ref={branchMapRef}>
+                <svg className="branch-edges" aria-hidden="true">
+                  {branchEdges.map((edge) => {
+                    const sourceCompleted = completed.has(edge.sourceId);
+                    const targetCompleted = completed.has(edge.targetId);
+                    return (
+                      <path
+                        key={edge.id}
+                        d={edge.path}
+                        className={targetCompleted ? "completed" : sourceCompleted ? "available" : "locked"}
+                      />
+                    );
+                  })}
+                </svg>
+                {displayForest.nodes.map((node) => {
+                  const status = nodeState(node, completed) as NodeStatus;
+                  const domainIndex = displayForest.domains.findIndex((domain) => domain.id === node.domainId);
+                  const domain = displayForest.domains[domainIndex];
+                  const domainMuted = activeDomainId !== "all" && activeDomainId !== node.domainId;
+                  const searchMuted = query.trim().length > 0 && !matchingNodeIds.has(node.id);
+                  return (
                     <button
+                      ref={(element) => {
+                        if (element) branchNodeRefs.current.set(node.id, element);
+                        else branchNodeRefs.current.delete(node.id);
+                      }}
                       type="button"
-                      className={`node-card ${status} ${selected.id === node.id ? "selected" : ""}`}
+                      className={`node-card branch-node ${status} ${selected.id === node.id ? "selected" : ""} ${domainMuted || searchMuted ? "muted" : ""}`}
                       onClick={() => selectNode(node)}
                       data-testid={`tree-node-${node.id}`}
                       data-node-state={status}
+                      data-branch-level={branchLevels.get(node.id) ?? 0}
+                      style={{
+                        gridColumn: domainIndex + 1,
+                        gridRow: (branchLevels.get(node.id) ?? 0) + 1,
+                        "--domain-color": domain.color,
+                      } as React.CSSProperties}
                     >
-                      <span className="node-status">{status === "completed" ? "✓" : index + 1}</span>
+                      <span className="node-status">{status === "completed" ? "✓" : (branchLevels.get(node.id) ?? 0) + 1}</span>
                       <span className="node-copy">
                         <small>{statusLabel(status)} · {node.estimatedHours} {t.hours}</small>
                         <strong>{node.title}</strong>
                         <span>{node.outcome}</span>
                       </span>
                     </button>
-                  </div>
-                );
-              })}
-              {filteredNodes.length === 0 && (
-                <p className="empty-state">{t.noMatches}</p>
-              )}
+                  );
+                })}
+              </div>
             </div>
           </section>
 

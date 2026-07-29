@@ -51,6 +51,36 @@
       "statement": "Judge releases through realistic user journeys",
       "regressionCheck": "Every release carries a user-journey review with observed friction and changes",
       "source": "framework"
+    },
+    {
+      "id": "branched-dependency-map",
+      "statement": "Show a real dependency tree with visible branches instead of presenting the demo as one chain",
+      "regressionCheck": "The renderer exposes at least two dependency levels, multiple domain lanes, and prerequisite edges derived from dependsOn",
+      "source": "framework"
+    },
+    {
+      "id": "separate-language-entrypoints",
+      "statement": "Give English and Chinese their own direct demo URLs and do not mix interface languages",
+      "regressionCheck": "Both language query URLs are linked and each rendered interface passes a language-leak check",
+      "source": "framework"
+    },
+    {
+      "id": "real-language-matched-screenshots",
+      "statement": "Use real product screenshots; English documentation shows English UI and Chinese documentation shows Chinese UI",
+      "regressionCheck": "README tests require language-suffixed production screenshots and reject cross-language screenshot references",
+      "source": "framework"
+    },
+    {
+      "id": "substantive-node-explanations",
+      "statement": "Use professional terms for depth; do not treat a professional term as its own explanation",
+      "regressionCheck": "Every node includes a separate outcome, rationale, inspectable artifact, and observable criteria beyond its title",
+      "source": "framework"
+    },
+    {
+      "id": "product-documentation",
+      "statement": "Present the repository as a usable product rather than a record of past corrections",
+      "regressionCheck": "Public README describes user outcomes, examples, operation, quality and maintenance without exposing private iteration history",
+      "source": "framework"
     }
   ]
 }

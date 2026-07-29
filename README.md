@@ -9,7 +9,7 @@
 [![Local first](https://img.shields.io/badge/progress-local--first-805a46.svg)](docs/privacy.md)
 [![No telemetry](https://img.shields.io/badge/telemetry-none-657067.svg)](docs/privacy.md)
 
-[Live demo](https://aialra-0.github.io/knowledge-forest-framework/) · [中文说明](README.zh-CN.md) · [How it works](docs/architecture.md) · [Quality checks](docs/quality-gates.md) · [Security](SECURITY.md)
+[English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en) · [中文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) · [中文说明](README.zh-CN.md) · [How it works](docs/architecture.md) · [Quality checks](docs/quality-gates.md) · [Security](SECURITY.md)
 
 </div>
 
@@ -24,9 +24,9 @@ These sanitized screenshots come from AIALRA's running, Authentik-protected priv
 - a 376-node semiconductor tree organized into 82 branches
 - a complete resource, acceptance artifact, learning platforms, three current research directions, and saved progress at every node
 
-![AIALRA private semiconductor knowledge forest](docs/images/aialra-forest-chip-overview.jpg)
+![AIALRA private semiconductor knowledge forest in English](docs/images/aialra-forest-chip-overview-en.jpg)
 
-![AIALRA private knowledge forest directory](docs/images/aialra-forest-directory.jpg)
+![AIALRA private knowledge forest directory in English](docs/images/aialra-forest-directory-en.jpg)
 
 ## What you do
 
@@ -46,13 +46,15 @@ These sanitized screenshots come from AIALRA's running, Authentik-protected priv
 - three current research directions with dated sources
 - progress, feedback, export, and a way to report an unavailable resource
 
-The bilingual public demo is a connected path through evidence, accessibility, visualization, and reliable delivery; it contains twelve steps, twelve complete resources, twelve practical outcomes, and thirty-six current research directions; switch between English and Chinese without changing progress
+The public example is a real dependency tree, not a single chain; two shared foundations split into evidence, accessibility, visualization, and reliable-delivery branches, then reunite at publication; it contains twelve steps, twelve complete resources, twelve practical outcomes, and thirty-six current research directions
+
+English and Chinese have separate entry URLs and fully localized interfaces; both render the same dependency graph and preserve the same browser-local progress without mixing languages on one page
 
 ![Public demo statistics](public/readme-stats.svg)
 
 ## Try it
 
-Open the [live demo](https://aialra-0.github.io/knowledge-forest-framework/); enter a goal such as:
+Open the [English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en); the [Chinese demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) is a separate localized entry; enter a goal such as:
 
 ```text
 I want to build reliable household robots; I already know Python and basic linear algebra
