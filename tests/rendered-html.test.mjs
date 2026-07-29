@@ -41,16 +41,36 @@ test("readmes keep demo languages and production screenshots separate", async ()
     readFile(new URL("../README.md", import.meta.url), "utf8"),
     readFile(new URL("../README.zh-CN.md", import.meta.url), "utf8"),
   ]);
+  const englishProductionImages = [
+    "aialra-forest-chip-overview-en.jpg",
+    "aialra-forest-directory-en.jpg",
+    "production-platform-guide-en.png",
+    "production-research-frontiers-en.png",
+  ];
+  const chineseProductionImages = [
+    "aialra-forest-chip-overview-zh.jpg",
+    "aialra-forest-directory-zh.jpg",
+    "production-platform-guide-zh.png",
+    "production-embodied-tree-zh.png",
+    "production-research-frontiers-zh.png",
+    "production-ai-mobile-zh.png",
+  ];
 
   assert.match(english, /knowledge-forest-framework\/\?lang=en/);
   assert.match(english, /knowledge-forest-framework\/\?lang=zh-CN/);
-  assert.match(english, /aialra-forest-chip-overview-en\.jpg/);
-  assert.match(english, /aialra-forest-directory-en\.jpg/);
-  assert.doesNotMatch(english, /aialra-forest-(?:chip-overview|directory)-zh\.jpg/);
+  for (const image of englishProductionImages) {
+    assert.match(english, new RegExp(image.replaceAll(".", "\\.")));
+    const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
+    assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
+  }
+  assert.doesNotMatch(english, /(?:aialra-forest|production)-[^)\n]*-zh\.(?:jpg|png)/);
 
   assert.match(chinese, /knowledge-forest-framework\/\?lang=zh-CN/);
   assert.match(chinese, /knowledge-forest-framework\/\?lang=en/);
-  assert.match(chinese, /aialra-forest-chip-overview-zh\.jpg/);
-  assert.match(chinese, /aialra-forest-directory-zh\.jpg/);
-  assert.doesNotMatch(chinese, /aialra-forest-(?:chip-overview|directory)-en\.jpg/);
+  for (const image of chineseProductionImages) {
+    assert.match(chinese, new RegExp(image.replaceAll(".", "\\.")));
+    const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
+    assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
+  }
+  assert.doesNotMatch(chinese, /(?:aialra-forest|production)-[^)\n]*-en\.(?:jpg|png)/);
 });
