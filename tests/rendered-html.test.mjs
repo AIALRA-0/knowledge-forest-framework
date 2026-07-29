@@ -42,35 +42,43 @@ test("readmes keep demo languages and production screenshots separate", async ()
     readFile(new URL("../README.zh-CN.md", import.meta.url), "utf8"),
   ]);
   const englishProductionImages = [
-    "aialra-forest-chip-overview-en.jpg",
-    "aialra-forest-directory-en.jpg",
-    "production-platform-guide-en.png",
-    "production-research-frontiers-en.png",
+    "product-learning-path-en.png",
+    "product-source-guide-en.png",
+    "product-research-review-en.png",
   ];
   const chineseProductionImages = [
-    "aialra-forest-chip-overview-zh.jpg",
-    "aialra-forest-directory-zh.jpg",
-    "production-platform-guide-zh.png",
-    "production-embodied-tree-zh.png",
-    "production-research-frontiers-zh.png",
-    "production-ai-mobile-zh.png",
+    "product-learning-path-zh.png",
+    "product-source-guide-zh.png",
+    "product-research-review-zh.png",
+    "product-mobile-complete-zh.png",
   ];
+  const chineseProductSection = chinese.match(/## 产品界面([\s\S]*?)\n## /)?.[1] ?? "";
+  const englishProductSection = english.match(/## Product interface([\s\S]*?)\n## /)?.[1] ?? "";
 
   assert.match(english, /knowledge-forest-framework\/\?lang=en/);
   assert.match(english, /knowledge-forest-framework\/\?lang=zh-CN/);
+  assert.ok(englishProductSection.length > 500);
   for (const image of englishProductionImages) {
     assert.match(english, new RegExp(image.replaceAll(".", "\\.")));
     const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
     assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
+    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
   }
-  assert.doesNotMatch(english, /(?:aialra-forest|production)-[^)\n]*-zh\.(?:jpg|png)/);
+  assert.doesNotMatch(englishProductSection, /Authentik|private deployment|private forest|learner(?:'s)? actual data/i);
+  assert.doesNotMatch(englishProductSection, /product-[^"\n]*-zh\.png/);
+  assert.match(englishProductSection, /<p align="center">[\s\S]*product-learning-path-en\.png/);
 
   assert.match(chinese, /knowledge-forest-framework\/\?lang=zh-CN/);
   assert.match(chinese, /knowledge-forest-framework\/\?lang=en/);
+  assert.ok(chineseProductSection.length > 500);
   for (const image of chineseProductionImages) {
     assert.match(chinese, new RegExp(image.replaceAll(".", "\\.")));
     const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
     assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
+    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
   }
-  assert.doesNotMatch(chinese, /(?:aialra-forest|production)-[^)\n]*-en\.(?:jpg|png)/);
+  assert.doesNotMatch(chineseProductSection, /Authentik|认证网关|私有部署|私有森林|使用者实际数据/);
+  assert.doesNotMatch(chineseProductSection, /product-[^"\n]*-en\.png/);
+  assert.doesNotMatch(chineseProductSection, /[；。][ \t]*$/m);
+  assert.match(chineseProductSection, /<p align="center">[\s\S]*product-mobile-complete-zh\.png/);
 });
