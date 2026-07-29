@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { lstat, readFile, readdir } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -52,6 +53,18 @@ async function walk(directory) {
 }
 
 await walk(root);
+try {
+  const metadata = execFileSync(
+    "git",
+    ["log", "--format=%H%n%an%n%ae%n%cn%n%ce%n%B"],
+    { cwd: root, encoding: "utf8" },
+  );
+  if (/\.local\b|localhost\b|\/Users\/[^/\s]+/iu.test(metadata)) {
+    findings.push({ code: "git-history-private-metadata", path: ".git" });
+  }
+} catch {
+  // Source archives may not contain Git metadata; file scanning still applies
+}
 if (findings.length) {
   console.error(JSON.stringify({ status: "fail", findings }, null, 2));
   process.exitCode = 1;
