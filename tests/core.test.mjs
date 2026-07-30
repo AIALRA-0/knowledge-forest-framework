@@ -24,13 +24,13 @@ test("public demo passes the deterministic forest contract", () => {
 test("brief preserves every remembered correction", () => {
   const report = auditBrief(brief);
   assert.equal(report.status, "pass");
-  assert.equal(brief.corrections.length, 12);
-  assert.equal(new Set(brief.corrections.map((item) => item.id)).size, 12);
+  assert.equal(brief.corrections.length, 15);
+  assert.equal(new Set(brief.corrections.map((item) => item.id)).size, 15);
 });
 
 test("locked nodes explain prerequisites through the state model", () => {
   const completed = new Set();
-  const publication = bundle.nodes.find((node) => node.id === "visualization-publication");
+  const publication = bundle.nodes.find((node) => node.id === "integration-fpga");
   assert.equal(nodeState(publication, completed), "locked");
   const attempt = completeNode(bundle, completed, publication.id);
   assert.equal(attempt.ok, false);
@@ -38,11 +38,11 @@ test("locked nodes explain prerequisites through the state model", () => {
 
 test("completing a root node unlocks the next exact node", () => {
   const completed = new Set();
-  const result = completeNode(bundle, completed, "evidence-statistics");
+  const result = completeNode(bundle, completed, "architecture-isa");
   assert.equal(result.ok, true);
   const next = nextAvailableNodes(bundle, result.completed).map((node) => node.id);
-  assert.ok(next.includes("evidence-provenance"));
-  assert.ok(next.includes("visualization-design"));
+  assert.ok(next.includes("architecture-microarchitecture"));
+  assert.ok(next.includes("software-toolchain"));
 });
 
 test("chapter fragments are rejected", () => {

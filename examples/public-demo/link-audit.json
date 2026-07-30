@@ -1,224 +1,224 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-29T01:35:25.987Z",
+  "generatedAt": "2026-07-30T04:53:37.958Z",
   "status": "pass",
   "summary": {
     "total": 21,
     "pass": 20,
-    "restricted": 1,
-    "networkError": 0,
+    "restricted": 0,
+    "networkError": 1,
     "fail": 0
   },
   "results": [
     {
-      "url": "https://openstax.org/details/books/introductory-statistics-2e",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/unpriv-index.html",
       "kind": "resource",
-      "nodeId": "evidence-statistics",
-      "title": "OpenStax Introductory Statistics 2e",
-      "result": "pass",
-      "status": 200,
-      "finalUrl": "https://openstax.org/details/books/introductory-statistics-2e",
-      "checkedAt": "2026-07-29T01:35:18.841Z"
-    },
-    {
-      "url": "https://ieeevis.org/year/2025/welcome",
-      "kind": "frontier",
-      "nodeId": "visualization-design",
-      "title": "IEEE VIS 2025",
+      "nodeId": "architecture-isa",
+      "title": "RISC-V Ratified Specifications Library",
       "result": "pass",
       "status": 206,
-      "finalUrl": "https://ieeevis.org/year/2025/welcome",
-      "checkedAt": "2026-07-29T01:35:18.840Z"
+      "finalUrl": "https://docs.riscv.org/reference/isa/unpriv/unpriv-index.html",
+      "checkedAt": "2026-07-30T04:53:27.531Z"
     },
     {
-      "url": "https://dl.acm.org/doi/proceedings/10.1145/3706598",
+      "url": "https://docs.riscv.org/reference/profiles-overview/index.html",
       "kind": "frontier",
-      "nodeId": "visualization-design",
-      "title": "CHI 2025 Proceedings",
-      "result": "restricted",
-      "status": 403,
-      "finalUrl": "https://dl.acm.org/doi/proceedings/10.1145/3706598",
-      "checkedAt": "2026-07-29T01:35:18.837Z"
-    },
-    {
-      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
-      "kind": "frontier",
-      "nodeId": "evidence-statistics",
-      "title": "NIST AI Risk Management Framework Generative AI Profile",
+      "nodeId": "software-toolchain",
+      "title": "RISC-V Ratified Profiles Library",
       "result": "pass",
       "status": 206,
-      "finalUrl": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
-      "checkedAt": "2026-07-29T01:35:18.840Z"
+      "finalUrl": "https://docs.riscv.org/reference/profiles-overview/index.html",
+      "checkedAt": "2026-07-30T04:53:27.545Z"
     },
     {
-      "url": "https://datajournalism.com/read/handbook/one",
+      "url": "https://docs.riscv.org/reference/isa/extensions/crypto-vector/_attachments/riscv-crypto-spec-vector.pdf",
+      "kind": "frontier",
+      "nodeId": "software-toolchain",
+      "title": "RISC-V Vector Cryptography Extensions",
+      "result": "pass",
+      "status": 206,
+      "finalUrl": "https://docs.riscv.org/reference/isa/extensions/crypto-vector/_attachments/riscv-crypto-spec-vector.pdf",
+      "checkedAt": "2026-07-30T04:53:27.543Z"
+    },
+    {
+      "url": "https://riscv.github.io/riscv-cheri/",
+      "kind": "frontier",
+      "nodeId": "software-firmware",
+      "title": "RISC-V CHERI Specification",
+      "result": "pass",
+      "status": 206,
+      "finalUrl": "https://riscv.github.io/riscv-cheri/",
+      "checkedAt": "2026-07-30T04:53:27.736Z"
+    },
+    {
+      "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
       "kind": "resource",
-      "nodeId": "evidence-journalism",
-      "title": "The Data Journalism Handbook",
-      "result": "pass",
-      "status": 200,
-      "finalUrl": "https://datajournalism.com/read/handbook/one",
-      "checkedAt": "2026-07-29T01:35:21.265Z"
-    },
-    {
-      "url": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-      "kind": "frontier",
-      "nodeId": "evidence-journalism",
-      "title": "NIST AI 600-1",
+      "nodeId": "architecture-microarchitecture",
+      "title": "MIT 6.004 Computation Structures",
       "result": "pass",
       "status": 206,
-      "finalUrl": "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf",
-      "checkedAt": "2026-07-29T01:35:20.709Z"
+      "finalUrl": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2017/",
+      "checkedAt": "2026-07-30T04:53:30.624Z"
     },
     {
-      "url": "https://oecd.ai/en/ai-principles",
+      "url": "https://docs.openhwgroup.org/projects/cva6-user-manual/",
       "kind": "frontier",
-      "nodeId": "evidence-journalism",
-      "title": "OECD AI Principles",
+      "nodeId": "architecture-microarchitecture",
+      "title": "CVA6 User Manual",
       "result": "pass",
       "status": 200,
-      "finalUrl": "https://oecd.ai/en/ai-principles",
-      "checkedAt": "2026-07-29T01:35:20.649Z"
+      "finalUrl": "https://docs.openhwgroup.org/projects/cva6-user-manual/",
+      "checkedAt": "2026-07-30T04:53:28.902Z"
     },
     {
-      "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+      "url": "https://chipyard.readthedocs.io/en/stable/",
       "kind": "frontier",
-      "nodeId": "evidence-journalism",
-      "title": "C2PA Technical Specification 2.2",
-      "result": "pass",
-      "status": 206,
-      "finalUrl": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
-      "checkedAt": "2026-07-29T01:35:20.530Z"
-    },
-    {
-      "url": "https://www.w3.org/TR/WCAG22/",
-      "kind": "frontier",
-      "nodeId": "accessibility-wcag",
-      "title": "WCAG 2.2 Recommendation",
+      "nodeId": "integration-fpga",
+      "title": "Chipyard Documentation",
       "result": "pass",
       "status": 200,
-      "finalUrl": "https://www.w3.org/TR/WCAG22/",
-      "checkedAt": "2026-07-29T01:35:22.170Z"
+      "finalUrl": "https://chipyard.readthedocs.io/en/stable/",
+      "checkedAt": "2026-07-30T04:53:29.247Z"
     },
     {
-      "url": "https://www.w3.org/TR/wcag-3.0/",
+      "url": "https://riscv.org/wp-content/uploads/2026/01/RISC-V-Annual-Report-2025.pdf",
       "kind": "frontier",
-      "nodeId": "accessibility-wcag",
-      "title": "W3C WCAG 3.0 Working Draft",
+      "nodeId": "architecture-memory",
+      "title": "RISC-V Annual Report 2025",
       "result": "pass",
       "status": 200,
-      "finalUrl": "https://www.w3.org/TR/wcag-3.0/",
-      "checkedAt": "2026-07-29T01:35:22.199Z"
+      "finalUrl": "https://riscv.org/wp-content/uploads/2026/01/RISC-V-Annual-Report-2025.pdf",
+      "checkedAt": "2026-07-30T04:53:29.538Z"
     },
     {
-      "url": "https://webaim.org/projects/million/",
-      "kind": "frontier",
-      "nodeId": "accessibility-wcag",
-      "title": "WebAIM Million 2025",
-      "result": "pass",
-      "status": 200,
-      "finalUrl": "https://webaim.org/projects/million/",
-      "checkedAt": "2026-07-29T01:35:22.347Z"
-    },
-    {
-      "url": "https://www.w3.org/WAI/ARIA/apg/",
+      "url": "https://hdlbits.01xz.net/wiki/Main_Page",
       "kind": "resource",
-      "nodeId": "accessibility-patterns",
-      "title": "ARIA Authoring Practices Guide",
-      "result": "pass",
-      "status": 206,
-      "finalUrl": "https://www.w3.org/WAI/ARIA/apg/",
-      "checkedAt": "2026-07-29T01:35:22.201Z"
-    },
-    {
-      "url": "https://www.w3.org/TR/wai-aria-1.3/",
-      "kind": "frontier",
-      "nodeId": "accessibility-patterns",
-      "title": "WAI-ARIA 1.3 Working Draft",
+      "nodeId": "rtl-systemverilog",
+      "title": "HDLBits",
       "result": "pass",
       "status": 200,
-      "finalUrl": "https://www.w3.org/TR/wai-aria-1.3/",
-      "checkedAt": "2026-07-29T01:35:22.665Z"
+      "finalUrl": "https://hdlbits.01xz.net/wiki/Main_Page",
+      "checkedAt": "2026-07-30T04:53:32.265Z"
     },
     {
-      "url": "https://www.w3.org/WAI/adapt/",
+      "url": "https://circt.llvm.org/docs/",
       "kind": "frontier",
-      "nodeId": "accessibility-patterns",
-      "title": "W3C WAI Adapt",
+      "nodeId": "physical-synthesis",
+      "title": "CIRCT Code Documentation",
       "result": "pass",
       "status": 206,
-      "finalUrl": "https://www.w3.org/WAI/adapt/",
-      "checkedAt": "2026-07-29T01:35:22.665Z"
+      "finalUrl": "https://circt.llvm.org/docs/",
+      "checkedAt": "2026-07-30T04:53:31.308Z"
     },
     {
-      "url": "https://www.w3.org/community/act-r/",
+      "url": "https://verilator.org/guide/latest/",
       "kind": "frontier",
-      "nodeId": "accessibility-patterns",
-      "title": "ACT Rules Community Group",
+      "nodeId": "rtl-verification",
+      "title": "Verilator Guide",
+      "result": "pass",
+      "status": 206,
+      "finalUrl": "https://verilator.org/guide/latest/",
+      "checkedAt": "2026-07-30T04:53:32.104Z"
+    },
+    {
+      "url": "https://docs.cocotb.org/en/stable/",
+      "kind": "frontier",
+      "nodeId": "rtl-verification",
+      "title": "cocotb Documentation",
       "result": "pass",
       "status": 200,
-      "finalUrl": "https://www.w3.org/community/act-r/",
-      "checkedAt": "2026-07-29T01:35:23.093Z"
+      "finalUrl": "https://docs.cocotb.org/en/stable/",
+      "checkedAt": "2026-07-30T04:53:33.798Z"
     },
     {
-      "url": "https://socviz.co/",
+      "url": "https://circt.llvm.org/docs/Tools/",
+      "kind": "frontier",
+      "nodeId": "rtl-formal",
+      "title": "CIRCT Verification Tools",
+      "result": "pass",
+      "status": 206,
+      "finalUrl": "https://circt.llvm.org/docs/Tools/",
+      "checkedAt": "2026-07-30T04:53:34.133Z"
+    },
+    {
+      "url": "https://symbiyosys.readthedocs.io/en/latest/",
+      "kind": "frontier",
+      "nodeId": "rtl-formal",
+      "title": "SymbiYosys Documentation",
+      "result": "pass",
+      "status": 200,
+      "finalUrl": "https://symbiyosys.readthedocs.io/en/latest/",
+      "checkedAt": "2026-07-30T04:53:36.002Z"
+    },
+    {
+      "url": "https://yosyshq.readthedocs.io/projects/yosys/en/latest/",
+      "kind": "frontier",
+      "nodeId": "physical-synthesis",
+      "title": "Yosys Documentation",
+      "result": "pass",
+      "status": 200,
+      "finalUrl": "https://yosyshq.readthedocs.io/projects/yosys/en/latest/",
+      "checkedAt": "2026-07-30T04:53:35.636Z"
+    },
+    {
+      "url": "https://openroad.readthedocs.io/en/latest/",
+      "kind": "frontier",
+      "nodeId": "physical-timing",
+      "title": "OpenROAD Documentation",
+      "result": "pass",
+      "status": 200,
+      "finalUrl": "https://openroad.readthedocs.io/en/latest/",
+      "checkedAt": "2026-07-30T04:53:34.728Z"
+    },
+    {
+      "url": "https://openroad.readthedocs.io/en/latest/main/README2.html",
+      "kind": "frontier",
+      "nodeId": "integration-fpga",
+      "title": "OpenROAD Regression Tests",
+      "result": "pass",
+      "status": 200,
+      "finalUrl": "https://openroad.readthedocs.io/en/latest/main/README2.html",
+      "checkedAt": "2026-07-30T04:53:36.148Z"
+    },
+    {
+      "url": "https://openroad.readthedocs.io/en/latest/main/src/sta/README.html",
+      "kind": "frontier",
+      "nodeId": "physical-timing",
+      "title": "OpenSTA Documentation",
+      "result": "pass",
+      "status": 200,
+      "finalUrl": "https://openroad.readthedocs.io/en/latest/main/src/sta/README.html",
+      "checkedAt": "2026-07-30T04:53:36.111Z"
+    },
+    {
+      "url": "https://llvm.org/docs/RISCVUsage.html",
       "kind": "resource",
-      "nodeId": "visualization-design",
-      "title": "Data Visualization: A Practical Introduction",
+      "nodeId": "software-toolchain",
+      "title": "LLVM RISC-V Usage",
       "result": "pass",
       "status": 206,
-      "finalUrl": "https://socviz.co/",
-      "checkedAt": "2026-07-29T01:35:23.822Z"
+      "finalUrl": "https://llvm.org/docs/RISCVUsage.html",
+      "checkedAt": "2026-07-30T04:53:37.283Z"
     },
     {
-      "url": "https://vega.github.io/vega-lite/",
+      "url": "https://docs.zephyrproject.org/latest/",
       "kind": "frontier",
-      "nodeId": "visualization-design",
-      "title": "Vega-Lite Documentation",
+      "nodeId": "software-firmware",
+      "title": "Zephyr Project Documentation",
       "result": "pass",
       "status": 206,
-      "finalUrl": "https://vega.github.io/vega-lite/",
-      "checkedAt": "2026-07-29T01:35:24.883Z"
+      "finalUrl": "https://docs.zephyrproject.org/latest/",
+      "checkedAt": "2026-07-30T04:53:36.891Z"
     },
     {
-      "url": "https://design-system.service.gov.uk/",
-      "kind": "resource",
-      "nodeId": "visualization-publication",
-      "title": "GOV.UK Design System",
-      "result": "pass",
-      "status": 206,
-      "finalUrl": "https://design-system.service.gov.uk/",
-      "checkedAt": "2026-07-29T01:35:24.783Z"
-    },
-    {
-      "url": "https://design-system.service.gov.uk/community/roadmap/",
+      "url": "https://opentitan.org/book/",
       "kind": "frontier",
-      "nodeId": "visualization-publication",
-      "title": "GOV.UK Design System Roadmap",
-      "result": "pass",
-      "status": 206,
-      "finalUrl": "https://design-system.service.gov.uk/community/roadmap/",
-      "checkedAt": "2026-07-29T01:35:24.756Z"
-    },
-    {
-      "url": "https://web.dev/blog/baseline-project-2024",
-      "kind": "frontier",
-      "nodeId": "visualization-publication",
-      "title": "Baseline 2024",
-      "result": "pass",
-      "status": 200,
-      "finalUrl": "https://web.dev/blog/baseline-project-2024?hl=zh-tw",
-      "checkedAt": "2026-07-29T01:35:25.544Z"
-    },
-    {
-      "url": "https://www.w3.org/TR/privacy-principles/",
-      "kind": "frontier",
-      "nodeId": "visualization-publication",
-      "title": "W3C Privacy Principles",
-      "result": "pass",
-      "status": 200,
-      "finalUrl": "https://www.w3.org/TR/privacy-principles/",
-      "checkedAt": "2026-07-29T01:35:25.987Z"
+      "nodeId": "integration-fpga",
+      "title": "OpenTitan Technical Documentation",
+      "result": "network-error",
+      "status": null,
+      "error": "TypeError",
+      "checkedAt": "2026-07-30T04:53:37.957Z"
     }
   ]
 }

@@ -501,8 +501,8 @@ footer {
 
 .forest-workspace {
   display: grid;
-  grid-template-columns: 250px minmax(420px, 1fr) minmax(330px, 420px);
-  min-height: 820px;
+  grid-template-columns: 220px minmax(0, 1fr);
+  min-height: 0;
   margin-top: 36px;
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -520,6 +520,21 @@ footer {
 
 .domain-rail {
   border-right: 1px solid var(--line);
+}
+
+.node-detail {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  border-left: 0;
+  columns: 2;
+  column-gap: 36px;
+}
+
+.node-detail > *,
+.detail-block,
+.completion-box,
+.feedback-box {
+  break-inside: avoid;
 }
 
 .domain-rail > label {
@@ -640,6 +655,7 @@ footer {
 
 .vertical-tree {
   min-width: 0;
+  scroll-margin-top: 84px;
   padding: 32px 24px 70px;
   background:
     linear-gradient(rgba(23, 33, 28, 0.025) 1px, transparent 1px),
@@ -691,9 +707,9 @@ footer {
 .branch-lane-headings,
 .branch-map {
   display: grid;
-  min-width: 820px;
-  grid-template-columns: repeat(4, minmax(170px, 1fr));
-  column-gap: 34px;
+  min-width: 720px;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  column-gap: 24px;
 }
 
 .branch-lane-headings {
@@ -726,8 +742,8 @@ footer {
 .branch-map {
   position: relative;
   isolation: isolate;
-  grid-auto-rows: minmax(130px, auto);
-  row-gap: 58px;
+  grid-auto-rows: minmax(56px, auto);
+  row-gap: 10px;
   align-items: center;
   padding: 4px 0 22px;
 }
@@ -801,24 +817,29 @@ footer {
 .branch-node {
   z-index: 2;
   width: 100%;
-  min-height: 130px;
+  min-height: 56px;
   align-self: center;
   border-top: 4px solid var(--domain-color);
-  padding: 14px;
+  gap: 7px;
+  padding: 6px 8px;
 }
 
 .branch-node .node-status {
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
+  font-size: 8px;
 }
 
 .branch-node .node-copy strong {
-  font-size: 14px;
+  font-size: 11px;
 }
 
 .branch-node .node-copy > span {
-  font-size: 10px;
-  line-height: 1.45;
+  display: none;
+}
+
+.branch-node .node-copy small {
+  font-size: 7.5px;
 }
 
 .branch-node.muted:not(.selected) {
@@ -1234,27 +1255,6 @@ footer span {
   margin-top: 4px;
 }
 
-@media (max-width: 1500px) {
-  .forest-workspace {
-    grid-template-columns: 220px minmax(0, 1fr);
-  }
-
-  .node-detail {
-    grid-column: 1 / -1;
-    border-top: 1px solid var(--line);
-    border-left: 0;
-    columns: 2;
-    column-gap: 30px;
-  }
-
-  .node-detail > *,
-  .detail-block,
-  .completion-box,
-  .feedback-box {
-    break-inside: avoid;
-  }
-}
-
 @media (max-width: 1120px) {
   .hero {
     grid-template-columns: 1fr;
@@ -1389,13 +1389,13 @@ footer span {
 
   .branch-lane-headings,
   .branch-map {
-    min-width: 760px;
-    column-gap: 24px;
-    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    min-width: 720px;
+    column-gap: 20px;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
   }
 
   .branch-map {
-    row-gap: 46px;
+    row-gap: 10px;
   }
 
   .branch-node {
