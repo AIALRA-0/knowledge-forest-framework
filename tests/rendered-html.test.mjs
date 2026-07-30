@@ -113,3 +113,18 @@ test("readmes keep demo languages and production screenshots separate", async ()
   assert.equal(gallery.captures.length, 9);
   assert.doesNotMatch(galleryText, /forest\.aialra|Authentik|1028|376|private progress/i);
 });
+
+test("dependency lines remain visible and distinguishable", async () => {
+  const [pageSource, styles] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(pageSource, /className="edge-halo"/);
+  assert.match(pageSource, /className=\{`edge-line \$\{edgeState\} \$\{touchesSelectedNode \? "active" : ""\}`\}/);
+  assert.match(styles, /\.branch-edges path\.edge-halo\s*\{[\s\S]*?stroke-width:\s*9;/);
+  assert.match(styles, /\.branch-edges path\.edge-line\s*\{[\s\S]*?stroke:\s*#66756d;[\s\S]*?stroke-width:\s*3;/);
+  assert.match(styles, /\.branch-edges path\.edge-line\.available\s*\{[\s\S]*?stroke:\s*#3f684f;[\s\S]*?stroke-width:\s*3\.5;/);
+  assert.match(styles, /\.branch-edges path\.edge-line\.completed\s*\{[\s\S]*?stroke:\s*#173e30;[\s\S]*?stroke-width:\s*4;/);
+  assert.match(styles, /\.branch-edges path\.edge-line\.active\s*\{[\s\S]*?stroke:\s*#9a4f2f;[\s\S]*?stroke-width:\s*4\.5;/);
+});
