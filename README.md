@@ -17,42 +17,42 @@ Knowledge Forest turns a broad ambition into separate learning paths; every step
 
 ## Product interface
 
-The public demo and production gallery now use the same vertical tree, node cards, detail panel, progress states, and dependency-line hierarchy
+The public release and the private production product now use one visual and interaction model; the default Focus view keeps the required path and immediate next choices readable; Atlas shows the field structure without turning daily learning into a wall of nodes
 
-Each screen below is rendered by the bilingual public-evidence route inside the production product; ordinary prerequisites use solid dark lines, while the path touching the selected node uses a thicker brown line
+Blue lines mark the exact prerequisite path into the selected node; brown lines mark an immediately learnable next step; gray lines preserve surrounding dependency context
 
-The gallery moves across four fields, four tree positions, and four working views; it contains no personal progress, private address, access-control configuration, deployment detail, or private aggregate
+The English screens below come directly from the working public release; the Chinese README also includes public-safe crops from current production fields; neither gallery exposes personal progress, a private address, access-control configuration, deployment detail, or private aggregate
 
-### Semiconductor node
+### Focused learning path
 
-The selected heterogeneous-SoC node keeps the full prerequisite branch, an observable engineering artifact, the AMD Versal Adaptive SoC Technical Reference Manual, and four supporting routes in one screen
+The selected pipeline node keeps its complete prerequisite path, nearby branches, one complete primary resource, an acceptance artifact, and current research evidence in one working screen
 
 <p align="center">
-  <img src="docs/images/actual-semiconductor-node-en.png" alt="English production interface showing a heterogeneous SoC node, its prerequisite branches, complete primary resource and acceptance work" width="960">
+  <img src="docs/images/actual-semiconductor-node-en.png" alt="English interface showing a selected RISC-V pipeline node, its prerequisite path, complete primary resource and acceptance work" width="960">
 </p>
 
-### Robotics field map
+### Complete field atlas
 
-The robotics screen moves to a different branch position and opens the field map; dynamics, perception, manipulation, and real-time safety remain independent paths until they reunite in a working system
+Atlas reveals every branch and merge in the public example; Focus remains one click away when the learner is ready to continue
 
 <p align="center">
-  <img src="docs/images/actual-robotics-map-en.png" alt="English production interface showing the branched robotics field map" width="960">
+  <img src="docs/images/actual-robotics-map-en.png" alt="English interface showing the complete branched RISC-V SoC field atlas" width="960">
 </p>
 
-### Aviation source directory
+### Request builder
 
-The aviation screen opens the source directory around MIT 16.333 Aircraft Stability and Control, the FAA pilot handbook, EASA rules, OpenVSP, and NASA technical reports; each source has a different learning job
+The request builder turns an ordinary description of the goal, prior knowledge, time, access, and constraints into a structured brief an agent can investigate
 
 <p align="center">
-  <img src="docs/images/actual-aviation-sources-en.png" alt="English production interface showing an aviation learning tree and authoritative source directory" width="960">
+  <img src="docs/images/actual-aviation-sources-en.png" alt="English interface showing the structured knowledge-forest request builder" width="960">
 </p>
 
-### AI research review
+### Research evidence
 
-The AI screen selects the World Models branch and opens the research review; each direction explains the unresolved engineering problem and binds it to dated public evidence
+Every node carries three current directions; each direction explains the open problem and links it to dated evidence
 
 <p align="center">
-  <img src="docs/images/actual-ai-frontiers-en.png" alt="English production interface showing a world-model tree branch and dated research frontiers" width="960">
+  <img src="docs/images/actual-ai-frontiers-en.png" alt="English interface showing three dated research directions for a selected engineering node" width="960">
 </p>
 
 ## What you do

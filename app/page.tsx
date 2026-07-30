@@ -9,14 +9,18 @@ import {
   type CSSProperties,
 } from "react";
 import {
+  BaseEdge,
   Controls,
   Handle,
   MarkerType,
   Position,
   ReactFlow,
   ReactFlowProvider,
+  getSmoothStepPath,
   useReactFlow,
   type Edge,
+  type EdgeProps,
+  type EdgeTypes,
   type Node,
   type NodeProps,
   type NodeTypes,
@@ -41,12 +45,19 @@ import {
   localizeForest,
   type DemoLanguage,
 } from "@/app/demo-i18n";
+import {
+  buildGraphContext,
+  classifyEdge,
+  graphDepths,
+  topologySignature,
+} from "@/packages/ui/src/graph-model.mjs";
 
 const forest = demoForest as ForestBundle;
 const audit = auditForest(forest, { currentYear: 2026 });
 const NODE_WIDTH = 226;
 const NODE_HEIGHT = 88;
 const PROGRESS_KEY = "knowledge-forest-framework-demo-progress-v2";
+const PUBLIC_LAYOUT_CACHE = new Map<string, DemoFlowNode[]>();
 
 const EXAMPLE_REQUIREMENTS = {
   en: [
@@ -67,6 +78,17 @@ const PRODUCT_COPY = {
     nodes: "nodes",
     branches: "branches",
     progress: "progress",
+    pathNavigator: "Path navigator",
+    focusView: "Focus",
+    atlasView: "Atlas",
+    focusDescription: "Current prerequisites and immediate next choices",
+    atlasDescription: "Complete field structure",
+    domains: "Domains",
+    legend: "Map key",
+    selectedPath: "Required path",
+    nextReady: "Ready next",
+    dependency: "Dependency",
+    mobilePath: "Readable path",
     buildRequest: "Build request",
     github: "GitHub",
     language: "中文",
@@ -116,6 +138,17 @@ const PRODUCT_COPY = {
     nodes: "节点",
     branches: "分支",
     progress: "进度",
+    pathNavigator: "路径导航",
+    focusView: "聚焦",
+    atlasView: "全图",
+    focusDescription: "当前前置路径和立即可选的下一步",
+    atlasDescription: "完整领域结构",
+    domains: "领域",
+    legend: "图例",
+    selectedPath: "必要路径",
+    nextReady: "可学下一步",
+    dependency: "普通依赖",
+    mobilePath: "可读路径",
     buildRequest: "生成需求",
     github: "GitHub",
     language: "English",
@@ -164,6 +197,8 @@ const PRODUCT_COPY = {
 
 type NodeStatus = "completed" | "available" | "locked";
 type PanelMode = "node" | "brief";
+type GraphViewMode = "focus" | "atlas";
+type EdgeEmphasis = "selected-path" | "next-ready" | "context" | "muted";
 
 type DemoNodeData = {
   node: ForestNode;
@@ -172,9 +207,23 @@ type DemoNodeData = {
   state: NodeStatus;
   selected: boolean;
   recommended: boolean;
+  incoming: string[];
+  outgoing: string[];
+  contextRole: "selected" | "ancestor" | "next" | "ambient";
 };
 
 type DemoFlowNode = Node<DemoNodeData, "skill">;
+type DependencyEdgeData = {
+  emphasis: EdgeEmphasis;
+};
+type DependencyFlowEdge = Edge<DependencyEdgeData, "dependency">;
+
+const EDGE_COLORS: Record<EdgeEmphasis, string> = {
+  "selected-path": "#1d4ed8",
+  "next-ready": "#a44700",
+  context: "#66736c",
+  muted: "#7b8780",
+};
 
 function branchCount(bundle: ForestBundle) {
   return bundle.nodes.reduce((sum, node) => sum + node.dependsOn.length, 0);
@@ -201,25 +250,38 @@ function nodeCode(node: ForestNode, bundle: ForestBundle) {
   return `${prefixes[domainIndex] ?? "N"}${String(nodeIndex + 1).padStart(2, "0")}`;
 }
 
-function createLayout(bundle: ForestBundle): DemoFlowNode[] {
+function createLayout(bundle: ForestBundle, visibleIds: Set<string>): DemoFlowNode[] {
+  const records = bundle.nodes.map((node) => ({ id: node.id, deps: node.dependsOn }));
+  const layoutKey = `${topologySignature(records)}:${[...visibleIds].sort().join(",")}`;
+  const cached = PUBLIC_LAYOUT_CACHE.get(layoutKey);
+  if (cached) return cached;
+
+  const visibleNodes = bundle.nodes.filter((node) => visibleIds.has(node.id));
   const graph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
   graph.setGraph({
     rankdir: "TB",
-    ranksep: 96,
-    nodesep: 42,
-    edgesep: 24,
-    marginx: 72,
-    marginy: 62,
+    ranksep: 88,
+    nodesep: 36,
+    edgesep: 26,
+    marginx: 56,
+    marginy: 52,
     ranker: "network-simplex",
     acyclicer: "greedy",
   });
 
-  bundle.nodes.forEach((node) => graph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT }));
-  bundle.nodes.forEach((node) => node.dependsOn.forEach((dependency) => graph.setEdge(dependency, node.id)));
+  visibleNodes.forEach((node) => graph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT }));
+  visibleNodes.forEach((node) => node.dependsOn.forEach((dependency) => {
+    if (visibleIds.has(dependency)) graph.setEdge(dependency, node.id);
+  }));
   dagre.layout(graph);
 
   const domainMap = new Map(bundle.domains.map((domain) => [domain.id, domain]));
-  return bundle.nodes.map((node) => {
+  const children = new Map(bundle.nodes.map((node) => [node.id, [] as string[]]));
+  bundle.nodes.forEach((node) => node.dependsOn.forEach((dependency) => {
+    children.get(dependency)?.push(node.id);
+  }));
+
+  const layout: DemoFlowNode[] = visibleNodes.map((node) => {
     const point = graph.node(node.id);
     return {
       id: node.id,
@@ -230,39 +292,108 @@ function createLayout(bundle: ForestBundle): DemoFlowNode[] {
       },
       sourcePosition: Position.Bottom,
       targetPosition: Position.Top,
+      style: { width: NODE_WIDTH, height: NODE_HEIGHT },
       data: {
         node,
         domain: domainMap.get(node.domainId) ?? bundle.domains[0],
         code: nodeCode(node, bundle),
-        state: "locked",
+        state: "locked" as NodeStatus,
         selected: false,
         recommended: false,
+        incoming: node.dependsOn.filter((dependency) => visibleIds.has(dependency)),
+        outgoing: (children.get(node.id) ?? []).filter((child) => visibleIds.has(child)),
+        contextRole: "ambient" as DemoNodeData["contextRole"],
       },
     };
   });
+  PUBLIC_LAYOUT_CACHE.set(layoutKey, layout);
+  return layout;
 }
 
 function DemoNode({ data }: NodeProps<DemoFlowNode>) {
-  const { node, domain, code, state, selected, recommended } = data;
+  const {
+    node,
+    domain,
+    code,
+    state,
+    selected,
+    recommended,
+    incoming,
+    outgoing,
+    contextRole,
+  } = data;
+  const stateText = state === "completed" ? "✓" : state === "available" ? "→" : "○";
   return (
     <div
-      className={`skill-node state-${state}${node.dependsOn.length === 0 ? " kind-realm" : ""}${selected ? " is-selected" : ""}${recommended ? " is-recommended" : ""}`}
+      className={`skill-node state-${state} context-${contextRole}${node.dependsOn.length === 0 ? " kind-realm" : ""}${selected ? " is-selected" : ""}${recommended ? " is-recommended" : ""}`}
       style={{ "--realm": domain.color } as CSSProperties}
     >
-      <Handle type="target" position={Position.Top} isConnectable={false} />
+      {incoming.map((dependency, index) => (
+        <Handle
+          key={`target-${dependency}`}
+          id={`target-${dependency}`}
+          type="target"
+          position={Position.Top}
+          isConnectable={false}
+          style={{ left: `${((index + 1) / (incoming.length + 1)) * 100}%` }}
+        />
+      ))}
       <div className="skill-node-topline">
         <span className="skill-code">{code}</span>
         <span className="skill-track">{domain.title}</span>
-        <span className="skill-state-dot" aria-hidden="true" />
+        <span className="skill-state-badge" aria-hidden="true">{stateText}</span>
       </div>
       <strong>{node.title}</strong>
       <span className="node-resource">{node.resource.publisher} · {node.resource.title}</span>
-      <Handle type="source" position={Position.Bottom} isConnectable={false} />
+      {outgoing.map((child, index) => (
+        <Handle
+          key={`source-${child}`}
+          id={`source-${child}`}
+          type="source"
+          position={Position.Bottom}
+          isConnectable={false}
+          style={{ left: `${((index + 1) / (outgoing.length + 1)) * 100}%` }}
+        />
+      ))}
     </div>
   );
 }
 
 const NODE_TYPES: NodeTypes = { skill: DemoNode };
+
+function DependencyEdge({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  markerEnd,
+  style,
+}: EdgeProps<DependencyFlowEdge>) {
+  const [path] = getSmoothStepPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    borderRadius: 8,
+    offset: 26,
+  });
+  return (
+    <BaseEdge
+      id={id}
+      path={path}
+      markerEnd={markerEnd}
+      style={style}
+      interactionWidth={16}
+    />
+  );
+}
+
+const EDGE_TYPES: EdgeTypes = { dependency: DependencyEdge };
 
 function descendantsOf(bundle: ForestBundle, rootId: string) {
   const descendants = new Set<string>();
@@ -284,6 +415,7 @@ function ForestExperience() {
   const [language, setLanguage] = useState<DemoLanguage>("en");
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState(forest.nodes[0].id);
+  const [viewMode, setViewMode] = useState<GraphViewMode>("focus");
   const [artifactConfirmed, setArtifactConfirmed] = useState(false);
   const [panelMode, setPanelMode] = useState<PanelMode>("node");
   const [requirement, setRequirement] = useState<string>(EXAMPLE_REQUIREMENTS.en[0]);
@@ -298,13 +430,30 @@ function ForestExperience() {
     () => new Map(displayForest.domains.map((domain) => [domain.id, domain])),
     [displayForest.domains],
   );
-  const baseNodes = useMemo(() => createLayout(displayForest), [displayForest]);
   const stateMap = useMemo(
     () => new Map(displayForest.nodes.map((node) => [
       node.id,
       nodeState(node, completed) as NodeStatus,
     ])),
     [completed, displayForest.nodes],
+  );
+  const graphRecords = useMemo(
+    () => displayForest.nodes.map((node) => ({ id: node.id, deps: node.dependsOn })),
+    [displayForest.nodes],
+  );
+  const graphContext = useMemo(
+    () => buildGraphContext(graphRecords, selectedId, completed),
+    [completed, graphRecords, selectedId],
+  );
+  const visibleIds = useMemo(
+    () => viewMode === "focus"
+      ? graphContext.focusNodes
+      : new Set(displayForest.nodes.map((node) => node.id)),
+    [displayForest.nodes, graphContext.focusNodes, viewMode],
+  );
+  const baseNodes = useMemo(
+    () => createLayout(displayForest, visibleIds),
+    [displayForest, visibleIds],
   );
   const recommended = useMemo(
     () => nextAvailableNodes(displayForest, completed)[0] ?? null,
@@ -314,6 +463,13 @@ function ForestExperience() {
     () => baseNodes.map((flowNode) => {
       const state = stateMap.get(flowNode.id) ?? "locked";
       const selected = flowNode.id === selectedId;
+      const contextRole: DemoNodeData["contextRole"] = selected
+        ? "selected"
+        : graphContext.ancestors.has(flowNode.id)
+          ? "ancestor"
+          : graphContext.immediateChildren.has(flowNode.id)
+            ? "next"
+            : "ambient";
       return {
         ...flowNode,
         selected,
@@ -323,6 +479,7 @@ function ForestExperience() {
           state,
           selected,
           recommended: flowNode.id === recommended?.id,
+          contextRole,
         },
         ariaLabel: `${flowNode.data.node.title}; ${state}`,
         domAttributes: {
@@ -332,30 +489,51 @@ function ForestExperience() {
         },
       };
     }),
-    [baseNodes, recommended?.id, selectedId, stateMap],
+    [baseNodes, graphContext.ancestors, graphContext.immediateChildren, recommended?.id, selectedId, stateMap],
   );
-  const edges = useMemo<Edge[]>(() => {
-    const result: Edge[] = [];
+  const edges = useMemo<DependencyFlowEdge[]>(() => {
+    const result: DependencyFlowEdge[] = [];
     displayForest.nodes.forEach((node) => {
+      if (!visibleIds.has(node.id)) return;
       node.dependsOn.forEach((dependency) => {
-        const dependencyDone = completed.has(dependency);
-        const state = completed.has(node.id)
-          ? "completed"
-          : dependencyDone && stateMap.get(node.id) === "available"
-            ? "available"
-            : "locked";
+        if (!visibleIds.has(dependency)) return;
+        const emphasis = classifyEdge(
+          dependency,
+          node.id,
+          graphContext,
+          viewMode,
+        ) as EdgeEmphasis;
+        const color = EDGE_COLORS[emphasis];
         result.push({
           id: `${dependency}-${node.id}`,
           source: dependency,
           target: node.id,
-          type: "smoothstep",
-          className: `tree-edge edge-${state}${dependency === selectedId || node.id === selectedId ? " edge-selected" : ""}`,
-          markerEnd: { type: MarkerType.ArrowClosed },
+          sourceHandle: `source-${node.id}`,
+          targetHandle: `target-${dependency}`,
+          type: "dependency",
+          data: { emphasis },
+          className: `tree-edge edge-${emphasis}`,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: emphasis === "selected-path" || emphasis === "next-ready" ? 12 : 10,
+            height: emphasis === "selected-path" || emphasis === "next-ready" ? 12 : 10,
+            color,
+          },
+          style: {
+            stroke: color,
+            strokeWidth: emphasis === "selected-path"
+              ? 3
+              : emphasis === "next-ready"
+                ? 2.5
+                : emphasis === "context"
+                  ? 2
+                  : 1.75,
+          },
         });
       });
     });
     return result;
-  }, [completed, displayForest.nodes, selectedId, stateMap]);
+  }, [displayForest.nodes, graphContext, viewMode, visibleIds]);
 
   const selected = displayForest.nodes.find((node) => node.id === selectedId) ?? displayForest.nodes[0];
   const selectedState = stateMap.get(selected.id) ?? "locked";
@@ -365,6 +543,16 @@ function ForestExperience() {
   const children = displayForest.nodes.filter((node) => node.dependsOn.includes(selected.id));
   const completedCount = displayForest.nodes.filter((node) => completed.has(node.id)).length;
   const progress = Math.round((completedCount / displayForest.nodes.length) * 100);
+  const depthMap = useMemo(() => graphDepths(graphRecords), [graphRecords]);
+  const mobileNodes = useMemo(
+    () => displayForest.nodes
+      .filter((node) => visibleIds.has(node.id))
+      .sort((left, right) => (
+        (depthMap.get(left.id) ?? 0) - (depthMap.get(right.id) ?? 0)
+        || displayForest.nodes.indexOf(left) - displayForest.nodes.indexOf(right)
+      )),
+    [depthMap, displayForest.nodes, visibleIds],
+  );
 
   const showToast = useCallback((message: string) => {
     if (toastTimer.current !== null) window.clearTimeout(toastTimer.current);
@@ -399,25 +587,26 @@ function ForestExperience() {
   const fitCompleteTree = useCallback((instance: ReactFlowInstance<DemoFlowNode, Edge>) => {
     window.requestAnimationFrame(() => {
       instance.fitView({
-        padding: 0.12,
-        minZoom: 0.2,
-        maxZoom: 0.76,
-        duration: 0,
+        padding: viewMode === "focus" ? 0.2 : 0.12,
+        minZoom: 0.18,
+        maxZoom: viewMode === "focus" ? 0.92 : 0.7,
+        duration: 220,
       });
     });
-  }, []);
+  }, [viewMode]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      fitCompleteTree(flow);
+    }, 60);
+    return () => window.clearTimeout(timer);
+  }, [fitCompleteTree, flow, language, nodes.length, selectedId, viewMode]);
 
   function focusNode(nodeId: string) {
-    const target = nodes.find((node) => node.id === nodeId);
-    if (!target) return;
+    if (!displayForest.nodes.some((node) => node.id === nodeId)) return;
     setSelectedId(nodeId);
     setArtifactConfirmed(false);
     setPanelMode("node");
-    flow.setCenter(
-      target.position.x + NODE_WIDTH / 2,
-      target.position.y + NODE_HEIGHT / 2,
-      { zoom: window.innerWidth < 720 ? 0.58 : 0.82, duration: 340 },
-    );
   }
 
   function focusDomain(domain: ForestDomain) {
@@ -503,25 +692,10 @@ function ForestExperience() {
           </span>
         </div>
 
-        <nav
-          className="realm-jump"
-          aria-label={language === "en" ? "Engineering branches" : "工程分支"}
-          style={{ gridTemplateColumns: `repeat(${displayForest.domains.length}, minmax(0, 1fr))` }}
-        >
-          {displayForest.domains.map((domain, index) => (
-            <button
-              key={domain.id}
-              type="button"
-              onClick={() => focusDomain(domain)}
-              aria-current={selected.domainId === domain.id ? "location" : undefined}
-              style={{ "--realm": domain.color } as CSSProperties}
-              data-testid={`realm-jump-${domain.id}`}
-            >
-              <span className="realm-index">{String(index + 1).padStart(2, "0")}</span>
-              <strong>{domain.title}</strong>
-            </button>
-          ))}
-        </nav>
+        <div className="topbar-context" aria-label={copy.pathNavigator}>
+          <span>{selectedDomain.title}</span>
+          <strong>{selected.title}</strong>
+        </div>
 
         <div className="header-progress">
           <div className="progress-copy">
@@ -578,6 +752,59 @@ function ForestExperience() {
       </header>
 
       <div className="workspace">
+        <aside className="forest-rail" aria-label={copy.pathNavigator}>
+          <div className="rail-heading">
+            <span>{copy.pathNavigator}</span>
+            <strong>{viewMode === "focus" ? copy.focusView : copy.atlasView}</strong>
+            <p>{viewMode === "focus" ? copy.focusDescription : copy.atlasDescription}</p>
+          </div>
+
+          <div className="view-switch" role="group" aria-label={copy.pathNavigator}>
+            <button
+              type="button"
+              className={viewMode === "focus" ? "is-active" : ""}
+              aria-pressed={viewMode === "focus"}
+              onClick={() => setViewMode("focus")}
+              data-testid="focus-view"
+            >
+              {copy.focusView}
+            </button>
+            <button
+              type="button"
+              className={viewMode === "atlas" ? "is-active" : ""}
+              aria-pressed={viewMode === "atlas"}
+              onClick={() => setViewMode("atlas")}
+              data-testid="atlas-view"
+            >
+              {copy.atlasView}
+            </button>
+          </div>
+
+          <nav className="rail-domains" aria-label={copy.domains}>
+            <span>{copy.domains}</span>
+            {displayForest.domains.map((domain, index) => (
+              <button
+                key={domain.id}
+                type="button"
+                onClick={() => focusDomain(domain)}
+                aria-current={selected.domainId === domain.id ? "location" : undefined}
+                style={{ "--realm": domain.color } as CSSProperties}
+                data-testid={`realm-jump-${domain.id}`}
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{domain.title}</strong>
+              </button>
+            ))}
+          </nav>
+
+          <div className="graph-legend" aria-label={copy.legend}>
+            <span>{copy.legend}</span>
+            <p><i className="legend-line selected-path" />{copy.selectedPath}</p>
+            <p><i className="legend-line next-ready" />{copy.nextReady}</p>
+            <p><i className="legend-line dependency" />{copy.dependency}</p>
+          </div>
+        </aside>
+
         <section
           id="complete-map"
           className="tree-canvas"
@@ -589,6 +816,7 @@ function ForestExperience() {
             nodes={nodes}
             edges={edges}
             nodeTypes={NODE_TYPES}
+            edgeTypes={EDGE_TYPES}
             onInit={fitCompleteTree}
             onNodeClick={(_, node) => {
               setSelectedId(node.id);
@@ -609,6 +837,45 @@ function ForestExperience() {
           >
             <Controls showInteractive={false} position="bottom-left" />
           </ReactFlow>
+          <div className="mobile-path-list" data-testid="mobile-path-list" aria-label={copy.mobilePath}>
+            <div className="mobile-path-heading">
+              <span>{copy.mobilePath}</span>
+              <button
+                type="button"
+                onClick={() => setViewMode(viewMode === "focus" ? "atlas" : "focus")}
+              >
+                {viewMode === "focus" ? copy.atlasView : copy.focusView}
+              </button>
+            </div>
+            {mobileNodes.map((node) => {
+              const state = stateMap.get(node.id) ?? "locked";
+              const domain = domainMap.get(node.domainId) ?? displayForest.domains[0];
+              const depth = Math.min(depthMap.get(node.id) ?? 0, 5);
+              return (
+                <button
+                  key={node.id}
+                  type="button"
+                  className={`mobile-path-node state-${state}${node.id === selectedId ? " is-selected" : ""}`}
+                  style={{
+                    "--realm": domain.color,
+                    "--depth": depth,
+                  } as CSSProperties}
+                  onClick={() => focusNode(node.id)}
+                  aria-current={node.id === selectedId ? "true" : undefined}
+                >
+                  <span>{nodeCode(node, displayForest)} · {domain.title}</span>
+                  <strong>{node.title}</strong>
+                  <small>
+                    {state === "completed"
+                      ? copy.completed
+                      : state === "available"
+                        ? copy.available
+                        : copy.locked}
+                  </small>
+                </button>
+              );
+            })}
+          </div>
           <div className="canvas-audit" aria-label={language === "en" ? "Demo audit" : "演示审计"}>
             <strong>{audit.status === "pass" ? "PASS" : "REVIEW"}</strong>
             <span>{audit.summary.frontierEvidence} {copy.checked}</span>

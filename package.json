@@ -20,7 +20,7 @@
     "readme:stats": "node scripts/generate-readme-stats.mjs",
     "audit:links": "node scripts/audit-links.mjs",
     "audit:sanitize": "node scripts/audit-sanitization.mjs",
-    "test:unit": "node --test tests/core.test.mjs",
+    "test:unit": "node --test tests/core.test.mjs tests/graph-model.test.mjs tests/design-tokens.test.mjs",
     "test:experience": "node scripts/run-experience-cases.mjs",
     "test": "npm run demo:report && npm run readme:stats && npm run test:unit && npm run test:experience && npm run audit:sanitize && npm run build && npm run build:pages && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
