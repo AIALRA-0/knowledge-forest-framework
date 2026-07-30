@@ -29,7 +29,7 @@ const FEEDBACK_KEY = "knowledge-forest-framework-demo-feedback-v1";
 const RESOURCE_ISSUE_KEY = "knowledge-forest-framework-demo-resource-issues-v1";
 
 const EXAMPLE_REQUIREMENTS = [
-  "I want to learn accessible public data dashboards; I know basic JavaScript",
+  "Build an RV32IM SoC through RTL verification, physical implementation, firmware, and an FPGA prototype; I already know digital logic",
   "构建航空工程与飞行执照学习树；我已经学过空气动力学基础",
   "构建芯片制造、SoC、NoC、CPU、GPU 与先进封装的研究级技能森林",
   "规划腰肌劳损康复、增肌、跑步耐力与科学工作；明确医疗边界",
@@ -282,7 +282,7 @@ export default function Home() {
           </span>
         </a>
         <nav aria-label={t.projectLinksLabel}>
-          <a href="#forest">{t.demoForest}</a>
+          <a href="#complete-map">{t.demoForest}</a>
           <a href="#contract">{t.createMap}</a>
           <a href="https://github.com/AIALRA-0/knowledge-forest-framework">GitHub</a>
           <button
@@ -307,7 +307,7 @@ export default function Home() {
           <p className="hero-lede">{t.heroDescription}</p>
           <div className="hero-actions">
             <a className="primary-action" href="#contract">{t.createMap}</a>
-            <a className="secondary-action" href="#forest">{t.exploreDemo}</a>
+            <a className="secondary-action" href="#complete-map">{t.exploreDemo}</a>
           </div>
           <dl className="hero-stats" aria-label={t.demoStatisticsLabel}>
             <div><dt>{displayForest.domains.length}</dt><dd>{t.domains}</dd></div>
@@ -462,10 +462,12 @@ export default function Home() {
           </aside>
 
           <section
+            id="complete-map"
             className="vertical-tree"
             aria-label={`${t.completeMap} ${t.learningPath}`}
             data-layout-direction="top-to-bottom"
             data-layout-model="branched-dag"
+            data-complete-preview="true"
           >
             <div className="domain-intro">
               <span className="domain-accent" />

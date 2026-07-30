@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "goal": "Build an evidence-backed learning forest for creating accessible public information dashboards",
+  "goal": "Build an open RISC-V SoC from the ISA contract through RTL verification, physical implementation, firmware, and a bootable FPGA prototype",
   "knownSkills": [],
   "desiredDepth": "practitioner",
   "weeklyHours": 8,
@@ -87,6 +87,24 @@
       "statement": "Show real production-site learning cases from several fields and page locations instead of repeating one selected tree position",
       "regressionCheck": "README galleries require distinct field and view identifiers, real public evidence names, language-matched interfaces, varied screenshots, and no private progress or deployment metadata",
       "source": "framework"
+    },
+    {
+      "id": "complete-case-preview",
+      "statement": "Make the complete dependency structure visible in the public case preview instead of cropping the tree to one local position",
+      "regressionCheck": "The desktop overview renders every node, every branch lane, and the final convergence without horizontal clipping",
+      "source": "user"
+    },
+    {
+      "id": "technical-public-case",
+      "statement": "Use a technically substantive public example whose resources, artifacts, dependencies, and research directions demonstrate the framework at engineering depth",
+      "regressionCheck": "The public case spans ISA, microarchitecture, RTL, verification, physical implementation, firmware, and FPGA system integration",
+      "source": "user"
+    },
+    {
+      "id": "production-targeted-visual-fix",
+      "statement": "When feedback concerns the real production forest, validate and change the production renderer rather than treating a demo-only change as the fix",
+      "regressionCheck": "Production edge styles have their own contrast contract and selected-path browser journey",
+      "source": "user"
     }
   ]
 }

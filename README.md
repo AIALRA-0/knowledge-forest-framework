@@ -71,7 +71,7 @@ The AI screen selects the World Models branch and opens the research review; eac
 - three current research directions with dated sources
 - progress, feedback, export, and a way to report an unavailable resource
 
-The public example is a real dependency tree, not a single chain; two shared foundations split into evidence, accessibility, visualization, and reliable-delivery branches, then reunite at publication; it contains twelve steps, twelve complete resources, twelve practical outcomes, and thirty-six current research directions
+The public example is a complete RISC-V SoC engineering tree, not a single chain; ISA and synthesizable RTL foundations split into architecture, RTL verification, physical implementation, and software integration, then reunite in a bootable FPGA SoC prototype; it contains twelve steps, twelve complete resources, twelve engineering artifacts, and thirty-six current research directions
 
 English and Chinese have separate entry URLs and fully localized interfaces; both render the same dependency graph and preserve the same browser-local progress without mixing languages on one page
 
@@ -82,7 +82,7 @@ English and Chinese have separate entry URLs and fully localized interfaces; bot
 Open the [English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en); the [Chinese demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) is a separate localized entry; enter a goal such as:
 
 ```text
-I want to build reliable household robots; I already know Python and basic linear algebra
+I want to build an RV32IM SoC through RTL verification, physical implementation, firmware, and an FPGA prototype; I already know digital logic
 ```
 
 The page prepares a structured request; an agent then researches the field, checks the sources, and generates the complete forest
