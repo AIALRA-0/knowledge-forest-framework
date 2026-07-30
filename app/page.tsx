@@ -1,6 +1,28 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+import {
+  Controls,
+  Handle,
+  MarkerType,
+  Position,
+  ReactFlow,
+  ReactFlowProvider,
+  useReactFlow,
+  type Edge,
+  type Node,
+  type NodeProps,
+  type NodeTypes,
+  type ReactFlowInstance,
+} from "@xyflow/react";
+import dagre from "@dagrejs/dagre";
 import demoForest from "@/examples/public-demo/forest.generated.json";
 import type {
   ForestBundle,
@@ -13,672 +35,782 @@ import {
   completeNode,
   nextAvailableNodes,
   nodeState,
-  progressEnvelope,
 } from "@/packages/core/src/progress.mjs";
 import { normalizeRequirement } from "@/packages/agent/src/normalize.mjs";
 import {
   localizeForest,
-  UI_COPY,
   type DemoLanguage,
 } from "@/app/demo-i18n";
 
 const forest = demoForest as ForestBundle;
 const audit = auditForest(forest, { currentYear: 2026 });
-const PROGRESS_KEY = "knowledge-forest-framework-demo-progress-v1";
-const FEEDBACK_KEY = "knowledge-forest-framework-demo-feedback-v1";
-const RESOURCE_ISSUE_KEY = "knowledge-forest-framework-demo-resource-issues-v1";
+const NODE_WIDTH = 226;
+const NODE_HEIGHT = 88;
+const PROGRESS_KEY = "knowledge-forest-framework-demo-progress-v2";
 
-const EXAMPLE_REQUIREMENTS = [
-  "Build an RV32IM SoC through RTL verification, physical implementation, firmware, and an FPGA prototype; I already know digital logic",
-  "构建航空工程与飞行执照学习树；我已经学过空气动力学基础",
-  "构建芯片制造、SoC、NoC、CPU、GPU 与先进封装的研究级技能森林",
-  "规划腰肌劳损康复、增肌、跑步耐力与科学工作；明确医疗边界",
-];
+const EXAMPLE_REQUIREMENTS = {
+  en: [
+    "Build an RV32IM SoC through RTL verification, physical implementation, firmware, and an FPGA prototype; I already know digital logic",
+    "Build a research-level learning forest for embodied robotics; I already know Python and linear algebra",
+    "Map aircraft engineering, flight training, certification, and operational safety into separate learning paths",
+  ],
+  "zh-CN": [
+    "构建 RV32IM SoC；覆盖 RTL 验证、物理实现、固件与 FPGA 原型；我已经掌握数字逻辑",
+    "构建具身机器人研究级学习森林；我已经掌握 Python 与线性代数",
+    "将飞机工程、飞行训练、执照法规与运行安全拆成独立学习路径",
+  ],
+} as const;
+
+const PRODUCT_COPY = {
+  en: {
+    framework: "KNOWLEDGE FOREST FRAMEWORK",
+    nodes: "nodes",
+    branches: "branches",
+    progress: "progress",
+    buildRequest: "Build request",
+    github: "GitHub",
+    language: "中文",
+    languageLabel: "切换到中文",
+    next: "Next",
+    finished: "All nodes complete",
+    completed: "Lit",
+    available: "Ready now",
+    locked: "Waiting for prerequisites",
+    outcome: "What you must be able to build",
+    resource: "One complete primary resource",
+    resourceReason: "Why this resource",
+    openResource: "Open complete resource ↗",
+    acceptance: "Acceptance artifact",
+    criteria: "Observable checks",
+    frontier: "Current research directions",
+    prerequisites: "Prerequisites and next branches",
+    prerequisite: "Prerequisite",
+    nextBranch: "Next branch",
+    root: "This node starts a branch",
+    risk: "Boundary",
+    completeFirst: "Complete first",
+    confirmArtifact: "I produced and checked the required artifact",
+    lightNode: "Light this node",
+    reopen: "Reopen this node",
+    reset: "Reset demo progress",
+    openRequest: "Open request builder",
+    requestTitle: "Describe the capability you want to build",
+    requestIntro: "The framework turns this answer into a research brief; an agent then investigates the field, verifies sources, and generates the forest",
+    requirementLabel: "Goal, prior knowledge, time, access, and important limits",
+    prepare: "Prepare research brief",
+    copy: "Copy brief",
+    copied: "Copied",
+    requestReady: "Research brief ready",
+    requestWaiting: "No brief prepared yet",
+    knownSkills: "known skills",
+    riskAreas: "high-care areas",
+    rules: "durable quality rules",
+    close: "Return to selected node",
+    checked: "sources checked",
+    localProgress: "Progress stays in this browser",
+    unlocked: "Node lit; new branches may now be available",
+    resetDone: "Demo progress reset",
+  },
+  "zh-CN": {
+    framework: "知识森林框架",
+    nodes: "节点",
+    branches: "分支",
+    progress: "进度",
+    buildRequest: "生成需求",
+    github: "GitHub",
+    language: "English",
+    languageLabel: "Switch to English",
+    next: "下一步",
+    finished: "全部节点已点亮",
+    completed: "已点亮",
+    available: "现在可学",
+    locked: "等待前置",
+    outcome: "学完必须能做出来",
+    resource: "唯一完整主线资源",
+    resourceReason: "为什么选择这份资源",
+    openResource: "打开完整资源 ↗",
+    acceptance: "验收作品",
+    criteria: "可观察的验收标准",
+    frontier: "当前研究方向",
+    prerequisites: "前置关系与后续分支",
+    prerequisite: "前置",
+    nextBranch: "下一步",
+    root: "这是当前分支的起点",
+    risk: "边界",
+    completeFirst: "请先点亮",
+    confirmArtifact: "我已经完成并检查要求的作品",
+    lightNode: "点亮这个节点",
+    reopen: "重新打开这个节点",
+    reset: "重置演示进度",
+    openRequest: "打开需求生成器",
+    requestTitle: "说明最终想构建的能力",
+    requestIntro: "框架会把回答整理成调查需求；Agent 随后调查完整领域、核验来源并生成学习森林",
+    requirementLabel: "目标、已有基础、可投入时间、资源权限与重要限制",
+    prepare: "整理调查需求",
+    copy: "复制需求",
+    copied: "已复制",
+    requestReady: "调查需求已经就绪",
+    requestWaiting: "尚未整理调查需求",
+    knownSkills: "项已有能力",
+    riskAreas: "个需要谨慎处理的领域",
+    rules: "项长期质量规则",
+    close: "返回当前节点",
+    checked: "条来源已核验",
+    localProgress: "进度只保存在当前浏览器",
+    unlocked: "节点已经点亮；新的分支可能已经解锁",
+    resetDone: "演示进度已经重置",
+  },
+} as const;
 
 type NodeStatus = "completed" | "available" | "locked";
-type FeedbackValue = "clear" | "unsure" | "blocked";
-type BranchEdge = {
-  id: string;
-  sourceId: string;
-  targetId: string;
-  path: string;
+type PanelMode = "node" | "brief";
+
+type DemoNodeData = {
+  node: ForestNode;
+  domain: ForestDomain;
+  code: string;
+  state: NodeStatus;
+  selected: boolean;
+  recommended: boolean;
 };
 
-function loadSet(key: string) {
+type DemoFlowNode = Node<DemoNodeData, "skill">;
+
+function branchCount(bundle: ForestBundle) {
+  return bundle.nodes.reduce((sum, node) => sum + node.dependsOn.length, 0);
+}
+
+function loadProgress() {
   if (typeof window === "undefined") return new Set<string>();
   try {
-    const value = JSON.parse(window.localStorage.getItem(key) ?? "[]");
-    return new Set(Array.isArray(value) ? value.filter((item) => typeof item === "string") : []);
+    const stored = JSON.parse(window.localStorage.getItem(PROGRESS_KEY) ?? "[]");
+    return new Set(Array.isArray(stored) ? stored.filter((item) => typeof item === "string") : []);
   } catch {
     return new Set<string>();
   }
 }
 
-function saveSet(key: string, value: Set<string>) {
-  window.localStorage.setItem(key, JSON.stringify([...value]));
+function saveProgress(completed: Set<string>) {
+  window.localStorage.setItem(PROGRESS_KEY, JSON.stringify([...completed]));
 }
 
-function domainProgress(domain: ForestDomain, completed: Set<string>) {
-  const nodes = forest.nodes.filter((node) => node.domainId === domain.id);
-  return {
-    complete: nodes.filter((node) => completed.has(node.id)).length,
-    total: nodes.length,
-  };
+function nodeCode(node: ForestNode, bundle: ForestBundle) {
+  const domainIndex = bundle.domains.findIndex((domain) => domain.id === node.domainId);
+  const nodeIndex = bundle.nodes.filter((item) => item.domainId === node.domainId).findIndex((item) => item.id === node.id);
+  const prefixes = ["A", "V", "P", "S"];
+  return `${prefixes[domainIndex] ?? "N"}${String(nodeIndex + 1).padStart(2, "0")}`;
 }
 
-function dependencyLevels(nodes: ForestNode[]) {
-  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-  const memo = new Map<string, number>();
-  const visit = (id: string, visiting = new Set<string>()): number => {
-    const cached = memo.get(id);
-    if (cached !== undefined) return cached;
-    if (visiting.has(id)) return 0;
-    const node = nodeMap.get(id);
-    if (!node || node.dependsOn.length === 0) {
-      memo.set(id, 0);
-      return 0;
-    }
-    const nextVisiting = new Set(visiting).add(id);
-    const level = Math.max(...node.dependsOn.map((dependency) => visit(dependency, nextVisiting))) + 1;
-    memo.set(id, level);
-    return level;
-  };
-  nodes.forEach((node) => visit(node.id));
-  return memo;
+function createLayout(bundle: ForestBundle): DemoFlowNode[] {
+  const graph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+  graph.setGraph({
+    rankdir: "TB",
+    ranksep: 96,
+    nodesep: 42,
+    edgesep: 24,
+    marginx: 72,
+    marginy: 62,
+    ranker: "network-simplex",
+    acyclicer: "greedy",
+  });
+
+  bundle.nodes.forEach((node) => graph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT }));
+  bundle.nodes.forEach((node) => node.dependsOn.forEach((dependency) => graph.setEdge(dependency, node.id)));
+  dagre.layout(graph);
+
+  const domainMap = new Map(bundle.domains.map((domain) => [domain.id, domain]));
+  return bundle.nodes.map((node) => {
+    const point = graph.node(node.id);
+    return {
+      id: node.id,
+      type: "skill",
+      position: {
+        x: point.x - NODE_WIDTH / 2,
+        y: point.y - NODE_HEIGHT / 2,
+      },
+      sourcePosition: Position.Bottom,
+      targetPosition: Position.Top,
+      data: {
+        node,
+        domain: domainMap.get(node.domainId) ?? bundle.domains[0],
+        code: nodeCode(node, bundle),
+        state: "locked",
+        selected: false,
+        recommended: false,
+      },
+    };
+  });
 }
 
-export default function Home() {
+function DemoNode({ data }: NodeProps<DemoFlowNode>) {
+  const { node, domain, code, state, selected, recommended } = data;
+  return (
+    <div
+      className={`skill-node state-${state}${node.dependsOn.length === 0 ? " kind-realm" : ""}${selected ? " is-selected" : ""}${recommended ? " is-recommended" : ""}`}
+      style={{ "--realm": domain.color } as CSSProperties}
+    >
+      <Handle type="target" position={Position.Top} isConnectable={false} />
+      <div className="skill-node-topline">
+        <span className="skill-code">{code}</span>
+        <span className="skill-track">{domain.title}</span>
+        <span className="skill-state-dot" aria-hidden="true" />
+      </div>
+      <strong>{node.title}</strong>
+      <span className="node-resource">{node.resource.publisher} · {node.resource.title}</span>
+      <Handle type="source" position={Position.Bottom} isConnectable={false} />
+    </div>
+  );
+}
+
+const NODE_TYPES: NodeTypes = { skill: DemoNode };
+
+function descendantsOf(bundle: ForestBundle, rootId: string) {
+  const descendants = new Set<string>();
+  const queue = [rootId];
+  while (queue.length) {
+    const current = queue.shift();
+    bundle.nodes.forEach((node) => {
+      if (current && node.dependsOn.includes(current) && !descendants.has(node.id)) {
+        descendants.add(node.id);
+        queue.push(node.id);
+      }
+    });
+  }
+  return descendants;
+}
+
+function ForestExperience() {
+  const flow = useReactFlow<DemoFlowNode, Edge>();
   const [language, setLanguage] = useState<DemoLanguage>("en");
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState(forest.nodes[0].id);
-  const [activeDomainId, setActiveDomainId] = useState("all");
-  const [query, setQuery] = useState("");
-  const [requirement, setRequirement] = useState(EXAMPLE_REQUIREMENTS[0]);
-  const [brief, setBrief] = useState<LearnerBrief | null>(null);
   const [artifactConfirmed, setArtifactConfirmed] = useState(false);
-  const [feedback, setFeedback] = useState<Record<string, FeedbackValue>>({});
-  const [resourceIssues, setResourceIssues] = useState<Set<string>>(new Set());
+  const [panelMode, setPanelMode] = useState<PanelMode>("node");
+  const [requirement, setRequirement] = useState<string>(EXAMPLE_REQUIREMENTS.en[0]);
+  const [brief, setBrief] = useState<LearnerBrief | null>(null);
   const [copyState, setCopyState] = useState("Copy brief");
-  const branchMapRef = useRef<HTMLDivElement>(null);
-  const branchNodeRefs = useRef(new Map<string, HTMLButtonElement>());
-  const [branchEdges, setBranchEdges] = useState<BranchEdge[]>([]);
-  const t = UI_COPY[language];
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<number | null>(null);
+
   const displayForest = useMemo(() => localizeForest(forest, language), [language]);
+  const copy = PRODUCT_COPY[language];
+  const domainMap = useMemo(
+    () => new Map(displayForest.domains.map((domain) => [domain.id, domain])),
+    [displayForest.domains],
+  );
+  const baseNodes = useMemo(() => createLayout(displayForest), [displayForest]);
+  const stateMap = useMemo(
+    () => new Map(displayForest.nodes.map((node) => [
+      node.id,
+      nodeState(node, completed) as NodeStatus,
+    ])),
+    [completed, displayForest.nodes],
+  );
+  const recommended = useMemo(
+    () => nextAvailableNodes(displayForest, completed)[0] ?? null,
+    [completed, displayForest],
+  );
+  const nodes = useMemo(
+    () => baseNodes.map((flowNode) => {
+      const state = stateMap.get(flowNode.id) ?? "locked";
+      const selected = flowNode.id === selectedId;
+      return {
+        ...flowNode,
+        selected,
+        focusable: selected,
+        data: {
+          ...flowNode.data,
+          state,
+          selected,
+          recommended: flowNode.id === recommended?.id,
+        },
+        ariaLabel: `${flowNode.data.node.title}; ${state}`,
+        domAttributes: {
+          "aria-current": selected ? "true" as const : undefined,
+          "data-testid": `tree-node-${flowNode.id}`,
+          "data-node-state": state,
+        },
+      };
+    }),
+    [baseNodes, recommended?.id, selectedId, stateMap],
+  );
+  const edges = useMemo<Edge[]>(() => {
+    const result: Edge[] = [];
+    displayForest.nodes.forEach((node) => {
+      node.dependsOn.forEach((dependency) => {
+        const dependencyDone = completed.has(dependency);
+        const state = completed.has(node.id)
+          ? "completed"
+          : dependencyDone && stateMap.get(node.id) === "available"
+            ? "available"
+            : "locked";
+        result.push({
+          id: `${dependency}-${node.id}`,
+          source: dependency,
+          target: node.id,
+          type: "smoothstep",
+          className: `tree-edge edge-${state}${dependency === selectedId || node.id === selectedId ? " edge-selected" : ""}`,
+          markerEnd: { type: MarkerType.ArrowClosed },
+        });
+      });
+    });
+    return result;
+  }, [completed, displayForest.nodes, selectedId, stateMap]);
+
+  const selected = displayForest.nodes.find((node) => node.id === selectedId) ?? displayForest.nodes[0];
+  const selectedState = stateMap.get(selected.id) ?? "locked";
+  const selectedDomain = domainMap.get(selected.domainId) ?? displayForest.domains[0];
+  const selectedCode = nodeCode(selected, displayForest);
+  const pendingDependencies = selected.dependsOn.filter((dependency) => !completed.has(dependency));
+  const children = displayForest.nodes.filter((node) => node.dependsOn.includes(selected.id));
+  const completedCount = displayForest.nodes.filter((node) => completed.has(node.id)).length;
+  const progress = Math.round((completedCount / displayForest.nodes.length) * 100);
+
+  const showToast = useCallback((message: string) => {
+    if (toastTimer.current !== null) window.clearTimeout(toastTimer.current);
+    setToast(message);
+    toastTimer.current = window.setTimeout(() => {
+      setToast(null);
+      toastTimer.current = null;
+    }, 3200);
+  }, []);
+
+  useEffect(() => () => {
+    if (toastTimer.current !== null) window.clearTimeout(toastTimer.current);
+  }, []);
 
   useEffect(() => {
     const hydrationTimer = window.setTimeout(() => {
-      setCompleted(loadSet(PROGRESS_KEY));
-      try {
-        const stored = JSON.parse(window.localStorage.getItem(FEEDBACK_KEY) ?? "{}");
-        setFeedback(stored && typeof stored === "object" ? stored : {});
-      } catch {
-        setFeedback({});
-      }
-      setResourceIssues(loadSet(RESOURCE_ISSUE_KEY));
       const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
-      if (requestedLanguage === "zh-CN" || requestedLanguage === "en") {
-        setLanguage(requestedLanguage);
-      }
+      const nextLanguage = requestedLanguage === "zh-CN" ? "zh-CN" : "en";
+      setLanguage(nextLanguage);
+      setRequirement(EXAMPLE_REQUIREMENTS[nextLanguage][0]);
+      setCopyState(PRODUCT_COPY[nextLanguage].copy);
+      setCompleted(loadProgress());
     }, 0);
     return () => window.clearTimeout(hydrationTimer);
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = language;
-    const copyStateTimer = window.setTimeout(() => setCopyState(t.copyBrief), 0);
-    return () => window.clearTimeout(copyStateTimer);
-  }, [language, t.copyBrief]);
+    document.title = `${displayForest.metadata.title} · Knowledge Forest Framework`;
+  }, [displayForest.metadata.title, language]);
 
-  function statusLabel(status: NodeStatus) {
-    if (status === "completed") return t.completed;
-    if (status === "available") return t.nodeReady;
-    return t.locked;
-  }
-
-  const selected = displayForest.nodes.find((node) => node.id === selectedId) ?? displayForest.nodes[0];
-  const selectedStatus = nodeState(selected, completed) as NodeStatus;
-  const readyNodes = nextAvailableNodes(forest, completed);
-  const matchingNodeIds = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase();
-    return new Set(displayForest.nodes.filter((node) => (
-      !normalized
-      || node.title.toLocaleLowerCase().includes(normalized)
-      || node.tags.some((tag) => tag.toLocaleLowerCase().includes(normalized))
-    )).map((node) => node.id));
-  }, [displayForest.nodes, query]);
-  const branchLevels = useMemo(() => dependencyLevels(displayForest.nodes), [displayForest.nodes]);
-
-  useLayoutEffect(() => {
-    const map = branchMapRef.current;
-    if (!map) return;
-    let frame = 0;
-    const measure = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        const mapRect = map.getBoundingClientRect();
-        const edges: BranchEdge[] = [];
-        displayForest.nodes.forEach((target) => {
-          const targetElement = branchNodeRefs.current.get(target.id);
-          if (!targetElement) return;
-          const targetRect = targetElement.getBoundingClientRect();
-          target.dependsOn.forEach((sourceId) => {
-            const sourceElement = branchNodeRefs.current.get(sourceId);
-            if (!sourceElement) return;
-            const sourceRect = sourceElement.getBoundingClientRect();
-            const startX = sourceRect.left - mapRect.left + sourceRect.width / 2;
-            const startY = sourceRect.bottom - mapRect.top;
-            const endX = targetRect.left - mapRect.left + targetRect.width / 2;
-            const endY = targetRect.top - mapRect.top;
-            const middleY = startY + Math.max(26, (endY - startY) / 2);
-            edges.push({
-              id: `${sourceId}-${target.id}`,
-              sourceId,
-              targetId: target.id,
-              path: `M ${startX} ${startY} C ${startX} ${middleY}, ${endX} ${middleY}, ${endX} ${endY}`,
-            });
-          });
-        });
-        setBranchEdges(edges);
+  const fitCompleteTree = useCallback((instance: ReactFlowInstance<DemoFlowNode, Edge>) => {
+    window.requestAnimationFrame(() => {
+      instance.fitView({
+        padding: 0.12,
+        minZoom: 0.2,
+        maxZoom: 0.76,
+        duration: 0,
       });
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(map);
-    branchNodeRefs.current.forEach((element) => observer.observe(element));
-    window.addEventListener("resize", measure);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [displayForest, language]);
+    });
+  }, []);
 
-  function switchLanguage() {
-    const nextLanguage: DemoLanguage = language === "en" ? "zh-CN" : "en";
-    const url = new URL(window.location.href);
-    url.searchParams.set("lang", nextLanguage);
-    window.history.replaceState(null, "", url);
-    setLanguage(nextLanguage);
+  function focusNode(nodeId: string) {
+    const target = nodes.find((node) => node.id === nodeId);
+    if (!target) return;
+    setSelectedId(nodeId);
+    setArtifactConfirmed(false);
+    setPanelMode("node");
+    flow.setCenter(
+      target.position.x + NODE_WIDTH / 2,
+      target.position.y + NODE_HEIGHT / 2,
+      { zoom: window.innerWidth < 720 ? 0.58 : 0.82, duration: 340 },
+    );
   }
 
-  function selectNode(node: ForestNode) {
-    setSelectedId(node.id);
-    setArtifactConfirmed(false);
+  function focusDomain(domain: ForestDomain) {
+    const target = displayForest.nodes.find((node) => node.domainId === domain.id);
+    if (target) focusNode(target.id);
+  }
+
+  function toggleLanguage() {
+    const nextLanguage: DemoLanguage = language === "en" ? "zh-CN" : "en";
+    const parameters = new URLSearchParams(window.location.search);
+    parameters.set("lang", nextLanguage);
+    window.history.replaceState({}, "", `${window.location.pathname}?${parameters.toString()}`);
+    setLanguage(nextLanguage);
+    setRequirement(EXAMPLE_REQUIREMENTS[nextLanguage][0]);
+    setCopyState(PRODUCT_COPY[nextLanguage].copy);
   }
 
   function markComplete() {
-    if (!artifactConfirmed) return;
-    const result = completeNode(forest, completed, selected.id);
+    if (!artifactConfirmed || selectedState !== "available") return;
+    const result = completeNode(displayForest, completed, selected.id);
     if (!result.ok) return;
+    saveProgress(result.completed);
     setCompleted(result.completed);
-    saveSet(PROGRESS_KEY, result.completed);
-    const next = nextAvailableNodes(forest, result.completed)[0];
-    if (next) {
-      setSelectedId(next.id);
-    }
     setArtifactConfirmed(false);
+    showToast(copy.unlocked);
   }
 
-  function undoNode() {
+  function reopenSelected() {
     const next = new Set(completed);
     next.delete(selected.id);
+    descendantsOf(displayForest, selected.id).forEach((id) => next.delete(id));
+    saveProgress(next);
     setCompleted(next);
-    saveSet(PROGRESS_KEY, next);
-    setArtifactConfirmed(false);
+  }
+
+  function resetProgress() {
+    const next = new Set<string>();
+    saveProgress(next);
+    setCompleted(next);
+    showToast(copy.resetDone);
   }
 
   function analyzeRequirement() {
-    const normalized = normalizeRequirement(requirement, { weeklyHours: 8 });
+    const normalized = normalizeRequirement(requirement, { language }) as LearnerBrief;
     setBrief(normalized);
   }
 
   async function copyBrief() {
-    const normalized = brief ?? normalizeRequirement(requirement, { weeklyHours: 8 });
-    await navigator.clipboard.writeText(JSON.stringify(normalized, null, 2));
-    setCopyState(t.copied);
-    window.setTimeout(() => setCopyState(t.copyBrief), 1400);
+    const normalized = brief ?? (normalizeRequirement(requirement, { language }) as LearnerBrief);
+    setBrief(normalized);
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(normalized, null, 2));
+      setCopyState(copy.copied);
+    } catch {
+      setCopyState(copy.copy);
+    }
   }
 
-  function recordFeedback(value: FeedbackValue) {
-    const next = { ...feedback, [selected.id]: value };
-    setFeedback(next);
-    window.localStorage.setItem(FEEDBACK_KEY, JSON.stringify(next));
-  }
-
-  function reportResourceIssue() {
-    const next = new Set(resourceIssues);
-    next.add(selected.id);
-    setResourceIssues(next);
-    saveSet(RESOURCE_ISSUE_KEY, next);
-    recordFeedback("blocked");
-  }
-
-  function exportProgress() {
-    const payload = {
-      ...progressEnvelope(forest, completed),
-      feedback,
-      resourceIssues: [...resourceIssues],
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "knowledge-forest-progress.json";
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }
-
-  const completedCount = completed.size;
-  const completionPercent = Math.round((completedCount / forest.nodes.length) * 100);
+  const statusLabel = selectedState === "completed"
+    ? copy.completed
+    : selectedState === "available"
+      ? copy.available
+      : copy.locked;
 
   return (
-    <main className="site-shell">
+    <main
+      className="app-shell"
+      data-testid="knowledge-forest-app"
+      data-selected-node-id={selected.id}
+      data-layout-direction="top-to-bottom"
+      data-layout-model="branched-dag"
+      data-complete-preview="true"
+      style={{ "--active-tree": "#315d72" } as CSSProperties}
+    >
       <header className="topbar">
-        <a className="brand" href="#top" aria-label={t.homeLabel}>
-          <span className="brand-mark">KF</span>
-          <span>
-            <strong>Knowledge Forest</strong>
-            <small>{t.brandSubtitle}</small>
+        <div className="brand-block">
+          <div>
+            <small>{copy.framework}</small>
+            <h1>{displayForest.metadata.title}</h1>
+          </div>
+          <span className="brand-meta">
+            {displayForest.nodes.length} {copy.nodes} · {branchCount(displayForest)} {copy.branches}
           </span>
-        </a>
-        <nav aria-label={t.projectLinksLabel}>
-          <a href="#complete-map">{t.demoForest}</a>
-          <a href="#contract">{t.createMap}</a>
-          <a href="https://github.com/AIALRA-0/knowledge-forest-framework">GitHub</a>
-          <button
-            className="language-toggle"
-            type="button"
-            onClick={switchLanguage}
-            aria-label={language === "en" ? "切换到中文" : "Switch to English"}
-          >
-            {t.languageName}
-          </button>
+        </div>
+
+        <nav
+          className="realm-jump"
+          aria-label={language === "en" ? "Engineering branches" : "工程分支"}
+          style={{ gridTemplateColumns: `repeat(${displayForest.domains.length}, minmax(0, 1fr))` }}
+        >
+          {displayForest.domains.map((domain, index) => (
+            <button
+              key={domain.id}
+              type="button"
+              onClick={() => focusDomain(domain)}
+              aria-current={selected.domainId === domain.id ? "location" : undefined}
+              style={{ "--realm": domain.color } as CSSProperties}
+              data-testid={`realm-jump-${domain.id}`}
+            >
+              <span className="realm-index">{String(index + 1).padStart(2, "0")}</span>
+              <strong>{domain.title}</strong>
+            </button>
+          ))}
         </nav>
+
+        <div className="header-progress">
+          <div className="progress-copy">
+            <strong>{completedCount}</strong>
+            <span>/ {displayForest.nodes.length} · {progress}%</span>
+          </div>
+          <div
+            className="progress-track"
+            role="progressbar"
+            aria-label={copy.progress}
+            aria-valuemin={0}
+            aria-valuemax={displayForest.nodes.length}
+            aria-valuenow={completedCount}
+          >
+            <span style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+
+        <div className="header-actions public-header-actions">
+          <button
+            className={`forest-button${panelMode === "brief" ? " is-active" : ""}`}
+            type="button"
+            onClick={() => setPanelMode("brief")}
+            aria-pressed={panelMode === "brief"}
+          >
+            {copy.buildRequest}
+          </button>
+          <a
+            className="platform-button"
+            href="https://github.com/AIALRA-0/knowledge-forest-framework"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {copy.github}
+          </a>
+          <button
+            className="platform-button"
+            type="button"
+            onClick={toggleLanguage}
+            aria-label={copy.languageLabel}
+          >
+            {copy.language}
+          </button>
+          <button
+            className="recommend-button"
+            type="button"
+            onClick={() => recommended && focusNode(recommended.id)}
+            disabled={!recommended}
+            data-testid="recommended-next"
+          >
+            <span>{recommended ? `${copy.next}: ${recommended.title}` : copy.finished}</span>
+          </button>
+        </div>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">{t.heroEyebrow}</p>
-          <h1>
-            {language === "zh-CN"
-              ? <>一次只完成<br />一个明确节点</>
-              : t.heroTitle}
-          </h1>
-          <p className="hero-lede">{t.heroDescription}</p>
-          <div className="hero-actions">
-            <a className="primary-action" href="#contract">{t.createMap}</a>
-            <a className="secondary-action" href="#complete-map">{t.exploreDemo}</a>
-          </div>
-          <dl className="hero-stats" aria-label={t.demoStatisticsLabel}>
-            <div><dt>{displayForest.domains.length}</dt><dd>{t.domains}</dd></div>
-            <div><dt>{displayForest.nodes.length}</dt><dd>{t.nodes}</dd></div>
-            <div><dt>{displayForest.nodes.length * 3}</dt><dd>{t.researchLeads}</dd></div>
-            <div><dt>{audit.status === "pass" ? t.auditPass : t.auditFail}</dt><dd>{t.qualityCheck}</dd></div>
-          </dl>
-        </div>
-        <div className="hero-map" aria-label={t.pipelineLabel}>
-          {t.pipeline.map(([step, title, note]) => (
-            <div className="pipeline-row" key={step}>
-              <span>{step}</span>
-              <strong>{title}</strong>
-              <small>{note}</small>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="contract-section" id="contract">
-        <div className="section-heading">
-          <p className="eyebrow">{t.startEyebrow}</p>
-          <h2>{t.startTitle}</h2>
-          <p>{t.startDescription}</p>
-        </div>
-        <div className="intake-grid">
-          <div className="intake-card">
-            <label htmlFor="requirement">{t.requirementLabel}</label>
-            <textarea
-              id="requirement"
-              data-testid="requirement-input"
-              value={requirement}
-              onChange={(event) => setRequirement(event.target.value)}
-              rows={5}
-            />
-            <div className="example-prompts" aria-label="Example requirements">
-              {EXAMPLE_REQUIREMENTS.map((example, index) => (
-                <button
-                  key={example}
-                  type="button"
-                  onClick={() => setRequirement(example)}
-                  aria-label={`${t.example} ${index + 1}`}
-                >
-                  {t.example} {index + 1}
-                </button>
-              ))}
-            </div>
-            <div className="intake-actions">
-              <button className="primary-action" type="button" onClick={analyzeRequirement}>
-                {t.prepareRequest}
-              </button>
-              <button className="secondary-action" type="button" onClick={copyBrief}>
-                {copyState}
-              </button>
-            </div>
-          </div>
-
-          <div className="contract-card" data-testid="brief-summary">
-            {brief ? (
-              <>
-                <div className="contract-status"><span>{t.ready}</span> {t.readyForResearch}</div>
-                <h3>{brief.goal}</h3>
-                <div className="contract-facts">
-                  <p><strong>{brief.knownSkills.length}</strong> {t.skillsKnown}</p>
-                  <p><strong>{brief.highRiskAreas.length}</strong> {t.careAreas}</p>
-                  <p><strong>{brief.corrections.length}</strong> {t.qualityRules}</p>
-                </div>
-                <ul>
-                  {t.requestFeatures.map((feature) => <li key={feature}>{feature}</li>)}
-                </ul>
-              </>
-            ) : (
-              <>
-                <div className="contract-status"><span>{t.waiting}</span> {t.noRequest}</div>
-                <h3>{t.startingPointTitle}</h3>
-                <p>{t.startingPointDescription}</p>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="forest-section" id="forest">
-        <div className="section-heading forest-heading">
-          <div>
-            <p className="eyebrow">{t.demoEyebrow}</p>
-            <h2>{displayForest.metadata.title}</h2>
-            <p>{displayForest.metadata.description}</p>
-          </div>
-          <div className="progress-summary">
-            <span>{completionPercent}%</span>
-            <div>
-              <strong>{completedCount} / {displayForest.nodes.length} {t.accepted}</strong>
-              <small>{readyNodes.length} {t.readyNow}</small>
-            </div>
-            <button type="button" onClick={exportProgress}>{t.export}</button>
-          </div>
-        </div>
-
-        <div className="forest-workspace">
-          <aside className="domain-rail" aria-label={t.learningDomains}>
-            <label htmlFor="node-search">{t.searchForest}</label>
-            <input
-              id="node-search"
-              data-testid="node-search"
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t.searchPlaceholder}
-            />
-            <div className="domain-list">
-              <button
-                type="button"
-                className={activeDomainId === "all" ? "domain-button active" : "domain-button"}
-                style={{ "--domain-color": "#254b3c" } as React.CSSProperties}
-                onClick={() => setActiveDomainId("all")}
-                data-testid="domain-all"
-              >
-                <span className="domain-dot domain-dot-all" />
-                <span>
-                  <strong>{t.completeMap}</strong>
-                  <small>{displayForest.nodes.length} {t.completeMapProgress}</small>
-                </span>
-              </button>
-              {displayForest.domains.map((domain) => {
-                const progress = domainProgress(domain, completed);
-                return (
-                  <button
-                    type="button"
-                    key={domain.id}
-                    className={domain.id === activeDomainId ? "domain-button active" : "domain-button"}
-                    style={{ "--domain-color": domain.color } as React.CSSProperties}
-                    onClick={() => setActiveDomainId(domain.id)}
-                    data-testid={`domain-${domain.id}`}
-                  >
-                    <span className="domain-dot" />
-                    <span>
-                      <strong>{domain.title}</strong>
-                      <small>{progress.complete} / {progress.total} {t.complete}</small>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="audit-card">
-              <span className={audit.status === "pass" ? "audit-pass" : "audit-fail"}>
-                {audit.status === "pass" ? t.auditPass.toUpperCase() : t.auditFail.toUpperCase()}
-              </span>
-              <strong>{t.qualityChecks}</strong>
-              <small>{audit.summary.frontierEvidence} {t.sourcesChecked}</small>
-            </div>
-          </aside>
-
-          <section
-            id="complete-map"
-            className="vertical-tree"
-            aria-label={`${t.completeMap} ${t.learningPath}`}
-            data-layout-direction="top-to-bottom"
-            data-layout-model="branched-dag"
-            data-complete-preview="true"
+      <div className="workspace">
+        <section
+          id="complete-map"
+          className="tree-canvas"
+          aria-label={`${displayForest.metadata.title}; ${language === "en" ? "complete dependency tree" : "完整依赖树"}`}
+          data-layout-direction="top-to-bottom"
+          data-complete-preview="true"
+        >
+          <ReactFlow<DemoFlowNode, Edge>
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={NODE_TYPES}
+            onInit={fitCompleteTree}
+            onNodeClick={(_, node) => {
+              setSelectedId(node.id);
+              setArtifactConfirmed(false);
+              setPanelMode("node");
+            }}
+            nodesDraggable={false}
+            nodesConnectable={false}
+            edgesFocusable={false}
+            disableKeyboardA11y
+            minZoom={0.18}
+            maxZoom={1.45}
+            panOnScroll={false}
+            zoomOnScroll={false}
+            preventScrolling={false}
+            selectionOnDrag={false}
+            proOptions={{ hideAttribution: true }}
           >
-            <div className="domain-intro">
-              <span className="domain-accent" />
-              <div>
-                <h3>{t.dependencyMapTitle}</h3>
-                <p>{t.dependencyMapDescription}</p>
-                <p className="branch-map-hint">{t.branchMapHint}</p>
-              </div>
-            </div>
-            <div className="branch-map-scroll">
-              <div className="branch-lane-headings" aria-hidden="true">
-                {displayForest.domains.map((domain) => (
-                  <span key={domain.id} style={{ "--domain-color": domain.color } as React.CSSProperties}>
-                    <i />
-                    {domain.title}
-                  </span>
-                ))}
-              </div>
-              <div className="branch-map" ref={branchMapRef}>
-                <svg className="branch-edges" aria-hidden="true">
-                  {branchEdges.map((edge) => {
-                    const sourceCompleted = completed.has(edge.sourceId);
-                    const targetCompleted = completed.has(edge.targetId);
-                    const edgeState = targetCompleted ? "completed" : sourceCompleted ? "available" : "locked";
-                    const touchesSelectedNode = edge.sourceId === selected.id || edge.targetId === selected.id;
-                    return (
-                      <g key={edge.id} className="branch-edge-pair">
-                        <path d={edge.path} className="edge-halo" />
-                        <path
-                          d={edge.path}
-                          className={`edge-line ${edgeState} ${touchesSelectedNode ? "active" : ""}`}
-                        />
-                      </g>
-                    );
-                  })}
-                </svg>
-                {displayForest.nodes.map((node) => {
-                  const status = nodeState(node, completed) as NodeStatus;
-                  const domainIndex = displayForest.domains.findIndex((domain) => domain.id === node.domainId);
-                  const domain = displayForest.domains[domainIndex];
-                  const domainMuted = activeDomainId !== "all" && activeDomainId !== node.domainId;
-                  const searchMuted = query.trim().length > 0 && !matchingNodeIds.has(node.id);
-                  return (
-                    <button
-                      key={node.id}
-                      ref={(element) => {
-                        if (element) branchNodeRefs.current.set(node.id, element);
-                        else branchNodeRefs.current.delete(node.id);
-                      }}
-                      type="button"
-                      className={`node-card branch-node ${status} ${selected.id === node.id ? "selected" : ""} ${domainMuted || searchMuted ? "muted" : ""}`}
-                      onClick={() => selectNode(node)}
-                      data-testid={`tree-node-${node.id}`}
-                      data-node-state={status}
-                      data-branch-level={branchLevels.get(node.id) ?? 0}
-                      style={{
-                        gridColumn: domainIndex + 1,
-                        gridRow: (branchLevels.get(node.id) ?? 0) + 1,
-                        "--domain-color": domain.color,
-                      } as React.CSSProperties}
-                    >
-                      <span className="node-status">{status === "completed" ? "✓" : (branchLevels.get(node.id) ?? 0) + 1}</span>
-                      <span className="node-copy">
-                        <small>{statusLabel(status)} · {node.estimatedHours} {t.hours}</small>
-                        <strong>{node.title}</strong>
-                        <span>{node.outcome}</span>
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
+            <Controls showInteractive={false} position="bottom-left" />
+          </ReactFlow>
+          <div className="canvas-audit" aria-label={language === "en" ? "Demo audit" : "演示审计"}>
+            <strong>{audit.status === "pass" ? "PASS" : "REVIEW"}</strong>
+            <span>{audit.summary.frontierEvidence} {copy.checked}</span>
+          </div>
+        </section>
 
-          <aside className="node-detail" data-testid="node-detail">
-            <div className="detail-heading">
-              <span className={`state-pill ${selectedStatus}`}>{statusLabel(selectedStatus)}</span>
-              <small>{selected.estimatedHours} {t.estimatedHours}</small>
-            </div>
-            <h3>{selected.title}</h3>
-            <p className="detail-outcome">{selected.outcome}</p>
-
-            {selectedStatus === "locked" && (
-              <div className="lock-explanation">
-                <strong>{t.whyLocked}</strong>
-                <p>
-                  {t.completeFirst} {selected.dependsOn
-                    .filter((id) => !completed.has(id))
-                    .map((id) => displayForest.nodes.find((node) => node.id === id)?.title)
-                    .join(language === "en" ? ", " : "、")} {t.first}
-                </p>
-              </div>
-            )}
-
-            <section className="detail-block">
-              <div className="block-label">{t.learnFrom}</div>
-              <a className="resource-card" href={selected.resource.url} target="_blank" rel="noreferrer">
-                <span>{t.resourceKinds[selected.resource.kind]}</span>
-                <strong>{selected.resource.title}</strong>
-                <small>{selected.resource.publisher} · {t[selected.resource.access]}</small>
-              </a>
-              <button className="resource-issue-button" type="button" onClick={reportResourceIssue}>
-                {t.resourceUnavailable}
-              </button>
-              {resourceIssues.has(selected.id) && (
-                <div className="resource-issue-note" role="status">
-                  {t.resourceSaved}
+        <aside className="detail-panel" data-testid="detail-panel">
+          {panelMode === "brief" ? (
+            <>
+              <div className="detail-scroll brief-panel">
+                <div className="detail-overline">
+                  <span className="status-pill forest-status">{copy.openRequest}</span>
+                  <span>v0.1</span>
                 </div>
-              )}
-              <p>{selected.rationale}</p>
-            </section>
-
-            <section className="detail-block">
-              <div className="block-label">{t.make}</div>
-              <h4>{selected.acceptance.title}</h4>
-              <p>{selected.acceptance.description}</p>
-              <ul>
-                {selected.acceptance.criteria.map((criterion) => <li key={criterion}>{criterion}</li>)}
-              </ul>
-            </section>
-
-            <section className="detail-block">
-              <div className="block-label">{t.researchMoving} · 3</div>
-              <div className="frontier-list">
-                {selected.frontiers.map((frontier, index) => (
-                  <details key={frontier.title}>
-                    <summary><span>0{index + 1}</span>{frontier.title}</summary>
-                    <p>{frontier.summary}</p>
-                    <a href={frontier.evidence.url} target="_blank" rel="noreferrer">
-                      {frontier.evidence.title} · {frontier.evidence.publishedAt.slice(0, 4)}
-                    </a>
-                  </details>
-                ))}
+                <div className="detail-title-row">
+                  <span className="detail-track">GOAL → RESEARCH BRIEF → FOREST</span>
+                  <h2>{copy.requestTitle}</h2>
+                  <p className="brief-intro">{copy.requestIntro}</p>
+                </div>
+                <section className="detail-section brief-form">
+                  <label htmlFor="requirement">{copy.requirementLabel}</label>
+                  <textarea
+                    id="requirement"
+                    data-testid="requirement-input"
+                    value={requirement}
+                    onChange={(event) => setRequirement(event.target.value)}
+                    rows={7}
+                  />
+                  <div className="brief-examples">
+                    {EXAMPLE_REQUIREMENTS[language].map((example, index) => (
+                      <button key={example} type="button" onClick={() => setRequirement(example)}>
+                        {language === "en" ? `Example ${index + 1}` : `示例 ${index + 1}`}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+                <section className="detail-section brief-result" data-testid="brief-summary">
+                  <h3>{brief ? copy.requestReady : copy.requestWaiting}</h3>
+                  {brief ? (
+                    <>
+                      <strong>{brief.goal}</strong>
+                      <div>
+                        <span><b>{brief.knownSkills.length}</b>{copy.knownSkills}</span>
+                        <span><b>{brief.highRiskAreas.length}</b>{copy.riskAreas}</span>
+                        <span><b>{brief.corrections.length}</b>{copy.rules}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <p>{displayForest.metadata.description}</p>
+                  )}
+                </section>
               </div>
-            </section>
+              <div className="detail-action">
+                <button className="light-button state-available" type="button" onClick={analyzeRequirement}>
+                  {copy.prepare}
+                </button>
+                <div className="progress-actions">
+                  <button type="button" onClick={copyBrief}>{copyState}</button>
+                  <button type="button" onClick={() => setPanelMode("node")}>{copy.close}</button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="detail-scroll">
+                <div className="detail-overline">
+                  <span className={`status-pill state-${selectedState}`}>{statusLabel}</span>
+                  <span>{selectedCode} · {selectedDomain.title}</span>
+                </div>
 
-            <section className="completion-box">
-              {selectedStatus !== "completed" ? (
-                <>
-                  <label>
+                <div className="detail-title-row">
+                  <span className="detail-track">{selectedDomain.description}</span>
+                  <h2 data-testid="panel-title">{selected.title}</h2>
+                </div>
+
+                <section className="detail-section outcome-section">
+                  <h3>{copy.outcome}</h3>
+                  <p>{selected.outcome}</p>
+                </section>
+
+                <section className="detail-section resource-section">
+                  <h3>{copy.resource}</h3>
+                  <a className="primary-resource" href={selected.resource.url} target="_blank" rel="noreferrer">
+                    <div className="resource-meta">
+                      <span>{selected.resource.kind}</span>
+                      <span>{selected.resource.access}</span>
+                      <span>{selected.resource.completeness}</span>
+                    </div>
+                    <strong>{selected.resource.title}</strong>
+                    <p>{selected.resource.publisher}</p>
+                    <small><b>{copy.resourceReason}</b>; {selected.rationale}</small>
+                    <span className="resource-open">{copy.openResource}</span>
+                  </a>
+                </section>
+
+                <section className="detail-section acceptance-section">
+                  <h3>{copy.acceptance}</h3>
+                  <strong>{selected.acceptance.title}</strong>
+                  <p>{selected.acceptance.description}</p>
+                  <span>{copy.criteria}</span>
+                  <ul>
+                    {selected.acceptance.criteria.map((criterion) => <li key={criterion}>{criterion}</li>)}
+                  </ul>
+                </section>
+
+                <section className="detail-section frontier-section">
+                  <div className="section-title-row">
+                    <h3>{copy.frontier}</h3>
+                    <span>3</span>
+                  </div>
+                  <div className="frontier-list">
+                    {selected.frontiers.map((frontier) => (
+                      <article key={frontier.title}>
+                        <strong>{frontier.title}</strong>
+                        <p>{frontier.summary}</p>
+                        <a href={frontier.evidence.url} target="_blank" rel="noreferrer">
+                          {frontier.evidence.title} · {frontier.evidence.publishedAt.slice(0, 10)} ↗
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="detail-section dependency-section">
+                  <h3>{copy.prerequisites}</h3>
+                  {selected.dependsOn.length ? selected.dependsOn.map((dependency) => {
+                    const dependencyNode = displayForest.nodes.find((node) => node.id === dependency);
+                    const done = completed.has(dependency);
+                    if (!dependencyNode) return null;
+                    return (
+                      <button key={dependency} type="button" onClick={() => focusNode(dependency)}>
+                        <span className={done ? "done" : "pending"}>{done ? "✓" : "·"}</span>
+                        <span><small>{copy.prerequisite}</small><strong>{dependencyNode.title}</strong></span>
+                        <span className="row-arrow">→</span>
+                      </button>
+                    );
+                  }) : <p className="empty-copy">{copy.root}</p>}
+                  {children.map((child) => (
+                    <button key={child.id} type="button" onClick={() => focusNode(child.id)}>
+                      <span className="next">↓</span>
+                      <span><small>{copy.nextBranch}</small><strong>{child.title}</strong></span>
+                      <span className="row-arrow">→</span>
+                    </button>
+                  ))}
+                </section>
+
+                {selected.riskNote ? (
+                  <section className="detail-section tree-context-section">
+                    <h3>{copy.risk}</h3>
+                    <p className="risk-boundary">{selected.riskNote}</p>
+                  </section>
+                ) : null}
+              </div>
+
+              <div className="detail-action">
+                {selectedState === "locked" ? (
+                  <span className="action-note">
+                    {copy.completeFirst} {pendingDependencies
+                      .map((dependency) => displayForest.nodes.find((node) => node.id === dependency)?.title)
+                      .filter(Boolean)
+                      .join(language === "en" ? ", " : "、")}
+                  </span>
+                ) : null}
+                {selectedState === "available" ? (
+                  <label className="artifact-confirmation">
                     <input
                       type="checkbox"
                       checked={artifactConfirmed}
                       onChange={(event) => setArtifactConfirmed(event.target.checked)}
-                      disabled={selectedStatus === "locked"}
                     />
-                    {t.finishedWork}
+                    <span>{copy.confirmArtifact}</span>
                   </label>
-                  <button
-                    type="button"
-                    onClick={markComplete}
-                    disabled={!artifactConfirmed || selectedStatus === "locked"}
-                    data-testid="complete-node"
-                  >
-                    {t.markComplete}
-                  </button>
-                </>
-              ) : (
-                <button type="button" className="undo-button" onClick={undoNode}>
-                  {t.reopen}
+                ) : null}
+                <button
+                  className={`light-button state-${selectedState}`}
+                  type="button"
+                  onClick={selectedState === "completed" ? reopenSelected : markComplete}
+                  disabled={selectedState === "locked" || (selectedState === "available" && !artifactConfirmed)}
+                  data-testid="complete-node"
+                >
+                  {selectedState === "completed" ? copy.reopen : copy.lightNode}
                 </button>
-              )}
-            </section>
-
-            <section className="feedback-box">
-              <span>{t.clarityQuestion}</span>
-              <div>
-                {([
-                  ["clear", t.clear],
-                  ["unsure", t.unsure],
-                  ["blocked", t.blocked],
-                ] as Array<[FeedbackValue, string]>).map(([value, label]) => (
-                  <button
-                    type="button"
-                    key={value}
-                    className={feedback[selected.id] === value ? "active" : ""}
-                    onClick={() => recordFeedback(value)}
-                  >
-                    {label}
-                  </button>
-                ))}
+                <div className="progress-actions">
+                  <button type="button" onClick={() => setPanelMode("brief")}>{copy.buildRequest}</button>
+                  <button type="button" onClick={resetProgress}>{copy.reset}</button>
+                </div>
+                <small className="local-progress-note">{copy.localProgress}</small>
               </div>
-              <small>{t.storedLocally}</small>
-            </section>
-          </aside>
-        </div>
-      </section>
+            </>
+          )}
+        </aside>
+      </div>
 
-      <section className="principles-section">
-        <div className="section-heading">
-          <p className="eyebrow">{t.qualityEyebrow}</p>
-          <h2>{t.qualityTitle}</h2>
-        </div>
-        <div className="principle-grid">
-          {t.qualityItems.map(([number, title, text]) => (
-            <article key={number}>
-              <span>{number}</span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <footer>
-        <div>
-          <strong>Knowledge Forest Framework</strong>
-          <span>{t.footerLicense}</span>
-        </div>
-        <p>{t.footerTagline}</p>
-      </footer>
+      {toast ? <div className="unlock-toast" role="status">{toast}</div> : null}
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <ReactFlowProvider>
+      <ForestExperience />
+    </ReactFlowProvider>
   );
 }

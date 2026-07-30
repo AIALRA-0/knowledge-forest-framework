@@ -20,26 +20,20 @@ test("server-renders the product shell and interactive demo", async () => {
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /<title>Knowledge Forest Framework<\/title>/i);
-  assert.match(html, /One clear node at a time/);
-  assert.match(html, /Describe the destination in your own words/);
-  assert.match(html, /Technical interactive demo/i);
   assert.match(html, /Open RISC-V SoC Prototype/);
+  assert.match(html, /Knowledge Forest Framework/);
+  assert.match(html, /Build request/);
+  assert.match(html, /Engineering branches/);
+  assert.match(html, /One complete primary resource/);
+  assert.match(html, /Acceptance artifact/);
+  assert.match(html, /Current research directions/);
   assert.match(html, /data-layout-direction="top-to-bottom"/);
   assert.match(html, /data-layout-model="branched-dag"/);
   assert.match(html, /data-complete-preview="true"/);
-  assert.match(html, /href="#complete-map"/);
   assert.match(html, /id="complete-map"/);
-  assert.match(html, /Complete dependency map/);
-  assert.match(html, /architecture, RTL verification, physical implementation, and software integration/);
-  assert.match(html, /Swipe horizontally inside the complete map to compare all four branches/);
-  assert.match(html, /data-branch-level="5"/);
-  assert.match(html, /FPGA SoC prototype/);
   assert.match(html, /RISC-V Ratified Specifications Library/);
-  assert.match(html, /What to learn from/);
-  assert.match(html, /Where research is moving/);
+  assert.match(html, /data-testid="recommended-next"/);
   assert.match(html, /切换到中文/);
-  assert.match(html, />12</);
-  assert.match(html, />36</);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -78,8 +72,8 @@ test("readmes keep demo languages and production screenshots separate", async ()
     const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
     assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
     assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
-    assert.equal(bytes.readUInt32BE(16), 1440);
-    assert.equal(bytes.readUInt32BE(20), 900);
+    assert.equal(bytes.readUInt32BE(16), 1280);
+    assert.equal(bytes.readUInt32BE(20), 720);
   }
   assert.doesNotMatch(englishProductSection, /Authentik|private deployment|private forest|learner(?:'s)? actual data/i);
   assert.doesNotMatch(englishProductSection, /actual-[^"\n]*-zh\.png/);
@@ -97,8 +91,8 @@ test("readmes keep demo languages and production screenshots separate", async ()
     const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
     assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
     assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
-    const expectedWidth = image === "actual-ai-mobile-zh.png" ? 390 : 1440;
-    const expectedHeight = image === "actual-ai-mobile-zh.png" ? 1385 : 900;
+    const expectedWidth = image === "actual-ai-mobile-zh.png" ? 390 : 1280;
+    const expectedHeight = image === "actual-ai-mobile-zh.png" ? 1385 : 720;
     assert.equal(bytes.readUInt32BE(16), expectedWidth);
     assert.equal(bytes.readUInt32BE(20), expectedHeight);
   }
@@ -127,13 +121,13 @@ test("dependency lines remain visible and distinguishable", async () => {
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(pageSource, /className="edge-halo"/);
-  assert.match(pageSource, /className=\{`edge-line \$\{edgeState\} \$\{touchesSelectedNode \? "active" : ""\}`\}/);
-  assert.match(styles, /\.branch-edges path\.edge-halo\s*\{[\s\S]*?stroke-width:\s*9;/);
-  assert.match(styles, /\.branch-edges path\.edge-line\s*\{[\s\S]*?stroke:\s*#66756d;[\s\S]*?stroke-width:\s*3;/);
-  assert.match(styles, /\.branch-edges path\.edge-line\.available\s*\{[\s\S]*?stroke:\s*#3f684f;[\s\S]*?stroke-width:\s*3\.5;/);
-  assert.match(styles, /\.branch-edges path\.edge-line\.completed\s*\{[\s\S]*?stroke:\s*#173e30;[\s\S]*?stroke-width:\s*4;/);
-  assert.match(styles, /\.branch-edges path\.edge-line\.active\s*\{[\s\S]*?stroke:\s*#9a4f2f;[\s\S]*?stroke-width:\s*4\.5;/);
+  assert.match(pageSource, /className: `tree-edge edge-\$\{state\}\$\{dependency === selectedId \|\| node\.id === selectedId \? " edge-selected" : ""\}`/);
+  assert.match(pageSource, /markerEnd: \{ type: MarkerType\.ArrowClosed \}/);
+  assert.match(styles, /\.react-flow__edge-path\s*\{[\s\S]*?vector-effect:\s*non-scaling-stroke;/);
+  assert.match(styles, /\.react-flow__edge\.edge-locked \.react-flow__edge-path\s*\{[\s\S]*?stroke:\s*#777f79;[\s\S]*?stroke-width:\s*1\.75;/);
+  assert.match(styles, /\.react-flow__edge\.edge-available \.react-flow__edge-path\s*\{[\s\S]*?stroke:\s*#2f6a4c;[\s\S]*?stroke-width:\s*2\.4;/);
+  assert.match(styles, /\.react-flow__edge\.edge-completed \.react-flow__edge-path\s*\{[\s\S]*?stroke:\s*#164e38;[\s\S]*?stroke-width:\s*2\.6;/);
+  assert.match(styles, /\.react-flow__edge\.edge-selected \.react-flow__edge-path\s*\{[\s\S]*?stroke:\s*#9a4f2f;[\s\S]*?stroke-width:\s*3\.4;/);
 });
 
 test("desktop case preview shows the complete technical tree", async () => {
@@ -154,9 +148,12 @@ test("desktop case preview shows the complete technical tree", async () => {
     ["architecture", "rtl-verification", "physical-design", "software-integration"],
   );
   assert.ok(englishForest.nodes.some((node) => node.id === "integration-fpga" && node.dependsOn.length === 3));
-  assert.match(styles, /\.forest-workspace\s*\{[\s\S]{0,160}grid-template-columns:\s*220px minmax\(0,\s*1fr\);/);
-  assert.match(styles, /\.branch-map\s*\{[\s\S]{0,180}grid-auto-rows:\s*minmax\(56px,\s*auto\);[\s\S]{0,80}row-gap:\s*10px;/);
-  assert.match(styles, /\.branch-node\s*\{[\s\S]{0,160}min-height:\s*56px;/);
-  assert.match(styles, /\.branch-node \.node-copy > span\s*\{\s*display:\s*none;/);
-  assert.match(styles, /\.vertical-tree\s*\{[\s\S]{0,120}scroll-margin-top:\s*84px;/);
+  const pageSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(pageSource, /const NODE_WIDTH = 226;/);
+  assert.match(pageSource, /const NODE_HEIGHT = 88;/);
+  assert.match(pageSource, /rankdir: "TB"/);
+  assert.match(pageSource, /instance\.fitView\(\{[\s\S]*?padding: 0\.12,[\s\S]*?maxZoom: 0\.76,/);
+  assert.match(styles, /\.workspace\s*\{[\s\S]{0,140}grid-template-columns:\s*minmax\(0,\s*1fr\) 410px;/);
+  assert.match(styles, /\.skill-node\s*\{[\s\S]{0,220}border-left:\s*3px solid var\(--realm\);/);
+  assert.match(styles, /\.detail-panel\s*\{[\s\S]{0,220}border-left:\s*1px solid var\(--line\);/);
 });

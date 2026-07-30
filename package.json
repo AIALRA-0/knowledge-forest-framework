@@ -26,6 +26,8 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^3.0.0",
+    "@xyflow/react": "^12.11.2",
     "next": "16.2.12",
     "react": "19.2.8",
     "react-dom": "19.2.8"
