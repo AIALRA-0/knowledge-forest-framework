@@ -12,6 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Knowledge Forest Framework",
     description,
+    icons: {
+      icon: "/favicon.svg",
+    },
     openGraph: {
       title,
       description: "Research deeply; learn one complete node; return and light the next",
