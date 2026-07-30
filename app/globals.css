@@ -744,19 +744,41 @@ footer {
 
 .branch-edges path {
   fill: none;
-  stroke: #bec6c0;
-  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
 }
 
-.branch-edges path.available {
-  stroke: #789080;
-  stroke-width: 2.5;
+.branch-edges path.edge-halo {
+  stroke: rgba(253, 252, 248, 0.96);
+  stroke-width: 9;
 }
 
-.branch-edges path.completed {
-  stroke: var(--forest);
+.branch-edges path.edge-line {
+  stroke: #66756d;
   stroke-width: 3;
+}
+
+.branch-edges path.edge-line.locked {
+  stroke-dasharray: 8 6;
+}
+
+.branch-edges path.edge-line.available {
+  stroke: #3f684f;
+  stroke-width: 3.5;
+}
+
+.branch-edges path.edge-line.completed {
+  stroke: #173e30;
+  stroke-width: 4;
+}
+
+.branch-edges path.edge-line.active {
+  stroke: #9a4f2f;
+  stroke-width: 4.5;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 1px 1px rgba(23, 33, 28, 0.22));
 }
 
 .node-card {

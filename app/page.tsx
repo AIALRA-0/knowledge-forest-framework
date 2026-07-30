@@ -489,12 +489,16 @@ export default function Home() {
                   {branchEdges.map((edge) => {
                     const sourceCompleted = completed.has(edge.sourceId);
                     const targetCompleted = completed.has(edge.targetId);
+                    const edgeState = targetCompleted ? "completed" : sourceCompleted ? "available" : "locked";
+                    const touchesSelectedNode = edge.sourceId === selected.id || edge.targetId === selected.id;
                     return (
-                      <path
-                        key={edge.id}
-                        d={edge.path}
-                        className={targetCompleted ? "completed" : sourceCompleted ? "available" : "locked"}
-                      />
+                      <g key={edge.id} className="branch-edge-pair">
+                        <path d={edge.path} className="edge-halo" />
+                        <path
+                          d={edge.path}
+                          className={`edge-line ${edgeState} ${touchesSelectedNode ? "active" : ""}`}
+                        />
+                      </g>
                     );
                   })}
                 </svg>
