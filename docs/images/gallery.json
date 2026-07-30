@@ -6,65 +6,65 @@
       "file": "actual-semiconductor-node-en.png",
       "language": "en",
       "field": "semiconductor",
-      "view": "node",
-      "width": 1280,
-      "height": 720
+      "view": "focus",
+      "width": 1440,
+      "height": 900
     },
     {
       "file": "actual-robotics-map-en.png",
       "language": "en",
-      "field": "embodied-robotics",
-      "view": "directory",
-      "width": 1280,
-      "height": 720
+      "field": "semiconductor",
+      "view": "atlas",
+      "width": 1440,
+      "height": 900
     },
     {
       "file": "actual-aviation-sources-en.png",
       "language": "en",
-      "field": "aviation",
-      "view": "platforms",
-      "width": 1280,
-      "height": 720
+      "field": "framework",
+      "view": "request-builder",
+      "width": 1440,
+      "height": 900
     },
     {
       "file": "actual-ai-frontiers-en.png",
       "language": "en",
-      "field": "artificial-intelligence",
-      "view": "frontiers",
-      "width": 1280,
-      "height": 720
+      "field": "semiconductor",
+      "view": "research-evidence",
+      "width": 1440,
+      "height": 900
     },
     {
       "file": "actual-semiconductor-node-zh.png",
       "language": "zh-CN",
       "field": "semiconductor",
-      "view": "node",
-      "width": 1280,
-      "height": 720
+      "view": "focus",
+      "width": 1440,
+      "height": 821
     },
     {
       "file": "actual-robotics-map-zh.png",
       "language": "zh-CN",
       "field": "embodied-robotics",
-      "view": "directory",
-      "width": 1280,
-      "height": 720
+      "view": "branched-focus",
+      "width": 1440,
+      "height": 821
     },
     {
       "file": "actual-aviation-sources-zh.png",
       "language": "zh-CN",
       "field": "aviation",
       "view": "platforms",
-      "width": 1280,
-      "height": 720
+      "width": 1440,
+      "height": 821
     },
     {
       "file": "actual-ai-frontiers-zh.png",
       "language": "zh-CN",
       "field": "artificial-intelligence",
       "view": "frontiers",
-      "width": 1280,
-      "height": 720
+      "width": 1440,
+      "height": 821
     },
     {
       "file": "actual-ai-mobile-zh.png",
@@ -72,7 +72,7 @@
       "field": "artificial-intelligence",
       "view": "frontiers-mobile",
       "width": 390,
-      "height": 1385
+      "height": 686
     }
   ]
 }
