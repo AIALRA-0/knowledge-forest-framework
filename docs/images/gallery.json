@@ -7,64 +7,64 @@
       "language": "en",
       "field": "semiconductor",
       "view": "node",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-robotics-map-en.png",
       "language": "en",
       "field": "embodied-robotics",
       "view": "directory",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-aviation-sources-en.png",
       "language": "en",
       "field": "aviation",
       "view": "platforms",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-ai-frontiers-en.png",
       "language": "en",
       "field": "artificial-intelligence",
       "view": "frontiers",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-semiconductor-node-zh.png",
       "language": "zh-CN",
       "field": "semiconductor",
       "view": "node",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-robotics-map-zh.png",
       "language": "zh-CN",
       "field": "embodied-robotics",
       "view": "directory",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-aviation-sources-zh.png",
       "language": "zh-CN",
       "field": "aviation",
       "view": "platforms",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-ai-frontiers-zh.png",
       "language": "zh-CN",
       "field": "artificial-intelligence",
       "view": "frontiers",
-      "width": 1440,
-      "height": 900
+      "width": 1280,
+      "height": 720
     },
     {
       "file": "actual-ai-mobile-zh.png",

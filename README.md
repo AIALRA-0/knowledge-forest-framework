@@ -17,9 +17,11 @@ Knowledge Forest turns a broad ambition into separate learning paths; every step
 
 ## Product interface
 
-One static mockup cannot show how the product behaves across a large learning forest; the gallery therefore uses four distinct fields, four tree positions, and four working views from the production interface
+The public demo and production gallery now use the same vertical tree, node cards, detail panel, progress states, and dependency-line hierarchy
 
-The learning content shown here is built from independently public evidence; the gallery contains no personal progress, private address, access-control configuration, deployment detail, or private aggregate
+Each screen below is rendered by the bilingual public-evidence route inside the production product; ordinary prerequisites use solid dark lines, while the path touching the selected node uses a thicker brown line
+
+The gallery moves across four fields, four tree positions, and four working views; it contains no personal progress, private address, access-control configuration, deployment detail, or private aggregate
 
 ### Semiconductor node
 
