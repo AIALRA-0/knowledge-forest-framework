@@ -12,47 +12,58 @@ Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步
 
 ## 产品界面
 
-宽泛的学习目标通常同时包含前置知识、并行分支、学习资源、实践作品和研究方向，全部挤进一份清单会让学习者无法判断下一步
+只展示一个固定节点会让产品看起来像静态原型，无法说明使用者怎样在不同领域、树位置与工作界面之间切换
 
-框架把这些信息分到四个能够直接执行的界面：
+下面的图库直接使用正式产品界面，并以可以独立核验的公开资料构建案例
 
-- 学习树显示现在可以学习什么、哪些分支可以并行推进、哪些节点仍在等待前置成果
-- 节点面板把学习目标、完整主线资源和验收作品放在同一处
-- 资源指南帮助学习者比较完整课程、官方文档、行业培训、开放工具和研究资料
-- 研究复核界面区分成熟知识与未解决问题，并说明每项主张需要什么证据
+公开图库不包含个人进度、私有地址、访问控制配置、部署细节或私有规模统计
 
-这些图片由正式产品界面使用合成内容渲染，只说明框架如何工作，不读取或展示任何使用者的学习领域、记录、资源和进度
+### 芯片节点
 
-### 学习路径
-
-竖向分支树显示前置关系和并行路径，右侧面板说明完成当前节点前必须留下什么作品
+异构 SoC 节点同时保留前置分支、可检查的工程作品、AMD Versal Adaptive SoC Technical Reference Manual 与四条补充路线
 
 <p align="center">
-  <img src="docs/images/product-learning-path-zh.png" alt="中文产品界面展示竖向分支学习树和节点要求" width="960">
+  <img src="docs/images/actual-semiconductor-node-zh.png" alt="中文正式产品界面展示异构 SoC 节点、前置分支、完整主线资源与验收作品" width="960">
 </p>
 
-### 资源指南
+### 机器人分支地图
 
-学习树确定学习目标后，资源指南再帮助学习者比较完整且能够使用的资料，不会另外建立一套互相冲突的课程表
+机器人页面移动到另一条分支并打开领域地图
+
+动力学、感知、操作与实时安全分别推进，最后在能够运行的机器人系统中汇合
 
 <p align="center">
-  <img src="docs/images/product-source-guide-zh.png" alt="中文产品界面展示资源指南" width="960">
+  <img src="docs/images/actual-robotics-map-zh.png" alt="中文正式产品界面展示具有多条分支的机器人领域地图" width="960">
 </p>
 
-### 研究复核
+### 航空资源目录
 
-研究复核界面指出仍未解决的问题、判断进展所需的证据，以及必须交给专业人员或负责人判断的边界
+航空页面围绕 MIT 16.333 Aircraft Stability and Control、FAA 飞行员手册、EASA 法规、OpenVSP 与 NASA 技术报告打开资源目录
+
+每份资料承担不同的学习任务，不会把课程、法规、工具与研究档案混成一份清单
 
 <p align="center">
-  <img src="docs/images/product-research-review-zh.png" alt="中文产品界面展示带有证据要求的研究方向" width="960">
+  <img src="docs/images/actual-aviation-sources-zh.png" alt="中文正式产品界面展示航空学习树与权威资源目录" width="960">
+</p>
+
+### AI 研究复核
+
+AI 页面选择 World Models 分支并打开研究复核
+
+每个方向先说明仍未解决的工程问题，再连接到带日期的公开证据
+
+<p align="center">
+  <img src="docs/images/actual-ai-frontiers-zh.png" alt="中文正式产品界面展示世界模型分支与带日期的研究方向" width="960">
 </p>
 
 ### 移动端完整页面
 
-移动端保留相同的分支关系、节点说明、完整资源、补充来源和点亮操作，学习者不需要在手机上使用删减版功能
+移动端保留树、分支、节点说明、研究证据与验收作品
+
+手机界面改变排列方式，不删减学习判断所需的信息
 
 <p align="center">
-  <img src="docs/images/product-mobile-complete-zh.png" alt="中文移动端完整页面展示学习树和节点内容" width="390">
+  <img src="docs/images/actual-ai-mobile-zh.png" alt="中文移动端完整页面展示 AI 世界模型分支、研究证据与验收作品" width="390">
 </p>
 
 ## 你需要做什么
