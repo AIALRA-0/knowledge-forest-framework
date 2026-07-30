@@ -17,37 +17,40 @@ Knowledge Forest turns a broad ambition into separate learning paths; every step
 
 ## Product interface
 
-A broad learning goal contains several kinds of work that should not be hidden inside one long checklist
+One static mockup cannot show how the product behaves across a large learning forest; the gallery therefore uses four distinct fields, four tree positions, and four working views from the production interface
 
-- the tree shows what can be learned now, what can proceed in parallel, and what must wait
-- the node panel keeps the learning outcome, complete primary resource, and required work together
-- the source guide compares courses, official documentation, industry training, open tools, and research evidence
-- the research view separates established knowledge from current open questions and records how each claim can be checked
+The learning content shown here is built from independently public evidence; the gallery contains no personal progress, private address, access-control configuration, deployment detail, or private aggregate
 
-The following screens are rendered by the production product interface with synthetic content; they describe framework behavior without reading or exposing any learner's fields, records, resources, or progress
+### Semiconductor node
 
-### Learning path and node requirements
-
-The vertical tree exposes prerequisites and parallel branches; the panel defines the work that must exist before the selected node can be marked complete
+The selected heterogeneous-SoC node keeps the full prerequisite branch, an observable engineering artifact, the AMD Versal Adaptive SoC Technical Reference Manual, and four supporting routes in one screen
 
 <p align="center">
-  <img src="docs/images/product-learning-path-en.png" alt="English product interface showing a vertical branched learning path and node requirements" width="960">
+  <img src="docs/images/actual-semiconductor-node-en.png" alt="English production interface showing a heterogeneous SoC node, its prerequisite branches, complete primary resource and acceptance work" width="960">
 </p>
 
-### Source guide
+### Robotics field map
 
-The source guide helps a learner compare complete and usable resources after the tree has already defined the learning outcome
+The robotics screen moves to a different branch position and opens the field map; dynamics, perception, manipulation, and real-time safety remain independent paths until they reunite in a working system
 
 <p align="center">
-  <img src="docs/images/product-source-guide-en.png" alt="English product interface showing the source guide" width="960">
+  <img src="docs/images/actual-robotics-map-en.png" alt="English production interface showing the branched robotics field map" width="960">
 </p>
 
-### Research review
+### Aviation source directory
 
-The research view names an unresolved problem, the evidence needed to evaluate it, and the boundary that still requires human review
+The aviation screen opens the source directory around MIT 16.333 Aircraft Stability and Control, the FAA pilot handbook, EASA rules, OpenVSP, and NASA technical reports; each source has a different learning job
 
 <p align="center">
-  <img src="docs/images/product-research-review-en.png" alt="English product interface showing evidence-bound research directions" width="960">
+  <img src="docs/images/actual-aviation-sources-en.png" alt="English production interface showing an aviation learning tree and authoritative source directory" width="960">
+</p>
+
+### AI research review
+
+The AI screen selects the World Models branch and opens the research review; each direction explains the unresolved engineering problem and binds it to dated public evidence
+
+<p align="center">
+  <img src="docs/images/actual-ai-frontiers-en.png" alt="English production interface showing a world-model tree branch and dated research frontiers" width="960">
 </p>
 
 ## What you do

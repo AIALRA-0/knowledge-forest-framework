@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "privacyBoundary": "Public evidence only; excludes identity, progress values, addresses, access-control details, deployment details, and non-public aggregates",
+  "captures": [
+    {
+      "file": "actual-semiconductor-node-en.png",
+      "language": "en",
+      "field": "semiconductor",
+      "view": "node",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-robotics-map-en.png",
+      "language": "en",
+      "field": "embodied-robotics",
+      "view": "directory",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-aviation-sources-en.png",
+      "language": "en",
+      "field": "aviation",
+      "view": "platforms",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-ai-frontiers-en.png",
+      "language": "en",
+      "field": "artificial-intelligence",
+      "view": "frontiers",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-semiconductor-node-zh.png",
+      "language": "zh-CN",
+      "field": "semiconductor",
+      "view": "node",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-robotics-map-zh.png",
+      "language": "zh-CN",
+      "field": "embodied-robotics",
+      "view": "directory",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-aviation-sources-zh.png",
+      "language": "zh-CN",
+      "field": "aviation",
+      "view": "platforms",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-ai-frontiers-zh.png",
+      "language": "zh-CN",
+      "field": "artificial-intelligence",
+      "view": "frontiers",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "actual-ai-mobile-zh.png",
+      "language": "zh-CN",
+      "field": "artificial-intelligence",
+      "view": "frontiers-mobile",
+      "width": 390,
+      "height": 1385
+    }
+  ]
+}

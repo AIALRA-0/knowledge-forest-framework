@@ -81,6 +81,12 @@
       "statement": "Present the repository as a usable product rather than a record of past corrections",
       "regressionCheck": "Public README describes user outcomes, examples, operation, quality and maintenance without exposing private iteration history",
       "source": "framework"
+    },
+    {
+      "id": "varied-real-site-gallery",
+      "statement": "Show real production-site learning cases from several fields and page locations instead of repeating one selected tree position",
+      "regressionCheck": "README galleries require distinct field and view identifiers, real public evidence names, language-matched interfaces, varied screenshots, and no private progress or deployment metadata",
+      "source": "framework"
     }
   ]
 }

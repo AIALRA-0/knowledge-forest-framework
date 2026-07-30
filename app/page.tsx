@@ -106,27 +106,28 @@ export default function Home() {
   const displayForest = useMemo(() => localizeForest(forest, language), [language]);
 
   useEffect(() => {
-    setCompleted(loadSet(PROGRESS_KEY));
-    try {
-      const stored = JSON.parse(window.localStorage.getItem(FEEDBACK_KEY) ?? "{}");
-      setFeedback(stored && typeof stored === "object" ? stored : {});
-    } catch {
-      setFeedback({});
-    }
-    setResourceIssues(loadSet(RESOURCE_ISSUE_KEY));
+    const hydrationTimer = window.setTimeout(() => {
+      setCompleted(loadSet(PROGRESS_KEY));
+      try {
+        const stored = JSON.parse(window.localStorage.getItem(FEEDBACK_KEY) ?? "{}");
+        setFeedback(stored && typeof stored === "object" ? stored : {});
+      } catch {
+        setFeedback({});
+      }
+      setResourceIssues(loadSet(RESOURCE_ISSUE_KEY));
+      const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
+      if (requestedLanguage === "zh-CN" || requestedLanguage === "en") {
+        setLanguage(requestedLanguage);
+      }
+    }, 0);
+    return () => window.clearTimeout(hydrationTimer);
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = language;
-    setCopyState(t.copyBrief);
+    const copyStateTimer = window.setTimeout(() => setCopyState(t.copyBrief), 0);
+    return () => window.clearTimeout(copyStateTimer);
   }, [language, t.copyBrief]);
-
-  useEffect(() => {
-    const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
-    if (requestedLanguage === "zh-CN" || requestedLanguage === "en") {
-      setLanguage(requestedLanguage);
-    }
-  }, []);
 
   function statusLabel(status: NodeStatus) {
     if (status === "completed") return t.completed;
@@ -505,6 +506,7 @@ export default function Home() {
                   const searchMuted = query.trim().length > 0 && !matchingNodeIds.has(node.id);
                   return (
                     <button
+                      key={node.id}
                       ref={(element) => {
                         if (element) branchNodeRefs.current.set(node.id, element);
                         else branchNodeRefs.current.delete(node.id);
