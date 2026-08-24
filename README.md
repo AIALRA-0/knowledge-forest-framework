@@ -1,95 +1,106 @@
 <div align="center">
 
-# Knowledge Forest Framework
+# 知识森林框架
 
-**Describe what you want to learn; get a clear path you can follow, finish, and maintain**
+**说清楚你想学什么；得到一张可以照着学、逐步完成、长期维护的路线图**
 
-[![CI](https://github.com/AIALRA-0/knowledge-forest-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/AIALRA-0/knowledge-forest-framework/actions/workflows/ci.yml)
-[![Apache 2.0](https://img.shields.io/badge/code-Apache--2.0-254b3c.svg)](LICENSE)
-[![Local first](https://img.shields.io/badge/progress-local--first-805a46.svg)](docs/privacy.md)
-[![No telemetry](https://img.shields.io/badge/telemetry-none-657067.svg)](docs/privacy.md)
-
-[English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en) · [中文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) · [中文说明](README.zh-CN.md) · [How it works](docs/architecture.md) · [Quality checks](docs/quality-gates.md) · [Security](SECURITY.md)
+[中文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) · [English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en) · [English](README.md) · [工作原理](docs/architecture.md) · [质量检查](docs/quality-gates.md) · [安全](SECURITY.md)
 
 </div>
 
-Knowledge Forest turns a broad ambition into separate learning paths; every step tells you what to learn from, what to make before moving on, what must be completed first, and where current research is heading
+Knowledge Forest 会把宽泛目标拆成不同领域的学习路径；每一步都会告诉你去哪里学、学完要做出什么、必须先完成什么，以及这个方向目前正在研究什么；
 
-## Product interface
+## 产品界面
 
-The public release and the private production product now use one visual and interaction model; the default Focus view keeps the required path and immediate next choices readable; Atlas shows the field structure without turning daily learning into a wall of nodes
+公开版本与正式产品现在使用同一套视觉和交互模型；默认聚焦视图只保留必要前置路径与立即可选的下一步；领域全图用于确认整体结构；日常学习不会被整棵大树淹没
 
-Blue lines mark the exact prerequisite path into the selected node; brown lines mark an immediately learnable next step; gray lines preserve surrounding dependency context
+蓝线表示进入当前节点的准确前置路径；棕线表示已经满足条件并可立即学习的下一步；灰线保留周边依赖语境
 
-The English screens below come directly from the working public release; the Chinese README also includes public-safe crops from current production fields; neither gallery exposes personal progress, a private address, access-control configuration, deployment detail, or private aggregate
+下面的中文图片直接截取自当前正式产品中的真实领域；截图已经去除会暴露个人进度、私有地址、访问控制、部署信息或私有规模的位置
 
-### Focused learning path
+### 芯片节点
 
-The selected pipeline node keeps its complete prerequisite path, nearby branches, one complete primary resource, an acceptance artifact, and current research evidence in one working screen
-
-<p align="center">
-  <img src="docs/images/actual-semiconductor-node-en.png" alt="English interface showing a selected RISC-V pipeline node, its prerequisite path, complete primary resource and acceptance work" width="960">
-</p>
-
-### Complete field atlas
-
-Atlas reveals every branch and merge in the public example; Focus remains one click away when the learner is ready to continue
+芯片节点同时保留准确前置路径、可检查的工程作品、完整主线资源与补充平台
 
 <p align="center">
-  <img src="docs/images/actual-robotics-map-en.png" alt="English interface showing the complete branched RISC-V SoC field atlas" width="960">
+  <img src="docs/images/actual-semiconductor-node-zh.png" alt="中文正式产品界面展示芯片工程节点、准确前置路径、完整主线资源与验收作品" width="960">
 </p>
 
-### Request builder
+### 机器人分支地图
 
-The request builder turns an ordinary description of the goal, prior knowledge, time, access, and constraints into a structured brief an agent can investigate
+机器人页面选择数学、力学与控制入口并展开多个可以独立推进的分支
+
+动力学、感知、操作与实时安全分别推进，最后在能够运行的机器人系统中汇合
 
 <p align="center">
-  <img src="docs/images/actual-aviation-sources-en.png" alt="English interface showing the structured knowledge-forest request builder" width="960">
+  <img src="docs/images/actual-robotics-map-zh.png" alt="中文正式产品界面展示具有多条分支的机器人领域地图" width="960">
 </p>
 
-### Research evidence
+### 航空资源目录
 
-Every node carries three current directions; each direction explains the open problem and links it to dated evidence
+航空页面围绕飞行动力学与控制节点打开经过筛选的平台目录
+
+每份资料承担不同的学习任务，不会把课程、法规、工具与研究档案混成一份清单
 
 <p align="center">
-  <img src="docs/images/actual-ai-frontiers-en.png" alt="English interface showing three dated research directions for a selected engineering node" width="960">
+  <img src="docs/images/actual-aviation-sources-zh.png" alt="中文正式产品界面展示航空学习树与权威资源目录" width="960">
 </p>
 
-## What you do
+### AI 研究复核
 
-1. Write the goal in your own words; include what you already know, how much time you have, and any limits that matter
-2. Give the generated request to an agent using the included workflow
-3. Open the resulting forest and choose a field
-4. Learn from the complete resource; produce the listed piece of work; mark the step complete; move to the next unlocked step
-5. Return later and continue from the progress saved in your browser
+AI 页面选择 World Models 分支并打开研究复核
 
-## What you see at every step
+每个方向先说明仍未解决的工程问题，再连接到带日期的公开证据
 
-- one focused skill or idea
-- a short explanation of why it matters
-- one complete course, book, article, standard, or official documentation set
-- a concrete result to produce before the step counts as complete
-- prerequisite steps and a clear explanation when the step is locked
-- three current research directions with dated sources
-- progress, feedback, export, and a way to report an unavailable resource
+<p align="center">
+  <img src="docs/images/actual-ai-frontiers-zh.png" alt="中文正式产品界面展示世界模型分支与带日期的研究方向" width="960">
+</p>
 
-The public example is a complete RISC-V SoC engineering tree, not a single chain; ISA and synthesizable RTL foundations split into architecture, RTL verification, physical implementation, and software integration, then reunite in a bootable FPGA SoC prototype; it contains twelve steps, twelve complete resources, twelve engineering artifacts, and thirty-six current research directions
+### 移动端可读路径
 
-English and Chinese have separate entry URLs and fully localized interfaces; both render the same dependency graph and preserve the same browser-local progress without mixing languages on one page
+移动端把二维画布替换为按照依赖深度缩进的可读列表；节点说明、研究证据与验收作品继续保留
 
-![Public demo statistics](public/readme-stats.svg)
+手机界面改变排列方式；不删减学习判断所需的信息
 
-## Try it
+<p align="center">
+  <img src="docs/images/actual-ai-mobile-zh.png" alt="中文移动端完整页面展示 AI 世界模型分支、研究证据与验收作品" width="390">
+</p>
 
-Open the [English demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=en); the [Chinese demo](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN) is a separate localized entry; enter a goal such as:
+## 你需要做什么
+
+1. 用自己的话写下目标；同时写明已经掌握的内容、可投入时间和重要限制；
+2. 将页面生成的学习需求交给使用本框架的 Agent；
+3. 打开生成后的知识森林并选择一个领域；
+4. 使用节点提供的完整资源学习；完成节点要求的作品；点亮节点；进入下一个已经解锁的节点；
+5. 下次回来时继续使用浏览器中保存的进度；
+
+## 每个节点会提供什么
+
+- 一个明确的技能或问题；
+- 它为什么值得学习；
+- 一门完整课程、一本完整教材、一篇完整文章、一个完整标准或一套完整官方文档；
+- 学完以后必须做出的具体作品；
+- 前置节点；节点被锁定时会直接说明还缺什么；
+- 三个当前研究方向及其日期和来源；
+- 进度、反馈、导出和资源失效报告；
+
+公开案例是一棵完整的 RISC-V SoC 技术依赖树；不是一条单线列表；ISA 与可综合 RTL 两个技术底座会分叉进入体系结构、RTL 验证、物理实现和软件集成；最终在可启动的 FPGA SoC 原型重新汇合；它包含十二个节点、十二份完整资源、十二项工程验收产物和三十六个当前研究方向；
+
+中文与英文使用两个独立入口和完整本地化界面；二者显示同一棵依赖树并共享浏览器本地进度；单个页面不会混用两种语言；
+
+![公开演示统计](public/readme-stats.svg)
+
+## 直接体验
+
+打开[中文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=zh-CN)；[英文演示](https://aialra-0.github.io/knowledge-forest-framework/?lang=en)使用独立入口；输入类似下面的目标；
 
 ```text
-I want to build an RV32IM SoC through RTL verification, physical implementation, firmware, and an FPGA prototype; I already know digital logic
+我想完成 RV32IM SoC 的 RTL 验证、物理实现、固件和 FPGA 原型；我已经掌握数字逻辑
 ```
 
-The page prepares a structured request; an agent then researches the field, checks the sources, and generates the complete forest
+页面会整理出清晰的学习需求；Agent 随后调查完整领域、核验资源并生成最终知识森林；
 
-## Run it locally
+## 本地运行
 
 ```bash
 git clone https://github.com/AIALRA-0/knowledge-forest-framework.git
@@ -98,37 +109,37 @@ npm install
 npm run dev
 ```
 
-Prepare a request from the command line:
+通过命令行整理学习需求；
 
 ```bash
 node packages/cli/bin/knowledge-forest.mjs brief \
-  "Build a research-level learning forest for embodied AI; I already know Python"
+  "构建具身智能研究级学习森林；我已经学过 Python"
 ```
 
-Check a generated forest:
+检查生成后的森林；
 
 ```bash
 node packages/cli/bin/knowledge-forest.mjs audit \
   examples/public-demo/forest.generated.json
 ```
 
-Give [`skills/knowledge-forest/SKILL.md`](skills/knowledge-forest/SKILL.md) to a compatible agent for the complete research and generation workflow
+将 [`skills/knowledge-forest/SKILL.md`](skills/knowledge-forest/SKILL.md) 交给兼容的 Agent；它会执行完整调查、生成和检查流程；
 
-## How a forest is produced
+## 森林如何生成
 
 ```mermaid
 flowchart TB
-    A["Your goal and starting point"] --> B["Major fields and prerequisites"]
-    B --> C["Complete learning resources"]
-    C --> D["Work that proves each skill"]
-    D --> E["Current research directions and sources"]
-    E --> F["Coverage, source, safety, and experience checks"]
-    F --> G["Interactive learning forest"]
-    G --> H["Progress and feedback"]
+    A["目标与现有基础"] --> B["主要领域与前置关系"]
+    B --> C["每一步的完整学习资源"]
+    C --> D["能够证明已经学会的作品"]
+    D --> E["当前研究方向及来源"]
+    E --> F["完整性、来源、安全与真实体验检查"]
+    F --> G["可交互的知识森林"]
+    G --> H["学习进度与反馈"]
     H --> B
 ```
 
-Every production run creates:
+每次正式生成都会提供；
 
 ```text
 forest.generated.json
@@ -137,72 +148,66 @@ audit-report.json
 review-queue.json
 ```
 
-In plain language; these files contain the forest shown on the page, where its information came from, which checks passed, and which decisions still need a person
+简单来说；这些文件分别保存页面要显示的森林、信息来自哪里、哪些检查已经通过、哪些判断仍然需要人来决定；
 
-## Quality checks
+## 质量检查
 
-`npm test` checks that:
+运行 `npm test` 会检查；
 
-- every step belongs to a clear field and has valid prerequisites
-- links point to complete resources rather than isolated chapters
-- completion requires a visible piece of work
-- current research directions have dates and sources
-- health, finance, aviation, space, and security requests receive appropriate boundaries
-- private paths, accounts, credentials, and personal course records cannot enter the public build
-- the production page builds successfully
+- 每个节点都属于明确领域；前置关系能够正常解锁；
+- 学习资源是完整课程或完整资料；不是随意截取的一章；
+- 学完必须产生可查看的作品；
+- 当前研究方向带有日期和来源；
+- 健康、金融、航空、航天和安全等领域具有适当边界；
+- 私有路径、账号、凭据和个人课程记录不能进入公共版本；
+- 最终页面能够正常构建；
 
-Automated checks are not enough; releases also include realistic desktop and mobile use; reviewers record where a person became confused, whether recovery was obvious, and what changed afterward
+自动检查只是第一层；每次发布还要用桌面端和移动端完成真实任务；记录用户在哪里困惑、能否找到恢复办法、最后具体修改了什么；
 
-Read the latest [real user journey review](docs/user-journey-review.md)
+可以查看最新的[真实用户旅程报告](docs/user-journey-review.md)；
 
-## Public and private projects
+## 公共项目与私有项目
 
-Use this public repository for reusable code, empty templates, synthetic examples, and common improvements
+公共仓库保存可复用代码、空白模板、合成示例和通用改进；
 
-Keep personal progress, private learning data, restricted resources, research archives, credentials, authentication, and deployment configuration in a separate private repository; the framework does not copy private data into the public project
+个人学习数据、进度、受限资源、研究档案、凭据、认证和部署配置放在独立私有仓库；本框架不会把私有数据复制到公共项目；
 
-## For maintainers
+## 维护者入口
 
 ```text
-app/                         interactive public demo
-packages/schema/             data shapes shared by generators and renderers
-packages/core/               prerequisite, progress, and quality rules
-packages/agent/              plain-language request preparation
-packages/cli/                local request and validation commands
-skills/knowledge-forest/     end-to-end agent workflow
-prompts/                     focused research instructions
-schemas/                     machine-readable file definitions
-templates/                   empty learner inputs
-examples/public-demo/        independently public example
-docs/                        design, quality, privacy, and policy
-scripts/                     reports, statistics, sanitization, and journey checks
-tests/                       repeatable release checks
+app/                         公开交互演示
+packages/schema/             生成器与页面共同使用的数据形状
+packages/core/               前置关系、进度与质量规则
+packages/agent/              将自然语言目标整理成清晰需求
+packages/cli/                本地生成与检查命令
+skills/knowledge-forest/     Agent 完整工作流程
+prompts/                     针对不同调查阶段的提示
+schemas/                     机器可读取的文件定义
+templates/                   空白用户输入
+examples/public-demo/        独立生成的公开示例
+docs/                        设计、质量、隐私和政策
+scripts/                     报告、统计、脱敏和体验检查
+tests/                       可重复执行的发布检查
 ```
 
-The [project landscape](docs/project-landscape.md) compares related curriculum, roadmap, graph, and research-index projects; the [architecture](docs/architecture.md) explains the internal file flow; the [agent protocol](docs/agent-protocol.md) defines the generation process
+阅读[相关项目调查](docs/project-landscape.md)可以了解现有项目与本框架的边界；阅读[系统结构](docs/architecture.md)可以了解文件如何流动；阅读[Agent 工作协议](docs/agent-protocol.md)可以了解生成流程；
 
-## Privacy and content rights
+## 隐私与内容许可
 
-- progress and feedback stay in the browser by default
-- the public demo includes no telemetry
-- public examples are independently generated
-- third-party material remains link-only unless redistribution permission is explicit
-- original code uses Apache-2.0
-- public example learning content uses CC BY 4.0
-- generated forests keep the license selected by their owner
+- 进度和反馈默认只保存在浏览器；
+- 公开演示不包含行为追踪；
+- 公开示例独立生成；
+- 没有明确再分发许可的第三方资料只保留链接；
+- 原创代码采用 Apache-2.0；
+- 公开示例学习内容采用 CC BY 4.0；
+- 用户生成的森林由用户自己选择许可证；
 
-Read [privacy](docs/privacy.md), [content policy](docs/content-policy.md), and [security](SECURITY.md) before publishing an instance
+发布实例前请阅读[隐私边界](docs/privacy.md)、[内容政策](docs/content-policy.md)和[安全政策](SECURITY.md)；
 
-## Contributing
+## 参与贡献
 
-Start with [CONTRIBUTING.md](CONTRIBUTING.md); explain the user problem, show the resulting behavior, and include the checks and real journey used to evaluate the change
+从 [CONTRIBUTING.md](CONTRIBUTING.md) 开始；说明用户遇到了什么问题、修改后实际会发生什么、使用了哪些自动检查和真实旅程；
 
-## Roadmap
+## 当前状态
 
-- `0.2` connect more research sources and preserve link snapshots
-- `0.3` add extension interfaces and richer connections between fields
-- `1.0` guarantee long-term file compatibility and signed releases
-
-## Status
-
-This is an early public release; use the review queue when a source, license, safety boundary, or field-coverage decision still needs a person; a generated forest is a learning guide and does not replace professional medical, legal, financial, licensing, or regulatory advice
+项目仍处于早期公共版本；当来源、许可证、安全边界或领域完整性仍需人工判断时保留待复核状态；生成的森林是学习指导；不能替代医疗、法律、金融、执照或监管领域的专业意见；
