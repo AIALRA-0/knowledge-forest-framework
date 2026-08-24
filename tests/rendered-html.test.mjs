@@ -41,8 +41,8 @@ test("server-renders the product shell and interactive demo", async () => {
 
 test("readmes keep demo languages and production screenshots separate", async () => {
   const [english, chinese, galleryText] = await Promise.all([
+    readFile(new URL("../README.en.md", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
-    readFile(new URL("../README.zh-CN.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/images/gallery.json", import.meta.url), "utf8"),
   ]);
   const gallery = JSON.parse(galleryText);
@@ -59,14 +59,14 @@ test("readmes keep demo languages and production screenshots separate", async ()
     "actual-ai-frontiers-zh.png",
     "actual-ai-mobile-zh.png",
   ];
-  const chineseProductSection = chinese.match(/## 产品界面([\s\S]*?)\n## /)?.[1] ?? "";
-  const englishProductSection = english.match(/## Product interface([\s\S]*?)\n## /)?.[1] ?? "";
+  const chineseProductSection = chinese.match(/## 2 产品界面([\s\S]*?)\n## /)?.[1] ?? "";
+  const englishProductSection = english.match(/## 2 Product interface([\s\S]*?)\n## /)?.[1] ?? "";
   const galleryFiles = new Set(gallery.captures.map((capture) => capture.file));
   const galleryFields = new Set(gallery.captures.map((capture) => capture.field));
   const galleryViews = new Set(gallery.captures.map((capture) => capture.view));
 
-  assert.match(english, /knowledge-forest-framework\/\?lang=en/);
-  assert.match(english, /knowledge-forest-framework\/\?lang=zh-CN/);
+  assert.match(english, /Website field beside the repository description/);
+  assert.doesNotMatch(english, /aialra-0\.github\.io\/knowledge-forest-framework/);
   assert.ok(englishProductSection.length > 500);
   for (const image of englishProductionImages) {
     assert.ok(galleryFiles.has(image));
@@ -85,8 +85,8 @@ test("readmes keep demo languages and production screenshots separate", async ()
   assert.match(englishProductSection, /Research evidence/);
   assert.match(englishProductSection, /<p align="center">[\s\S]*actual-semiconductor-node-en\.png/);
 
-  assert.match(chinese, /knowledge-forest-framework\/\?lang=zh-CN/);
-  assert.match(chinese, /knowledge-forest-framework\/\?lang=en/);
+  assert.match(chinese, /仓库首页 Description 区域的 Website 入口/);
+  assert.doesNotMatch(chinese, /aialra-0\.github\.io\/knowledge-forest-framework/);
   assert.ok(chineseProductSection.length > 500);
   for (const image of chineseProductionImages) {
     assert.ok(galleryFiles.has(image));
