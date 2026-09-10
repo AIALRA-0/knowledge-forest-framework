@@ -31,5 +31,17 @@
 - changed requirement with correction memory
 - unavailable resource recovery
 - desktop and mobile layouts
+- light and pure-black theme contrast
+- locked-node labels and progress eligibility
+- text equivalents for learning statistics
+- browser-local activity empty states and malformed-time handling
 
 The experience round records observed friction and the change made in response
+
+## Repository checks
+
+- generated fixtures are deterministic for identical input
+- local development and build commands work across supported platforms
+- Chinese and English repository guides describe the same current capabilities
+- the public demo contains only synthetic data and sanitized assets
+- credentials, private keys, cookies, local paths, internal addresses, and source maps are absent from the publication set

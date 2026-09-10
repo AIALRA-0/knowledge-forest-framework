@@ -14,7 +14,9 @@ The dependency direction is public to private only
 2. research manifests; taxonomy queries, resource candidates, evidence candidates
 3. `ForestBundle`; domains, nodes, bridges, provenance, completion contract
 4. audits; deterministic errors, warnings, review queue, experience evidence
-5. renderer; vertical trees, node detail, progress, feedback, export
+5. renderer; vertical trees, node detail, prerequisite-aware progress, light and pure-black themes, browser-local statistics, feedback, export
+
+The public renderer stores demo progress, theme preference, and activity summaries only in the current browser. These interface preferences are not part of `ForestBundle` and do not change the public schema
 
 ## Versioning
 

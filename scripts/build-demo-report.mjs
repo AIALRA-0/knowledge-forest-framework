@@ -22,7 +22,7 @@ const briefHash = createHash("sha256").update(briefText).digest("hex");
 
 const report = {
   schemaVersion: "1.0.0",
-  generatedAt: new Date().toISOString(),
+  generatedAt: forest.metadata.generatedAt,
   status: briefAudit.status === "pass"
     && forestAudit.status === "pass"
     && experience.status === "pass"

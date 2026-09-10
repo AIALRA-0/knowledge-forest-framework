@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-07-30T16:08:35.871Z",
+  "generatedAt": "2026-07-30T00:00:00.000Z",
   "status": "pass",
-  "briefHash": "04048e02558016b15af656bb7120968c40a3b52c387280ea320ec03c285c0df4",
+  "briefHash": "eddc5d31cc68ed4652c78610f01f39820389a497fc2806e9d38858a944d55cbf",
   "rounds": [
     {
       "id": "structure",

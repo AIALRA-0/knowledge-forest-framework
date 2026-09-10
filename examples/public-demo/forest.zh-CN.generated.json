@@ -835,7 +835,7 @@
     }
   ],
   "provenance": {
-    "briefHash": "04048e02558016b15af656bb7120968c40a3b52c387280ea320ec03c285c0df4",
+    "briefHash": "eddc5d31cc68ed4652c78610f01f39820389a497fc2806e9d38858a944d55cbf",
     "sourceSnapshotAt": "2026-07-30T00:00:00.000Z",
     "generator": "scripts/generate-technical-demo.mjs",
     "sourcePolicy": "Official technical documentation, standards, complete courses, whole-resource assignments, and link-only public evidence"

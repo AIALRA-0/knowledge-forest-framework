@@ -40,6 +40,7 @@ import {
   nextAvailableNodes,
   nodeState,
 } from "@/packages/core/src/progress.mjs";
+import { summarizeActivity, summarizeProgress } from "@/packages/core/src/ledger.mjs";
 import { normalizeRequirement } from "@/packages/agent/src/normalize.mjs";
 import {
   localizeForest,
@@ -57,6 +58,8 @@ const audit = auditForest(forest, { currentYear: 2026 });
 const NODE_WIDTH = 226;
 const NODE_HEIGHT = 88;
 const PROGRESS_KEY = "knowledge-forest-framework-demo-progress-v2";
+const ACTIVITY_KEY = "knowledge-forest-framework-demo-activity-v1";
+const THEME_KEY = "knowledge-forest-framework-theme-v1";
 const PUBLIC_LAYOUT_CACHE = new Map<string, DemoFlowNode[]>();
 
 const EXAMPLE_REQUIREMENTS = {
@@ -90,6 +93,9 @@ const PRODUCT_COPY = {
     dependency: "Dependency",
     mobilePath: "Readable path",
     buildRequest: "Build request",
+    ledger: "Learning stats",
+    nightTheme: "Night mode",
+    dayTheme: "Day mode",
     github: "GitHub",
     language: "中文",
     languageLabel: "切换到中文",
@@ -132,6 +138,19 @@ const PRODUCT_COPY = {
     localProgress: "Progress stays in this browser",
     unlocked: "Node lit; new branches may now be available",
     resetDone: "Demo progress reset",
+    ledgerTitle: "Learning overview",
+    ledgerIntro: "A local summary of this synthetic demo; no account or remote tracking is used",
+    totalNodes: "Total nodes",
+    completionRate: "Completion",
+    activityCount: "Recorded actions",
+    statusDistribution: "Current status",
+    domainProgress: "Progress by domain",
+    recentActivity: "Recent activity",
+    activityTrend: "Last 14 local days",
+    noActivity: "No learning actions have been recorded in this browser yet",
+    completedAction: "Lit",
+    reopenedAction: "Reopened",
+    resetAction: "Reset",
   },
   "zh-CN": {
     framework: "知识森林框架",
@@ -150,6 +169,9 @@ const PRODUCT_COPY = {
     dependency: "普通依赖",
     mobilePath: "可读路径",
     buildRequest: "生成需求",
+    ledger: "学习统计",
+    nightTheme: "黑夜模式",
+    dayTheme: "白天模式",
     github: "GitHub",
     language: "English",
     languageLabel: "Switch to English",
@@ -192,13 +214,55 @@ const PRODUCT_COPY = {
     localProgress: "进度只保存在当前浏览器",
     unlocked: "节点已经点亮；新的分支可能已经解锁",
     resetDone: "演示进度已经重置",
+    ledgerTitle: "学习概览",
+    ledgerIntro: "只汇总当前浏览器里的合成演示进度；不使用账号，也不上传行为记录",
+    totalNodes: "节点总数",
+    completionRate: "完成比例",
+    activityCount: "记录动作",
+    statusDistribution: "当前状态",
+    domainProgress: "分领域进度",
+    recentActivity: "最近活动",
+    activityTrend: "最近 14 个本地自然日",
+    noActivity: "当前浏览器还没有学习动作记录",
+    completedAction: "已点亮",
+    reopenedAction: "已重新打开",
+    resetAction: "已重置",
   },
 } as const;
 
 type NodeStatus = "completed" | "available" | "locked";
-type PanelMode = "node" | "brief";
+type PanelMode = "node" | "brief" | "ledger";
 type GraphViewMode = "focus" | "atlas";
 type EdgeEmphasis = "selected-path" | "next-ready" | "context" | "muted";
+type DemoTheme = "light" | "dark";
+type DemoActivity = {
+  id: string;
+  nodeId: string;
+  action: "completed" | "reopened" | "reset";
+  at: string;
+};
+type ProgressSummary = {
+  total: number;
+  completed: number;
+  available: number;
+  locked: number;
+  completionRate: number;
+  domains: Array<{
+    id: string;
+    title: string;
+    color: string;
+    total: number;
+    completed: number;
+    available: number;
+    locked: number;
+    completionRate: number;
+  }>;
+};
+type ActivitySummary = {
+  total: number;
+  trend: Array<{ day: string; count: number }>;
+  recent: DemoActivity[];
+};
 
 type DemoNodeData = {
   node: ForestNode;
@@ -218,11 +282,19 @@ type DependencyEdgeData = {
 };
 type DependencyFlowEdge = Edge<DependencyEdgeData, "dependency">;
 
-const EDGE_COLORS: Record<EdgeEmphasis, string> = {
-  "selected-path": "#1d4ed8",
-  "next-ready": "#a44700",
-  context: "#66736c",
-  muted: "#7b8780",
+const EDGE_COLORS: Record<DemoTheme, Record<EdgeEmphasis, string>> = {
+  light: {
+    "selected-path": "#1d4ed8",
+    "next-ready": "#a44700",
+    context: "#66736c",
+    muted: "#7b8780",
+  },
+  dark: {
+    "selected-path": "#8ab4ff",
+    "next-ready": "#ffb86b",
+    context: "#a0a0a0",
+    muted: "#777777",
+  },
 };
 
 function branchCount(bundle: ForestBundle) {
@@ -241,6 +313,28 @@ function loadProgress() {
 
 function saveProgress(completed: Set<string>) {
   window.localStorage.setItem(PROGRESS_KEY, JSON.stringify([...completed]));
+}
+
+function loadActivity() {
+  if (typeof window === "undefined") return [] as DemoActivity[];
+  try {
+    const stored = JSON.parse(window.localStorage.getItem(ACTIVITY_KEY) ?? "[]");
+    if (!Array.isArray(stored)) return [];
+    return stored.filter((event): event is DemoActivity => (
+      event
+      && typeof event.id === "string"
+      && typeof event.nodeId === "string"
+      && ["completed", "reopened", "reset"].includes(event.action)
+      && typeof event.at === "string"
+      && !Number.isNaN(Date.parse(event.at))
+    )).slice(-200);
+  } catch {
+    return [];
+  }
+}
+
+function saveActivity(events: DemoActivity[]) {
+  window.localStorage.setItem(ACTIVITY_KEY, JSON.stringify(events.slice(-200)));
 }
 
 function nodeCode(node: ForestNode, bundle: ForestBundle) {
@@ -416,8 +510,10 @@ function ForestExperience() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState(forest.nodes[0].id);
   const [viewMode, setViewMode] = useState<GraphViewMode>("focus");
+  const [theme, setTheme] = useState<DemoTheme>("light");
   const [artifactConfirmed, setArtifactConfirmed] = useState(false);
   const [panelMode, setPanelMode] = useState<PanelMode>("node");
+  const [activity, setActivity] = useState<DemoActivity[]>([]);
   const [requirement, setRequirement] = useState<string>(EXAMPLE_REQUIREMENTS.en[0]);
   const [brief, setBrief] = useState<LearnerBrief | null>(null);
   const [copyState, setCopyState] = useState("Copy brief");
@@ -503,7 +599,7 @@ function ForestExperience() {
           graphContext,
           viewMode,
         ) as EdgeEmphasis;
-        const color = EDGE_COLORS[emphasis];
+        const color = EDGE_COLORS[theme][emphasis];
         result.push({
           id: `${dependency}-${node.id}`,
           source: dependency,
@@ -533,7 +629,7 @@ function ForestExperience() {
       });
     });
     return result;
-  }, [displayForest.nodes, graphContext, viewMode, visibleIds]);
+  }, [displayForest.nodes, graphContext, theme, viewMode, visibleIds]);
 
   const selected = displayForest.nodes.find((node) => node.id === selectedId) ?? displayForest.nodes[0];
   const selectedState = stateMap.get(selected.id) ?? "locked";
@@ -543,6 +639,14 @@ function ForestExperience() {
   const children = displayForest.nodes.filter((node) => node.dependsOn.includes(selected.id));
   const completedCount = displayForest.nodes.filter((node) => completed.has(node.id)).length;
   const progress = Math.round((completedCount / displayForest.nodes.length) * 100);
+  const progressSummary = useMemo(
+    () => summarizeProgress(displayForest, completed) as ProgressSummary,
+    [completed, displayForest],
+  );
+  const activitySummary = useMemo(
+    () => summarizeActivity(activity) as ActivitySummary,
+    [activity],
+  );
   const depthMap = useMemo(() => graphDepths(graphRecords), [graphRecords]);
   const mobileNodes = useMemo(
     () => displayForest.nodes
@@ -575,6 +679,8 @@ function ForestExperience() {
       setRequirement(EXAMPLE_REQUIREMENTS[nextLanguage][0]);
       setCopyState(PRODUCT_COPY[nextLanguage].copy);
       setCompleted(loadProgress());
+      setActivity(loadActivity());
+      setTheme(window.localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light");
     }, 0);
     return () => window.clearTimeout(hydrationTimer);
   }, []);
@@ -624,12 +730,33 @@ function ForestExperience() {
     setCopyState(PRODUCT_COPY[nextLanguage].copy);
   }
 
+  function toggleTheme() {
+    const nextTheme: DemoTheme = theme === "light" ? "dark" : "light";
+    window.localStorage.setItem(THEME_KEY, nextTheme);
+    setTheme(nextTheme);
+  }
+
+  function recordActivity(action: DemoActivity["action"], nodeId: string) {
+    const event: DemoActivity = {
+      id: `${Date.now()}-${action}-${nodeId}`,
+      nodeId,
+      action,
+      at: new Date().toISOString(),
+    };
+    setActivity((current) => {
+      const next = [...current, event].slice(-200);
+      saveActivity(next);
+      return next;
+    });
+  }
+
   function markComplete() {
     if (!artifactConfirmed || selectedState !== "available") return;
     const result = completeNode(displayForest, completed, selected.id);
     if (!result.ok) return;
     saveProgress(result.completed);
     setCompleted(result.completed);
+    recordActivity("completed", selected.id);
     setArtifactConfirmed(false);
     showToast(copy.unlocked);
   }
@@ -640,12 +767,14 @@ function ForestExperience() {
     descendantsOf(displayForest, selected.id).forEach((id) => next.delete(id));
     saveProgress(next);
     setCompleted(next);
+    recordActivity("reopened", selected.id);
   }
 
   function resetProgress() {
     const next = new Set<string>();
     saveProgress(next);
     setCompleted(next);
+    recordActivity("reset", "*");
     showToast(copy.resetDone);
   }
 
@@ -670,6 +799,13 @@ function ForestExperience() {
     : selectedState === "available"
       ? copy.available
       : copy.locked;
+  const maxActivityCount = Math.max(1, ...activitySummary.trend.map((item) => item.count));
+
+  function activityLabel(action: DemoActivity["action"]) {
+    if (action === "completed") return copy.completedAction;
+    if (action === "reopened") return copy.reopenedAction;
+    return copy.resetAction;
+  }
 
   return (
     <main
@@ -679,6 +815,7 @@ function ForestExperience() {
       data-layout-direction="top-to-bottom"
       data-layout-model="branched-dag"
       data-complete-preview="true"
+      data-theme={theme}
       style={{ "--active-tree": "#315d72" } as CSSProperties}
     >
       <header className="topbar">
@@ -722,6 +859,24 @@ function ForestExperience() {
             aria-pressed={panelMode === "brief"}
           >
             {copy.buildRequest}
+          </button>
+          <button
+            className={`forest-button${panelMode === "ledger" ? " is-active" : ""}`}
+            type="button"
+            onClick={() => setPanelMode("ledger")}
+            aria-pressed={panelMode === "ledger"}
+            data-testid="learning-stats-toggle"
+          >
+            {copy.ledger}
+          </button>
+          <button
+            className="platform-button"
+            type="button"
+            onClick={toggleTheme}
+            aria-pressed={theme === "dark"}
+            data-testid="theme-toggle"
+          >
+            {theme === "light" ? copy.nightTheme : copy.dayTheme}
           </button>
           <a
             className="platform-button"
@@ -936,6 +1091,92 @@ function ForestExperience() {
                   <button type="button" onClick={copyBrief}>{copyState}</button>
                   <button type="button" onClick={() => setPanelMode("node")}>{copy.close}</button>
                 </div>
+              </div>
+            </>
+          ) : panelMode === "ledger" ? (
+            <>
+              <div className="detail-scroll ledger-panel" data-testid="learning-stats-panel">
+                <div className="detail-overline">
+                  <span className="status-pill forest-status">{copy.ledger}</span>
+                  <span>{activitySummary.total}</span>
+                </div>
+                <div className="detail-title-row">
+                  <span className="detail-track">LOCAL DEMO PROGRESS</span>
+                  <h2>{copy.ledgerTitle}</h2>
+                  <p className="brief-intro">{copy.ledgerIntro}</p>
+                </div>
+
+                <section className="detail-section ledger-metrics" aria-label={copy.ledgerTitle}>
+                  <article><span>{copy.totalNodes}</span><strong>{progressSummary.total}</strong></article>
+                  <article><span>{copy.completed}</span><strong>{progressSummary.completed}</strong></article>
+                  <article><span>{copy.available}</span><strong>{progressSummary.available}</strong></article>
+                  <article><span>{copy.locked}</span><strong>{progressSummary.locked}</strong></article>
+                  <article><span>{copy.completionRate}</span><strong>{progressSummary.completionRate}%</strong></article>
+                  <article><span>{copy.activityCount}</span><strong>{activitySummary.total}</strong></article>
+                </section>
+
+                <section className="detail-section ledger-section" data-testid="progress-distribution">
+                  <h3>{copy.statusDistribution}</h3>
+                  <div className="ledger-distribution" role="img" aria-label={`${copy.completed} ${progressSummary.completed}; ${copy.available} ${progressSummary.available}; ${copy.locked} ${progressSummary.locked}`}>
+                    <span className="is-completed" style={{ width: `${(progressSummary.completed / progressSummary.total) * 100}%` }} />
+                    <span className="is-available" style={{ width: `${(progressSummary.available / progressSummary.total) * 100}%` }} />
+                    <span className="is-locked" style={{ width: `${(progressSummary.locked / progressSummary.total) * 100}%` }} />
+                  </div>
+                  <ul className="ledger-legend">
+                    <li><i className="is-completed" /><span>{copy.completed}</span><strong>{progressSummary.completed}</strong></li>
+                    <li><i className="is-available" /><span>{copy.available}</span><strong>{progressSummary.available}</strong></li>
+                    <li><i className="is-locked" /><span>{copy.locked}</span><strong>{progressSummary.locked}</strong></li>
+                  </ul>
+                </section>
+
+                <section className="detail-section ledger-section" data-testid="domain-progress">
+                  <h3>{copy.domainProgress}</h3>
+                  <div className="ledger-domains">
+                    {progressSummary.domains.map((domain) => (
+                      <article key={domain.id} style={{ "--realm": domain.color } as CSSProperties}>
+                        <header><strong>{domain.title}</strong><span>{domain.completed}/{domain.total}</span></header>
+                        <div><span style={{ width: `${domain.completionRate}%` }} /></div>
+                        <p>{copy.completed} {domain.completed} · {copy.available} {domain.available} · {copy.locked} {domain.locked}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="detail-section ledger-section" data-testid="activity-trend">
+                  <h3>{copy.activityTrend}</h3>
+                  {activitySummary.total ? (
+                    <div className="ledger-trend" role="img" aria-label={copy.activityTrend}>
+                      {activitySummary.trend.map((item) => (
+                        <span key={item.day} title={`${item.day}: ${item.count}`}>
+                          <i style={{ height: `${Math.max(3, (item.count / maxActivityCount) * 64)}px` }} />
+                          <small>{item.day.slice(5)}</small>
+                        </span>
+                      ))}
+                    </div>
+                  ) : <p className="ledger-empty">{copy.noActivity}</p>}
+                </section>
+
+                <section className="detail-section ledger-section" data-testid="recent-activity">
+                  <h3>{copy.recentActivity}</h3>
+                  {activitySummary.recent.length ? (
+                    <ul className="ledger-recent">
+                      {activitySummary.recent.map((event) => {
+                        const node = displayForest.nodes.find((item) => item.id === event.nodeId);
+                        return (
+                          <li key={event.id}>
+                            <time dateTime={event.at}>{new Date(event.at).toLocaleDateString(language === "zh-CN" ? "zh-CN" : "en")}</time>
+                            <span>{activityLabel(event.action)}</span>
+                            <strong>{node?.title ?? displayForest.metadata.title}</strong>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : <p className="ledger-empty">{copy.noActivity}</p>}
+                </section>
+              </div>
+              <div className="detail-action">
+                <button className="light-button state-available" type="button" onClick={() => setPanelMode("node")}>{copy.close}</button>
+                <small className="local-progress-note">{copy.localProgress}</small>
               </div>
             </>
           ) : (

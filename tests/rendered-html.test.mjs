@@ -32,81 +32,63 @@ test("server-renders the product shell and interactive demo", async () => {
   assert.match(html, /data-layout-direction="top-to-bottom"/);
   assert.match(html, /data-layout-model="branched-dag"/);
   assert.match(html, /data-complete-preview="true"/);
+  assert.match(html, /data-theme="light"/);
   assert.match(html, /id="complete-map"/);
   assert.match(html, /RISC-V Ratified Specifications Library/);
   assert.match(html, /data-testid="recommended-next"/);
+  assert.match(html, /data-testid="learning-stats-toggle"/);
+  assert.match(html, /data-testid="theme-toggle"/);
   assert.match(html, /切换到中文/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
-test("readmes keep demo languages and production screenshots separate", async () => {
+test("theme and learning statistics remain part of the public framework contract", async () => {
+  const [pageSource, styles, ledgerSource, packageText] = await Promise.all([
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../packages/core/src/ledger.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ]);
+  const packageJson = JSON.parse(packageText);
+
+  assert.match(pageSource, /data-theme=\{theme\}/);
+  assert.match(pageSource, /knowledge-forest-framework-theme-v1/);
+  assert.match(pageSource, /data-testid="learning-stats-panel"/);
+  assert.match(pageSource, /data-testid="progress-distribution"/);
+  assert.match(pageSource, /data-testid="domain-progress"/);
+  assert.match(pageSource, /data-testid="activity-trend"/);
+  assert.match(styles, /\.app-shell\[data-theme="dark"\]\s*\{[\s\S]*?--page:\s*#000000;/);
+  assert.match(styles, /\.app-shell\[data-theme="dark"\]\s*\{[\s\S]*?--canvas:\s*#000000;/);
+  assert.match(styles, /\.ledger-distribution/);
+  assert.match(styles, /\.ledger-trend/);
+  assert.match(ledgerSource, /summarizeProgress/);
+  assert.match(ledgerSource, /summarizeActivity/);
+  assert.equal(packageJson.scripts.build, "node scripts/run-vinext.mjs build");
+});
+
+test("readmes route readers to the synthetic public framework", async () => {
   const [english, chinese, galleryText] = await Promise.all([
     readFile(new URL("../README.en.md", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/images/gallery.json", import.meta.url), "utf8"),
   ]);
   const gallery = JSON.parse(galleryText);
-  const englishProductionImages = [
-    "actual-semiconductor-node-en.png",
-    "actual-robotics-map-en.png",
-    "actual-aviation-sources-en.png",
-    "actual-ai-frontiers-en.png",
-  ];
-  const chineseProductionImages = [
-    "actual-semiconductor-node-zh.png",
-    "actual-robotics-map-zh.png",
-    "actual-aviation-sources-zh.png",
-    "actual-ai-frontiers-zh.png",
-    "actual-ai-mobile-zh.png",
-  ];
-  const chineseProductSection = chinese.match(/## 2 产品界面([\s\S]*?)\n## /)?.[1] ?? "";
-  const englishProductSection = english.match(/## 2 Product interface([\s\S]*?)\n## /)?.[1] ?? "";
-  const galleryFiles = new Set(gallery.captures.map((capture) => capture.file));
   const galleryFields = new Set(gallery.captures.map((capture) => capture.field));
   const galleryViews = new Set(gallery.captures.map((capture) => capture.view));
 
-  assert.match(english, /Website field beside the repository description/);
-  assert.doesNotMatch(english, /aialra-0\.github\.io\/knowledge-forest-framework/);
-  assert.ok(englishProductSection.length > 500);
-  for (const image of englishProductionImages) {
-    assert.ok(galleryFiles.has(image));
-    assert.match(english, new RegExp(image.replaceAll(".", "\\.")));
-    const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
-    assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
-    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
-    assert.equal(bytes.readUInt32BE(16), 1440);
-    assert.equal(bytes.readUInt32BE(20), 900);
+  for (const readme of [english, chinese]) {
+    assert.match(readme, /https:\/\/aialra-0\.github\.io\/knowledge-forest-framework\//);
+    assert.match(readme, /public\/og\.png/);
+    assert.match(readme, /public\/readme-stats\.svg/);
+    assert.match(readme, /4 (?:个领域|domains)/i);
+    assert.match(readme, /12 (?:个节点|nodes)/i);
+    assert.match(readme, /12 (?:项资源|resources)/i);
+    assert.match(readme, /36 (?:个研究前沿|research frontiers)/i);
+    assert.doesNotMatch(readme, /forest\.aialra|Authentik|private progress|生产配置[^\n]*[:=]/i);
   }
-  assert.doesNotMatch(englishProductSection, /Authentik|private deployment|private forest|learner(?:'s)? actual data/i);
-  assert.doesNotMatch(englishProductSection, /actual-[^"\n]*-zh\.png/);
-  assert.match(englishProductSection, /Focused learning path/);
-  assert.match(englishProductSection, /Complete field atlas/);
-  assert.match(englishProductSection, /Request builder/);
-  assert.match(englishProductSection, /Research evidence/);
-  assert.match(englishProductSection, /<p align="center">[\s\S]*actual-semiconductor-node-en\.png/);
-
-  assert.match(chinese, /仓库首页 Description 区域的 Website 入口/);
-  assert.doesNotMatch(chinese, /aialra-0\.github\.io\/knowledge-forest-framework/);
-  assert.ok(chineseProductSection.length > 500);
-  for (const image of chineseProductionImages) {
-    assert.ok(galleryFiles.has(image));
-    assert.match(chinese, new RegExp(image.replaceAll(".", "\\.")));
-    const bytes = await readFile(new URL(`../docs/images/${image}`, import.meta.url));
-    assert.ok(bytes.byteLength > 50_000, `${image} must contain a real production screenshot`);
-    assert.equal(bytes.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
-    const expectedWidth = image === "actual-ai-mobile-zh.png" ? 390 : 1440;
-    const expectedHeight = image === "actual-ai-mobile-zh.png" ? 686 : 821;
-    assert.equal(bytes.readUInt32BE(16), expectedWidth);
-    assert.equal(bytes.readUInt32BE(20), expectedHeight);
-  }
-  assert.doesNotMatch(chineseProductSection, /Authentik|认证网关|私有部署|私有森林|使用者实际数据/);
-  assert.doesNotMatch(chineseProductSection, /actual-[^"\n]*-en\.png/);
-  assert.doesNotMatch(chineseProductSection, /[；。][ \t]*$/m);
-  assert.match(chineseProductSection, /准确前置路径/);
-  assert.match(chineseProductSection, /多个可以独立推进的分支/);
-  assert.match(chineseProductSection, /经过筛选的平台目录/);
-  assert.match(chineseProductSection, /World Models/);
-  assert.match(chineseProductSection, /<p align="center">[\s\S]*actual-ai-mobile-zh\.png/);
+  assert.match(chinese, /中性纯黑夜间主题/);
+  assert.match(english, /neutral pure-black night theme/);
+  assert.doesNotMatch(chinese, /[；。][ \t]*$/m);
   assert.deepEqual(galleryFields, new Set([
     "framework",
     "semiconductor",
